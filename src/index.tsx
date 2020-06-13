@@ -1,9 +1,16 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './components/App';
+import { Provider } from 'react-redux';
+
+import App from './app';
+import { store } from './store';
 
 const Index = () => {
-    return <App />;
+    return (
+        <Provider store={store}>
+            <App />
+        </Provider>
+    );
 };
 
 ReactDOM.render(<Index />, document.getElementById('root'));
