@@ -15,8 +15,16 @@ import {
 
 const initialState: AuthState = {
     isLoggedIn: false,
-    isValidLogin: true,
+    isValidLogin: null,
     remembered: false,
+    email: '',
+    password: '',
+};
+
+const rememeberedLocalStorage = {
+    isLoggedIn: false,
+    isValidLogin: true,
+    remembered: true,
     email: '',
     password: '',
 };
@@ -33,10 +41,14 @@ export const authReducer = (
                 ...state,
                 isLoggedIn: true,
                 isValidLogin: true,
+                email: state.remembered ? state.email : '',
+                password: '',
             };
         case LOGOUT:
             return {
-                ...initialState,
+                ...state,
+                isLoggedIn: false,
+                isValidLogin: null,
             };
         case SET_AUTH_STATE:
             return {
