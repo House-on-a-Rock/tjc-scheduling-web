@@ -1,5 +1,6 @@
-import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from '../../shared/typed/useSelector';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 // Custom Components
@@ -19,21 +20,25 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
-import { login } from '../../store/actions';
 
-// Types
-import { RootState } from '../../store';
+// Actions
+import { login, rememberMe, updateAuthState, forgetMe } from '../../store/actions';
 
 const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const email = useSelector(({ auth }) => auth.email);
+    const password = useSelector(({ auth }) => auth.password);
+    const remembered = useSelector(({ auth }) => auth.remembered);
+    const isLoggedIn = useSelector(({ auth }) => auth.isLoggedIn);
+
     const handleLogin = () => {
         dispatch(login());
     };
 
-    const isLoggedIn = useSelector((state: RootState) => state.authReducer.isLoggedIn);
     if (isLoggedIn) {
+        remembered ? dispatch(rememberMe({ email: email })) : dispatch(forgetMe());
         return <Redirect to="/" />;
     }
 
@@ -55,24 +60,40 @@ const Login = () => {
                         fullWidth
                         id="email"
                         label="Email Address"
+                        value={email}
                         name="email"
                         autoComplete="email"
-                        autoFocus
+                        onChange={(event) =>
+                            dispatch(updateAuthState({ email: event.target.value }))
+                        }
                     />
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
+                        value={password}
                         name="password"
                         label="Password"
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={(event) =>
+                            dispatch(updateAuthState({ password: event.target.value }))
+                        }
                     />
                     <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
+                        control={
+                            <Checkbox
+                                value={remembered}
+                                color="primary"
+                                checked={remembered}
+                            />
+                        }
                         label="Remember me"
+                        onChange={() =>
+                            dispatch(updateAuthState({ remembered: !remembered }))
+                        }
                     />
                     <Button
                         type="submit"

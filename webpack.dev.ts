@@ -1,6 +1,6 @@
-import * as webpack from 'webpack';
-import * as HtmlWebPackPlugin from 'html-webpack-plugin';
-import * as path from 'path';
+import webpack from 'webpack';
+import HtmlWebPackPlugin from 'html-webpack-plugin';
+import path from 'path';
 
 const htmlPlugin = new HtmlWebPackPlugin({
     template: './src/index.html',

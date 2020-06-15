@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Login from '../components/Auth/Login';
 import ForgotPassword from '../components/Auth/ForgotPassword';

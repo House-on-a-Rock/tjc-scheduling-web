@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Auth from './containers/Auth';
 import { useSelector } from 'react-redux';
 import { RootState } from './store';

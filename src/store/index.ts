@@ -1,5 +1,6 @@
 import { createStore, combineReducers, compose } from 'redux';
 import { authReducer } from './reducers/authReducer';
+import { Reducer } from 'react';
 
 declare global {
     interface Window {
@@ -8,7 +9,7 @@ declare global {
 }
 
 const rootReducer = combineReducers({
-    authReducer: authReducer,
+    auth: authReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
