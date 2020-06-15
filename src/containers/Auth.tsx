@@ -1,18 +1,19 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Login from '../components/Auth/Login';
-
-// interface IProps {
-//     exact?: boolean;
-//     path: string;
-//     component: React.ComponentType<any>;
-// }
+import ForgotPassword from '../components/Auth/ForgotPassword';
 
 const Auth = () => {
+    const { path } = useRouteMatch();
     return (
-        <>
-            <Login />
-        </>
+        <Switch>
+            <Route path={`${path}/login`}>
+                <Login />
+            </Route>
+            <Route path={`${path}/forgotPassword`}>
+                <ForgotPassword />
+            </Route>
+        </Switch>
     );
 };
 

@@ -1,13 +1,24 @@
 import * as React from 'react';
 import Auth from './containers/Auth';
-import Home from './components/Home/Home';
 import { useSelector } from 'react-redux';
 import { RootState } from './store';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { PrivateRoute } from './components/shared/PrivateRoute';
+import Main from './containers/Main';
 
 export interface IAppProps {}
 
 export default function IApp(props: IAppProps) {
-    const isLoggedIn = useSelector((state: RootState) => state.authReducer.isLoggedIn);
-
-    return <>{isLoggedIn ? <Home /> : <Auth />}</>;
+    return (
+        <Router>
+            <Switch>
+                <Route path="/auth">
+                    <Auth />
+                </Route>
+                <PrivateRoute path="/">
+                    <Main />
+                </PrivateRoute>
+            </Switch>
+        </Router>
+    );
 }
