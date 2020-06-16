@@ -10,11 +10,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { secretIp } from '../../../secrets/secretStuff';
-
-interface Error {
-    status: number;
-    message: string;
-}
+import { HttpError } from '../../shared/types/models';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 const ResetPassword = () => {
     const classes = useStyles();
     const { token } = useParams();
-    const [errorCode, setErrorCode] = useState<Error>({ status: 200, message: '' });
+    const [errorCode, setErrorCode] = useState<HttpError>({ status: 200, message: '' });
     console.log(errorCode);
 
     useEffect(() => {
@@ -80,7 +76,7 @@ const ResetPassword = () => {
     );
 };
 
-const ResendAuthEmail = ({ message, status }: Error) => {
+const ResendAuthEmail = ({ message, status }: HttpError) => {
     const classes = useStyles();
     const [email, setEmail] = useState<string>('');
     return (

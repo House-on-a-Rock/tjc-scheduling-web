@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../shared/typed/useSelector';
+import { useSelector } from '../../shared/types/useSelector';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 // Custom Components

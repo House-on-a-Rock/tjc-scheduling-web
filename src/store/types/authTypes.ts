@@ -6,7 +6,7 @@ export const REMEMBER_ME = 'REMEMBER_ME';
 export const FORGET_ME = 'FORGET_ME';
 export const SET_AUTH_STATE = 'SET_AUTH_STATE';
 
-/** Action Paylodds */
+/** Action Payloads */
 export interface EmailMemory {
     email: string;
 }
