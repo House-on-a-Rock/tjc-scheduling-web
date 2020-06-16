@@ -22,19 +22,26 @@ import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
 
 // Actions
-import { login, rememberMe, updateAuthState, forgetMe } from '../../store/actions';
+import {
+    login,
+    rememberMe,
+    updateAuthState,
+    forgetMe,
+    checkCredentials,
+} from '../../store/actions';
 
 const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const email = useSelector(({ auth }) => auth.email);
-    const password = useSelector(({ auth }) => auth.password);
-    const remembered = useSelector(({ auth }) => auth.remembered);
-    const isLoggedIn = useSelector(({ auth }) => auth.isLoggedIn);
+    const email: string = useSelector(({ auth }) => auth.email);
+    const password: string = useSelector(({ auth }) => auth.password);
+    const remembered: boolean = useSelector(({ auth }) => auth.remembered);
+    const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
 
     const handleLogin = () => {
-        dispatch(login());
+        dispatch(checkCredentials(email, password));
+        // dispatch(login());
     };
 
     if (isLoggedIn) {

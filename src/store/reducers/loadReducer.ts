@@ -1,15 +1,16 @@
-import { ReducerDomains, LoadTypes, LoadReducerState, LoadActionTypes } from '../types';
+import {
+    ReducerDomains,
+    LoadStateTypes,
+    LoadReducerState,
+    LoadActionTypes,
+} from '../types';
 
 const initialState: LoadReducerState = {
     loadStatus: {
         [ReducerDomains.AUTH]: null,
-        [ReducerDomains.PROFILE]: null,
-        [ReducerDomains.TASKS]: null,
     },
     loadErrorStatus: {
         [ReducerDomains.AUTH]: null,
-        [ReducerDomains.PROFILE]: null,
-        [ReducerDomains.TASKS]: null,
     },
 };
 
@@ -17,29 +18,30 @@ export const loadReducer = (state = initialState, action: LoadActionTypes) => {
     return mapActionToDomain(action.domain);
 
     function mapActionToDomain(domain: ReducerDomains) {
+        console.log(action);
         switch (action.type) {
-            case LoadTypes.LOADED:
+            case LoadStateTypes.LOADED:
                 return {
                     ...state,
                     loadStatus: {
                         ...state.loadStatus,
-                        [domain]: LoadTypes.LOADED,
+                        [domain]: LoadStateTypes.LOADED,
                     },
                 };
-            case LoadTypes.LOADING:
+            case LoadStateTypes.LOADING:
                 return {
                     ...state,
                     loadStatus: {
                         ...state.loadStatus,
-                        [domain]: LoadTypes.LOADING,
+                        [domain]: LoadStateTypes.LOADING,
                     },
                 };
-            case LoadTypes.ERROR:
+            case LoadStateTypes.ERROR:
                 return {
                     ...state,
                     loadStatus: {
                         ...state.loadStatus,
-                        [domain]: LoadTypes.ERROR,
+                        [domain]: LoadStateTypes.ERROR,
                     },
                     loadErrorStatus: {
                         ...state.loadErrorStatus,

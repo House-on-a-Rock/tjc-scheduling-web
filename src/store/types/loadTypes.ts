@@ -37,14 +37,10 @@ export type LoadActionTypes =
 /** Reducer State */
 export interface LoadStatusType {
     [ReducerDomains.AUTH]: boolean;
-    [ReducerDomains.PROFILE]: boolean;
-    [ReducerDomains.TASKS]: boolean;
 }
 
 export interface LoadErrorType {
-    [ReducerDomains.AUTH]: string;
-    [ReducerDomains.PROFILE]: string;
-    [ReducerDomains.TASKS]: string;
+    [ReducerDomains.AUTH]: HttpError;
 }
 
 export interface LoadReducerState {
@@ -52,15 +48,11 @@ export interface LoadReducerState {
     loadErrorStatus: LoadErrorType;
 }
 
-// export const AUTH = 'AUTH';
-
 export enum ReducerDomains {
     AUTH = 'AUTH',
-    PROFILE = 'PROFILE',
-    TASKS = 'TASKS',
 }
 
-export enum LoadTypes {
+export enum LoadStateTypes {
     LOADED = 'LOADED',
     LOADING = 'LOADING',
     ERROR = 'ERROR',
