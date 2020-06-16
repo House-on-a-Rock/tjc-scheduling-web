@@ -21,18 +21,14 @@ const initialState: AuthState = {
     password: '',
 };
 
-const rememeberedLocalStorage = {
-    isLoggedIn: false,
-    isValidLogin: true,
+const savedState = {
+    ...initialState,
     remembered: true,
-    email: '',
-    password: '',
+    email: getLocalStorageState('auth')?.email,
 };
 
 export const authReducer = (
-    state = getLocalStorageState('auth')
-        ? { ...initialState, remembered: true, email: getLocalStorageState('auth').email }
-        : initialState,
+    state = getLocalStorageState('auth') ? savedState : initialState,
     action: AuthActionTypes,
 ): AuthState => {
     switch (action.type) {
