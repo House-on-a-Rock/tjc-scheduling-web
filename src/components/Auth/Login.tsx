@@ -43,6 +43,7 @@ const Login = () => {
         dispatch(checkCredentials(email, password));
         // dispatch(login());
     };
+    console.log(isLoggedIn);
 
     if (isLoggedIn) {
         remembered ? dispatch(rememberMe({ email: email })) : dispatch(forgetMe());

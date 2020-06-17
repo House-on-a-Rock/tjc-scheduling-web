@@ -18,7 +18,6 @@ export const loadReducer = (state = initialState, action: LoadActionTypes) => {
     return mapActionToDomain(action.domain);
 
     function mapActionToDomain(domain: ReducerDomains) {
-        console.log(action);
         switch (action.type) {
             case LoadStateTypes.LOADED:
                 return {
@@ -34,6 +33,10 @@ export const loadReducer = (state = initialState, action: LoadActionTypes) => {
                     loadStatus: {
                         ...state.loadStatus,
                         [domain]: LoadStateTypes.LOADING,
+                    },
+                    loadErrorStatus: {
+                        ...state.loadStatus,
+                        [domain]: null,
                     },
                 };
             case LoadStateTypes.ERROR:

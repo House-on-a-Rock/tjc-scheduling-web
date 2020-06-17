@@ -14,11 +14,6 @@ function mapLoadStateActions(domain: ReducerDomains) {
                 type: LoadStateTypes.ERROR,
                 error: error,
             }),
-            ErrorHandled: (error: HttpError) => ({
-                domain: domain,
-                type: LoadStateTypes.LOADED,
-                error: error,
-            }),
         };
     };
 }

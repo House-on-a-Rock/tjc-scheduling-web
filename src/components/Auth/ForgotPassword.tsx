@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 // Material UI
@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import { sendResetEmail } from '../../store/actions';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 const ForgotPassword = () => {
     const history = useHistory();
     const classes = useStyles();
+    const [email, setEmail] = useState<string>('');
 
     return (
         <Container component="main" maxWidth="xs">
@@ -56,11 +58,13 @@ const ForgotPassword = () => {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
                     ></TextField>
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button onClick={() => history.goBack()}>Reset Password</Button>
+                <Button onClick={() => sendResetEmail(email)}>Reset Password</Button>
                 <Button onClick={() => history.goBack()}>Remember it?</Button>
             </div>
         </Container>
