@@ -1,4 +1,4 @@
 export * from './ForgotPassword';
 export * from './Login';
-export * from './ResendAuthEmail';
-export * from './ChangePassword';
+export * from './AuthEmail';
+export * from './NewPassword';

@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { resetPassword } from '../../store/actions';
+import { LoadingOverlay } from '../shared';
 
 // Material UI
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
 
-interface ChangePasswordProps {
+interface NewPasswordProps {
     token: string;
 }
 
-export const ChangePassword = ({ token }: ChangePasswordProps) => {
+export const NewPassword = ({ token }: NewPasswordProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
@@ -25,7 +28,9 @@ export const ChangePassword = ({ token }: ChangePasswordProps) => {
         else dispatch(resetPassword(token, newPassword));
     }
     return (
-        <>
+        <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <LoadingOverlay />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Reset Password
@@ -67,7 +72,7 @@ export const ChangePassword = ({ token }: ChangePasswordProps) => {
                     Reset Password
                 </Button>
             </div>
-        </>
+        </Container>
     );
 };
 

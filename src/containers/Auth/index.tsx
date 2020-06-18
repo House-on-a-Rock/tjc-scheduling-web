@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ForgotPassword, Login } from '../../components/Auth';
+import { Login, AuthEmail } from '../../components/Auth';
 import { ResetPassword } from './ResetPassword';
 
 const Auth = () => {
@@ -11,7 +11,15 @@ const Auth = () => {
                 <Login />
             </Route>
             <Route path={`${path}/forgotPassword`}>
-                <ForgotPassword />
+                <AuthEmail
+                    data={{
+                        history: true,
+                        title: 'Forgot Password',
+                        description:
+                            'Lost your password? Please enter your email address. You will receive a link to create a new password via email.',
+                        type: 'Reset Password',
+                    }}
+                />
             </Route>
             <Route path={`${path}/resetPassword`}>
                 <ResetPassword />

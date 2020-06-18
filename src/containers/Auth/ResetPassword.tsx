@@ -3,14 +3,10 @@ import { useDispatch } from 'react-redux';
 import { validateResetToken } from '../../store/actions';
 import { useSelector } from '../../shared/types/useSelector';
 
-// Material UI
-import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
-
 // Custom components
 import { useQuery } from '../../shared/helper_functions';
 import { LoadingPage } from '../../components/shared';
-import { ResendAuthEmail, ChangePassword } from '../../components/Auth';
+import { AuthEmail, NewPassword } from '../../components/Auth';
 
 export const ResetPassword = () => {
     const dispatch = useDispatch();
@@ -26,17 +22,16 @@ export const ResetPassword = () => {
 
     return isLoading ? (
         <LoadingPage />
+    ) : tokenError ? (
+        <AuthEmail
+            data={{
+                history: false,
+                title: 'Resend Authentication Email',
+                type: 'Resend Authentication Email',
+            }}
+            error={tokenError}
+        />
     ) : (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            {tokenError ? (
-                <ResendAuthEmail
-                    message={tokenError.message}
-                    status={tokenError.status}
-                />
-            ) : (
-                <ChangePassword token={token} />
-            )}
-        </Container>
+        <NewPassword token={token} />
     );
 };
