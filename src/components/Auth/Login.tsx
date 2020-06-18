@@ -30,7 +30,7 @@ import {
 } from '../../store/actions';
 import { HttpError } from '../../shared/types/models';
 
-const Login = () => {
+export const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const email: string = useSelector(({ auth }) => auth.email);
@@ -39,9 +39,9 @@ const Login = () => {
     const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
     const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
 
-    const handleLogin = () => {
+    function handleLogin() {
         dispatch(checkCredentials(email, password));
-    };
+    }
 
     if (isLoggedIn) {
         remembered ? dispatch(rememberMe({ email: email })) : dispatch(forgetMe());
@@ -135,8 +135,6 @@ const Login = () => {
         </Container>
     );
 };
-
-export default Login;
 
 const useStyles = makeStyles((theme) => ({
     paper: {

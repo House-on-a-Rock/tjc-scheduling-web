@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import Login from '../../components/Auth/Login';
-import ForgotPassword from '../../components/Auth/ForgotPassword';
+import { ForgotPassword, Login } from '../../components/Auth';
 import { ResetPassword } from './ResetPassword';
 
 const Auth = () => {

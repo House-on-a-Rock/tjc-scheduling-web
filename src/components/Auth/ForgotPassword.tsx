@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     buttonRow: { display: 'flex', justifyContent: 'space-between' },
 }));
 
-const ForgotPassword = () => {
+export const ForgotPassword = () => {
     const history = useHistory();
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -74,5 +74,3 @@ const ForgotPassword = () => {
         </Container>
     );
 };
-
-export default ForgotPassword;

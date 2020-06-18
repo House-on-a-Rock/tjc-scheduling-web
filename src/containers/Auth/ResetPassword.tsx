@@ -9,7 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 // Custom components
 import { useQuery } from '../../shared/helper_functions';
-import LoadingPage from '../../components/shared/LoadingPage';
+import { LoadingPage } from '../../components/shared';
 import { ResendAuthEmail, ChangePassword } from '../../components/Auth';
 
 export const ResetPassword = () => {
@@ -31,8 +31,8 @@ export const ResetPassword = () => {
             <CssBaseline />
             {tokenError ? (
                 <ResendAuthEmail
-                    message={tokenError?.message}
-                    status={tokenError?.status}
+                    message={tokenError.message}
+                    status={tokenError.status}
                 />
             ) : (
                 <ChangePassword token={token} />
