@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../shared/types/useSelector';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
@@ -23,30 +23,29 @@ import { makeStyles } from '@material-ui/core/styles';
 
 // Actions
 import {
-    login,
     rememberMe,
     updateAuthState,
     forgetMe,
     checkCredentials,
 } from '../../store/actions';
+import { HttpError } from '../../shared/types/models';
 
 const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
-
     const email: string = useSelector(({ auth }) => auth.email);
     const password: string = useSelector(({ auth }) => auth.password);
     const remembered: boolean = useSelector(({ auth }) => auth.remembered);
     const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
+    const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
 
     const handleLogin = () => {
         dispatch(checkCredentials(email, password));
-        // dispatch(login());
     };
-    console.log(isLoggedIn);
 
     if (isLoggedIn) {
         remembered ? dispatch(rememberMe({ email: email })) : dispatch(forgetMe());
+        // dispatch prepHomePage
         return <Redirect to="/" />;
     }
 
@@ -60,6 +59,10 @@ const Login = () => {
                 <Typography component="h1" variant="h5">
                     Login
                 </Typography>
+                {errorMessage ? (
+                    <Typography color="error">{`${errorMessage?.status}: ${errorMessage?.message}`}</Typography>
+                ) : null}
+
                 <form className={classes.form} noValidate>
                     <TextField
                         variant="outlined"
@@ -104,7 +107,6 @@ const Login = () => {
                         }
                     />
                     <Button
-                        type="submit"
                         fullWidth
                         variant="contained"
                         color="primary"
@@ -148,7 +150,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', // Fix IE 11 issue.
+        width: '100%',
         marginTop: theme.spacing(1),
     },
     submit: {

@@ -14,7 +14,7 @@ const Auth = () => {
             <Route path={`${path}/forgotPassword`}>
                 <ForgotPassword />
             </Route>
-            <Route path={`${path}/resetPassword/:token`}>
+            <Route path={`${path}/resetPassword`}>
                 <ResetPassword />
             </Route>
         </Switch>

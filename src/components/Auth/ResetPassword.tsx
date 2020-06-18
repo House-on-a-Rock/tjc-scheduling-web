@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { validateResetToken, sendResetEmail } from '../../store/actions';
+import { validateResetToken, sendAuthEmail, resetPassword } from '../../store/actions';
 import { useSelector } from '../../shared/types/useSelector';
 import { HttpError } from '../../shared/types/models';
 
@@ -15,6 +14,7 @@ import TextField from '@material-ui/core/TextField';
 
 // Custom components
 import LoadingPage from '../shared/LoadingPage';
+import { useQuery } from '../../shared/helper_functions';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -39,13 +39,14 @@ const useStyles = makeStyles((theme) => ({
 
 const ResetPassword = () => {
     const dispatch = useDispatch();
-    const { token } = useParams();
+    const query = useQuery();
+    const token = query.get('token');
 
     const isLoading = useSelector(({ load }) => load.loadStatus.AUTH === 'LOADING');
     const errorCode = useSelector(({ load }) => load.loadErrorStatus.AUTH);
 
     useEffect(() => {
-        dispatch(validateResetToken('token'));
+        dispatch(validateResetToken(token));
     }, []);
 
     return isLoading ? (
@@ -66,6 +67,7 @@ const ResetPassword = () => {
 };
 
 const ResendAuthEmail = ({ message, status }: HttpError) => {
+    const dispatch = useDispatch();
     const classes = useStyles();
     const [email, setEmail] = useState<string>('');
     return (
@@ -92,7 +94,7 @@ const ResendAuthEmail = ({ message, status }: HttpError) => {
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button onClick={() => sendResetEmail(email)}>
+                <Button onClick={() => dispatch(sendAuthEmail(email))}>
                     Resend Authentication Email
                 </Button>
             </div>
@@ -102,15 +104,30 @@ const ResendAuthEmail = ({ message, status }: HttpError) => {
 
 const ChangePasswordForm = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<HttpError>({
+        status: null,
+        message: '',
+    });
+    const onSubmitResetPassword = (newPassword: string, confirmPassword: string) => {
+        if (password !== confirmPassword)
+            setErrorMessage({ message: "Passwords aren't the same", status: 400 });
+        else dispatch(resetPassword('token', newPassword));
+    };
     return (
         <>
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Reset Password
                 </Typography>
-                <Typography>Type in your new password</Typography>
+                {errorMessage.status ? (
+                    <Typography color="error">{`${errorMessage?.status}: ${errorMessage?.message}`}</Typography>
+                ) : (
+                    <Typography>Type in your new password</Typography>
+                )}
+
                 <form className={classes.form} noValidate>
                     <TextField
                         variant="outlined"
@@ -138,9 +155,7 @@ const ChangePasswordForm = () => {
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button
-                // onClick={() => history.goBack()}
-                >
+                <Button onClick={() => onSubmitResetPassword(password, confirmPassword)}>
                     Reset Password
                 </Button>
             </div>

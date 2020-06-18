@@ -7,7 +7,14 @@ const Home = () => {
     return (
         <>
             I'm HOME BABY
-            <button onClick={() => dispatch(logout())}>Log Out</button>
+            <button
+                onClick={() => {
+                    // remove from local storage
+                    dispatch(logout());
+                }}
+            >
+                Log Out
+            </button>
         </>
     );
 };

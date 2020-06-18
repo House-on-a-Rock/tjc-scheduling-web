@@ -8,7 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { sendResetEmail } from '../../store/actions';
+import { sendAuthEmail } from '../../store/actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 const ForgotPassword = () => {
     const history = useHistory();
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [email, setEmail] = useState<string>('');
 
     return (
@@ -64,7 +66,9 @@ const ForgotPassword = () => {
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button onClick={() => sendResetEmail(email)}>Reset Password</Button>
+                <Button onClick={() => dispatch(sendAuthEmail(email))}>
+                    Reset Password
+                </Button>
                 <Button onClick={() => history.goBack()}>Remember it?</Button>
             </div>
         </Container>

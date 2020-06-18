@@ -11,7 +11,12 @@ import {
 } from '../types';
 import { AuthStateActions } from './loadActions';
 import { Action } from 'redux';
-import { recoverEmail, checkResetToken, authenticateLogin } from '../apis';
+import {
+    recoverEmail,
+    checkResetToken,
+    authenticateLogin,
+    sendNewPassword,
+} from '../apis';
 import { errorDataExtractor } from '../../shared/helper_functions';
 
 export const login = (): AuthActionTypes => ({ type: LOGIN });
@@ -28,20 +33,22 @@ export const updateAuthState = (payload: any): AuthActionTypes => ({
 
 /* Thunk */
 
+export const onValidated = (): ThunkAction<any, any, any, Action> => (dispatch) => {
+    dispatch(login());
+    dispatch(AuthStateActions.Loaded());
+};
+
 export const checkCredentials = (
     email: string,
     password: string,
 ): ThunkAction<any, any, any, Action> => {
-    console.log('check', email, password);
     return async (dispatch) => {
-        dispatch(AuthStateActions.Loading());
         try {
             const response = await authenticateLogin(email, password);
+            dispatch(AuthStateActions.Loading());
             localStorage.setItem('access_token', response.data.access_token);
-            console.log(response);
-            // prep home page
             response.status === 200
-                ? dispatch(AuthStateActions.Loaded())
+                ? dispatch(onValidated())
                 : dispatch(
                       AuthStateActions.Error({
                           status: response.status,
@@ -49,7 +56,6 @@ export const checkCredentials = (
                       }),
                   );
         } catch (error) {
-            console.log(error);
             const errorData = errorDataExtractor(error);
             dispatch(AuthStateActions.Error(errorData));
         }
@@ -76,17 +82,38 @@ export const validateResetToken = (token: string): ThunkAction<any, any, any, Ac
     };
 };
 
-export const sendResetEmail = (email: string): ThunkAction<any, any, any, Action> => {
-    console.log('sendResetEmail');
-    return async (dispatch) => {
-        dispatch(AuthStateActions.Loading());
-        console.log(email);
-        try {
-            const response = await recoverEmail(email);
-            dispatch(AuthStateActions.Loaded());
-        } catch (error) {
-            const errorData = errorDataExtractor(error);
-            dispatch(AuthStateActions.Error(errorData));
-        }
-    };
+export const sendAuthEmail = (
+    email: string,
+): ThunkAction<any, any, any, Action> => async (dispatch) => {
+    dispatch(AuthStateActions.Loading());
+    try {
+        const response = await recoverEmail(email);
+        console.log(response);
+        dispatch(AuthStateActions.Loaded());
+    } catch (error) {
+        const errorData = errorDataExtractor(error);
+        dispatch(AuthStateActions.Error(errorData));
+    }
+};
+
+export const resetPassword = (
+    token: string,
+    newPassword: string,
+): ThunkAction<any, any, any, Action> => async (dispatch) => {
+    dispatch(AuthStateActions.Loading());
+    try {
+        const response = await sendNewPassword(token, newPassword);
+        console.log(response);
+        response.status === 201
+            ? dispatch(AuthStateActions.Loaded())
+            : dispatch(
+                  AuthStateActions.Error({
+                      status: response.status,
+                      message: response.statusText,
+                  }),
+              );
+    } catch (error) {
+        const errorData = errorDataExtractor(error);
+        dispatch(AuthStateActions.Error(errorData));
+    }
 };
