@@ -1,7 +1,5 @@
 import React from 'react';
 import Auth from './containers/Auth';
-import { useSelector } from 'react-redux';
-import { RootState } from './store';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { PrivateRoute } from './components/shared/PrivateRoute';
 import Main from './containers/Main';
