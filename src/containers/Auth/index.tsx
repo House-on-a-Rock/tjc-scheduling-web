@@ -1,7 +1,8 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { Login, AuthEmail } from '../../components/Auth';
 import { ResetPassword } from './ResetPassword';
+import { Login } from '../../components/Auth';
+import { AuthEmail } from '../../components/shared';
 
 const Auth = () => {
     const { path } = useRouteMatch();
@@ -17,7 +18,7 @@ const Auth = () => {
                         title: 'Forgot Password',
                         description:
                             'Lost your password? Please enter your email address. You will receive a link to create a new password via email.',
-                        type: 'Reset Password',
+                        button: 'Reset Password',
                     }}
                 />
             </Route>

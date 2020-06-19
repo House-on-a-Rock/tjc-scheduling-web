@@ -8,9 +8,6 @@ export function recoverEmail(email: string) {
 }
 
 export function checkResetToken(token: string) {
-    // console.log(token);
-
-    console.log('checkResetToken', typeof token, token);
     return axios.get(`${secretIp}/api/authentication/checkResetToken`, {
         headers: {
             authorization: token,
@@ -19,7 +16,6 @@ export function checkResetToken(token: string) {
 }
 
 export function authenticateLogin(email: string, password: string) {
-    console.log(email, password);
     return axios.post(`${secretIp}/api/authentication/login`, {
         email: email,
         password: password,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../shared/types/useSelector';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { Link as RouterLink, Redirect } from 'react-router-dom';
 import Copyright from '../shared/Copyright';
 
 // Material UI
+import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -19,7 +20,7 @@ import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Actions
 import {
@@ -28,16 +29,24 @@ import {
     forgetMe,
     checkCredentials,
 } from '../../store/actions';
+
+// Types
 import { HttpError } from '../../shared/types/models';
+import { VisiblePassword } from '../shared';
 
 export const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+
+    // email and password are selectors so that it can be received from local storage
     const email: string = useSelector(({ auth }) => auth.email);
     const password: string = useSelector(({ auth }) => auth.password);
     const remembered: boolean = useSelector(({ auth }) => auth.remembered);
     const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
     const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
+    const loadState: string = useSelector(({ load }) => load.loadStatus.AUTH);
+
+    const [visible, setVisible] = useState<boolean>(false);
 
     function handleLogin() {
         dispatch(checkCredentials(email, password));
@@ -86,12 +95,20 @@ export const Login = () => {
                         value={password}
                         name="password"
                         label="Password"
-                        type="password"
+                        type={visible ? 'text' : 'password'}
                         id="password"
                         autoComplete="current-password"
                         onChange={(event) =>
                             dispatch(updateAuthState({ password: event.target.value }))
                         }
+                        InputProps={{
+                            endAdornment: (
+                                <VisiblePassword
+                                    data={{ value: password, visible: visible }}
+                                    handleVisible={(event) => setVisible(event)}
+                                />
+                            ),
+                        }}
                     />
                     <FormControlLabel
                         control={
@@ -113,7 +130,7 @@ export const Login = () => {
                         className={classes.submit}
                         onClick={handleLogin}
                     >
-                        Sign In
+                        {loadState === 'LOADING' ? <CircularProgress /> : 'Sign In'}
                     </Button>
                     <Grid container>
                         <Grid item xs>

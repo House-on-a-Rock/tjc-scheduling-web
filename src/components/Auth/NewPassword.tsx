@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { resetPassword } from '../../store/actions';
-import { LoadingOverlay } from '../shared';
+import { TransitionsModal } from '../shared/TransitionsModal';
+import { VisiblePassword } from '../shared';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -15,22 +16,38 @@ interface NewPasswordProps {
     token: string;
 }
 
+export interface PasswordState {
+    value: string;
+    visible: boolean;
+}
+
 export const NewPassword = ({ token }: NewPasswordProps) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const [password, setPassword] = useState<string>('');
-    const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [areEquivalent, setAreEquivalent] = useState('');
+    const [password, setPassword] = useState<PasswordState>({
+        value: '',
+        visible: false,
+    });
+    const [confirmPassword, setConfirmPassword] = useState<PasswordState>({
+        value: '',
+        visible: false,
+    });
+    const [areEquivalent, setAreEquivalent] = useState<string>('');
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     function submitNewPassword(newPassword: string, confirmPassword: string) {
-        if (password !== confirmPassword) setAreEquivalent("Passwords aren't the same");
-        else dispatch(resetPassword(token, newPassword));
+        if (newPassword !== confirmPassword)
+            setAreEquivalent("Passwords aren't the same");
+        else {
+            dispatch(resetPassword(token, newPassword));
+            setOpenModal(true);
+        }
     }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <LoadingOverlay />
+            <TransitionsModal open={openModal} setOpen={setOpenModal} />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Reset Password
@@ -47,28 +64,66 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
                         margin="normal"
                         required
                         fullWidth
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        value={password.value}
+                        onChange={(event) =>
+                            setPassword({ ...password, value: event.target.value })
+                        }
                         id="password"
                         label="New Password"
                         name="Password"
-                        autoFocus
+                        type={password.visible ? 'text' : 'password'}
+                        InputProps={{
+                            endAdornment: (
+                                <VisiblePassword
+                                    data={password}
+                                    handleVisible={(event) =>
+                                        setPassword({
+                                            ...password,
+                                            visible: event,
+                                        })
+                                    }
+                                />
+                            ),
+                        }}
                     ></TextField>
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        value={confirmPassword}
-                        onChange={(event) => setConfirmPassword(event.target.value)}
+                        value={confirmPassword.value}
+                        onChange={(event) =>
+                            setConfirmPassword({
+                                ...confirmPassword,
+                                value: event.target.value,
+                            })
+                        }
                         id="confirmPassword"
                         label="Confirm Password"
                         name="Confirm Password"
+                        type={confirmPassword.visible ? 'text' : 'password'}
+                        InputProps={{
+                            endAdornment: (
+                                <VisiblePassword
+                                    data={confirmPassword}
+                                    handleVisible={(event) =>
+                                        setConfirmPassword({
+                                            ...confirmPassword,
+                                            visible: event,
+                                        })
+                                    }
+                                />
+                            ),
+                        }}
                     ></TextField>
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button onClick={() => submitNewPassword(password, confirmPassword)}>
+                <Button
+                    onClick={() =>
+                        submitNewPassword(password.value, confirmPassword.value)
+                    }
+                >
                     Reset Password
                 </Button>
             </div>

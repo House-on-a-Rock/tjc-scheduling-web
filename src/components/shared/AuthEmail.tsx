@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { sendAuthEmail } from '../../store/actions';
 import { HttpError } from '../../shared/types/models';
+import { TransitionsModal } from '.';
 
 // Material UI
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,7 +11,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { useSelector } from '../../shared/types/useSelector';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -42,7 +43,7 @@ interface AuthEmailDataProps {
     history: boolean;
     title: string;
     description?: string;
-    type: string;
+    button: string;
 }
 
 export const AuthEmail = ({ data, error }: AuthEmailProps) => {
@@ -50,9 +51,16 @@ export const AuthEmail = ({ data, error }: AuthEmailProps) => {
     const dispatch = useDispatch();
     const classes = useStyles();
     const [email, setEmail] = useState<string>('');
+    const [openModal, setOpenModal] = useState(false);
+
+    function handleClick() {
+        dispatch(sendAuthEmail(email));
+        setOpenModal(true);
+    }
+
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <TransitionsModal open={openModal} setOpen={setOpenModal} />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     {data.title}
@@ -78,9 +86,7 @@ export const AuthEmail = ({ data, error }: AuthEmailProps) => {
                 </form>
             </div>
             <div className={classes.buttonRow}>
-                <Button onClick={() => dispatch(sendAuthEmail(email))}>
-                    {data.type}
-                </Button>
+                <Button onClick={() => handleClick()}>{data.button}</Button>
                 {data.history ? (
                     <Button onClick={() => history.goBack()}>Remember it?</Button>
                 ) : null}

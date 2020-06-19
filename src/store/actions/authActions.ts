@@ -88,7 +88,6 @@ export const sendAuthEmail = (
     dispatch(AuthStateActions.Loading());
     try {
         const response = await recoverEmail(email);
-        console.log(response);
         dispatch(AuthStateActions.Loaded());
     } catch (error) {
         const errorData = errorDataExtractor(error);
@@ -103,7 +102,6 @@ export const resetPassword = (
     dispatch(AuthStateActions.Loading());
     try {
         const response = await sendNewPassword(token, newPassword);
-        console.log(response);
         response.status === 201
             ? dispatch(AuthStateActions.Loaded())
             : dispatch(

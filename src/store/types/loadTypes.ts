@@ -36,7 +36,7 @@ export type LoadActionTypes =
 
 /** Reducer State */
 export interface LoadStatusType {
-    [ReducerDomains.AUTH]: boolean;
+    [ReducerDomains.AUTH]: string;
 }
 
 export interface LoadErrorType {

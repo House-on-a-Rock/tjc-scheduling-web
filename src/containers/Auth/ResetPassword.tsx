@@ -5,8 +5,8 @@ import { useSelector } from '../../shared/types/useSelector';
 
 // Custom components
 import { useQuery } from '../../shared/helper_functions';
-import { LoadingPage } from '../../components/shared';
-import { AuthEmail, NewPassword } from '../../components/Auth';
+import { LoadingPage, AuthEmail } from '../../components/shared';
+import { NewPassword } from '../../components/Auth';
 
 export const ResetPassword = () => {
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ export const ResetPassword = () => {
             data={{
                 history: false,
                 title: 'Resend Authentication Email',
-                type: 'Resend Authentication Email',
+                button: 'Resend Authentication Email',
             }}
             error={tokenError}
         />
