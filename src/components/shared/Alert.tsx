@@ -41,21 +41,8 @@ export default function Alert(
                 <DialogContentText>{text}</DialogContentText>
             </DialogContent>
             <DialogActions>
-                {hasTwoButtons ? (
-                    <Button
-                        // onClick={handleClose}
-                        // variant="raised"
-                        color="primary"
-                    >
-                        {'CANCEL'}
-                    </Button>
-                ) : null}
-                <Button
-                    // onClick={handleSubmit}
-                    color="primary"
-                >
-                    {submitButtonText}
-                </Button>
+                {hasTwoButtons && <Button color="primary">{'CANCEL'}</Button>}
+                <Button color="primary">{submitButtonText}</Button>
             </DialogActions>
         </Dialog>
     );

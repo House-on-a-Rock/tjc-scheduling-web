@@ -96,7 +96,7 @@ export const AuthEmail = ({ data }: AuthEmailProps) => {
                 <Typography component="h1" variant="h5">
                     {data.title}
                 </Typography>
-                {data.description ? <Typography>{data.description} </Typography> : null}
+                {data.description && <Typography>{data.description}</Typography>}
                 {errorMessage && (
                     <Typography>{`${errorMessage.status}: ${errorMessage.message}`}</Typography>
                 )}
@@ -111,9 +111,9 @@ export const AuthEmail = ({ data }: AuthEmailProps) => {
             </div>
             <div className={classes.buttonRow}>
                 <Button onClick={() => handleClick()}>{data.button}</Button>
-                {data.history ? (
+                {data.history && (
                     <Button onClick={() => history.goBack()}>Remember it?</Button>
-                ) : null}
+                )}
             </div>
         </Container>
     );

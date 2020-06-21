@@ -59,14 +59,16 @@ export const TransitionsModal = ({
                         <h2 id="transition-modal-title">Transition modal</h2>
                         {status === 'LOADING' ? (
                             <CircularProgress />
-                        ) : status === 'LOADED' ? (
-                            <>
-                                <p>{description}</p>
-                                <Button component={Link} to="/auth/login">
-                                    Click to go back to login page
-                                </Button>
-                            </>
-                        ) : null}
+                        ) : (
+                            status === 'LOADED' && (
+                                <>
+                                    <p>{description}</p>
+                                    <Button component={Link} to="/auth/login">
+                                        Click to go back to login page
+                                    </Button>
+                                </>
+                            )
+                        )}
                     </div>
                 </Fade>
             </Modal>
