@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../shared/types/useSelector';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
@@ -23,38 +22,81 @@ import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 // Actions
-import {
-    rememberMe,
-    updateAuthState,
-    forgetMe,
-    checkCredentials,
-} from '../../store/actions';
+import { checkCredentials } from '../../store/actions';
 
 // Types
-import { HttpError } from '../../shared/types/models';
-import { VisiblePassword } from '../shared';
+import { HttpError, PasswordState, EmailState } from '../../shared/types/models';
+import { PasswordForm } from '../shared';
+import {
+    setLocalStorageState,
+    removeLocalStorageState,
+    getLocalStorageState,
+    isValidEmail,
+} from '../../shared/helper_functions';
+import { EmailForm } from '../shared/EmailForm';
 
 export const Login = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const rememberedEmailState: EmailState = {
+        value: getLocalStorageState('auth')?.email,
+        valid: true,
+        message: '',
+    };
 
-    // email and password are selectors so that it can be received from local storage
-    const email: string = useSelector(({ auth }) => auth.email);
-    const password: string = useSelector(({ auth }) => auth.password);
-    const remembered: boolean = useSelector(({ auth }) => auth.remembered);
     const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
     const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
     const loadState: string = useSelector(({ load }) => load.loadStatus.AUTH);
 
-    const [visible, setVisible] = useState<boolean>(false);
+    const [remembered, setRemembered] = useState<boolean>(
+        getLocalStorageState('auth') ? true : false,
+    );
 
-    function handleLogin() {
-        dispatch(checkCredentials(email, password));
+    const [email, setEmail] = useState<EmailState>(
+        rememberedEmailState.value
+            ? rememberedEmailState
+            : { value: '', valid: true, message: null },
+    );
+    const [password, setPassword] = useState<PasswordState>({
+        value: '',
+        valid: true,
+        visible: false,
+        message: null,
+    });
+
+    function handleLogin(event?: FormEvent<HTMLFormElement>) {
+        event?.preventDefault();
+        setEmail({ ...email, valid: true, message: '' });
+        setPassword({ ...password, valid: true, message: '' });
+        if (isValidEmail(email.value) && password.value.length > 0) {
+            dispatch(checkCredentials(email.value, password.value));
+        } else {
+            if (password.value.length === 0)
+                setPassword({
+                    ...password,
+                    valid: false,
+                    message: 'Please enter a password',
+                });
+            if (!isValidEmail(email.value)) {
+                setEmail({
+                    ...email,
+                    valid: false,
+                    message: 'Enter a valid email address.',
+                });
+            }
+            if (email.value.length === 0)
+                setEmail({
+                    ...email,
+                    valid: false,
+                    message: 'Please enter an email address.',
+                });
+        }
     }
 
     if (isLoggedIn) {
-        remembered ? dispatch(rememberMe({ email: email })) : dispatch(forgetMe());
-        // dispatch prepHomePage
+        remembered
+            ? setLocalStorageState('auth', { email: email.value })
+            : removeLocalStorageState('auth');
         return <Redirect to="/" />;
     }
 
@@ -68,48 +110,24 @@ export const Login = () => {
                 <Typography component="h1" variant="h5">
                     Login
                 </Typography>
-                {errorMessage ? (
+                {errorMessage && (
                     <Typography color="error">{`${errorMessage?.status}: ${errorMessage?.message}`}</Typography>
-                ) : null}
+                )}
 
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        value={email}
-                        name="email"
-                        autoComplete="email"
-                        onChange={(event) =>
-                            dispatch(updateAuthState({ email: event.target.value }))
-                        }
+                <form className={classes.form} noValidate onSubmit={handleLogin}>
+                    <EmailForm
+                        name={'email'}
+                        label={'Email Address'}
+                        email={email}
+                        handleEmail={setEmail}
                     />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        value={password}
-                        name="password"
-                        label="Password"
-                        type={visible ? 'text' : 'password'}
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={(event) =>
-                            dispatch(updateAuthState({ password: event.target.value }))
-                        }
-                        InputProps={{
-                            endAdornment: (
-                                <VisiblePassword
-                                    data={{ value: password, visible: visible }}
-                                    handleVisible={(event) => setVisible(event)}
-                                />
-                            ),
-                        }}
+                    <PasswordForm
+                        name={'Password'}
+                        label={'Password'}
+                        password={password}
+                        handlePassword={setPassword}
                     />
+
                     <FormControlLabel
                         control={
                             <Checkbox
@@ -119,33 +137,32 @@ export const Login = () => {
                             />
                         }
                         label="Remember me"
-                        onChange={() =>
-                            dispatch(updateAuthState({ remembered: !remembered }))
-                        }
+                        onChange={() => setRemembered(!remembered)}
                     />
                     <Button
                         fullWidth
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={handleLogin}
+                        type="submit"
+                        onClick={() => handleLogin()}
                     >
                         {loadState === 'LOADING' ? <CircularProgress /> : 'Sign In'}
                     </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <RouterLink to={`/auth/forgotPassword`}>
-                                Forgot password
-                            </RouterLink>
-                        </Grid>
-                        <Grid item>
-                            <Link href="#" variant="body2">
-                                {"Don't have an account?"}
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </form>
             </div>
+
+            <Grid container>
+                <Grid item xs>
+                    <RouterLink to={`/auth/forgotPassword`}>Forgot password</RouterLink>
+                </Grid>
+                <Grid item>
+                    <Link href="#" variant="body2">
+                        {"Don't have an account?"}
+                    </Link>
+                </Grid>
+            </Grid>
+
             <Box mt={8}>
                 <Copyright />
             </Box>

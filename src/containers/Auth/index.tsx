@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ResetPassword } from './ResetPassword';
-import { Login } from '../../components/Auth';
+import { ErrorPage, Login } from '../../components/Auth';
 import { AuthEmail } from '../../components/shared';
 
 const Auth = () => {
@@ -21,6 +21,9 @@ const Auth = () => {
                         button: 'Reset Password',
                     }}
                 />
+            </Route>
+            <Route path={`${path}/expiredAccess`}>
+                <ErrorPage />
             </Route>
             <Route path={`${path}/resetPassword`}>
                 <ResetPassword />

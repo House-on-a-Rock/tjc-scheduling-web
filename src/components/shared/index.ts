@@ -5,3 +5,5 @@ export * from './PrivateRoute';
 export * from './TransitionsModal';
 export * from './VisiblePassword';
 export * from './AuthEmail';
+export * from './PasswordStrengthMeter';
+export * from './PasswordForm';

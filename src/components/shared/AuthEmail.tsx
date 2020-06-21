@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { sendAuthEmail } from '../../store/actions';
-import { HttpError } from '../../shared/types/models';
-import { TransitionsModal } from '.';
+import { HttpError, EmailState } from '../../shared/types/models';
+import { TransitionsModal } from './TransitionsModal';
 
 // Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
-import { useSelector } from '../../shared/types/useSelector';
+import { useQuery, isValidEmail } from '../../shared/helper_functions';
+import { EmailForm } from './EmailForm';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 
 interface AuthEmailProps {
     data: AuthEmailDataProps;
-    error?: HttpError;
 }
 
 interface AuthEmailDataProps {
@@ -46,43 +45,68 @@ interface AuthEmailDataProps {
     button: string;
 }
 
-export const AuthEmail = ({ data, error }: AuthEmailProps) => {
+export const AuthEmail = ({ data }: AuthEmailProps) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const classes = useStyles();
-    const [email, setEmail] = useState<string>('');
+
+    const [email, setEmail] = useState<EmailState>({
+        value: '',
+        valid: true,
+        message: null,
+    });
     const [openModal, setOpenModal] = useState(false);
 
-    function handleClick() {
-        dispatch(sendAuthEmail(email));
-        setOpenModal(true);
+    const query = JSON.parse(useQuery().get('message'));
+    const errorMessage: HttpError = query && {
+        status: query?.status,
+        message: query?.message,
+    };
+
+    function handleClick(event?: FormEvent<HTMLFormElement>) {
+        event?.preventDefault();
+        setEmail({ ...email, valid: true, message: '' });
+        if (isValidEmail(email.value)) {
+            dispatch(sendAuthEmail(email.value));
+            setOpenModal(true);
+        } else {
+            if (!isValidEmail(email.value))
+                setEmail({
+                    ...email,
+                    valid: false,
+                    message: 'Enter a valid email address.',
+                });
+            if (email.value.length === 0)
+                setEmail({
+                    ...email,
+                    valid: false,
+                    message: 'Please enter an email address.',
+                });
+        }
     }
 
     return (
         <Container component="main" maxWidth="xs">
-            <TransitionsModal open={openModal} setOpen={setOpenModal} />
+            <TransitionsModal
+                open={openModal}
+                setOpen={setOpenModal}
+                description={'A recovery email has been sent to your email'}
+            />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     {data.title}
                 </Typography>
                 {data.description ? <Typography>{data.description} </Typography> : null}
-                {error ? (
-                    <Typography>{`${error.status}: ${error.message}`}</Typography>
-                ) : null}
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                    ></TextField>
+                {errorMessage && (
+                    <Typography>{`${errorMessage.status}: ${errorMessage.message}`}</Typography>
+                )}
+                <form className={classes.form} noValidate onSubmit={handleClick}>
+                    <EmailForm
+                        name={'email'}
+                        label={'Email Address'}
+                        email={email}
+                        handleEmail={setEmail}
+                    />
                 </form>
             </div>
             <div className={classes.buttonRow}>

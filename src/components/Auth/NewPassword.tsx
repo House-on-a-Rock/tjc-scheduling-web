@@ -1,24 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
-import { VisiblePassword } from '../shared';
+import { PasswordStrengthMeter, PasswordForm } from '../shared';
+import { PasswordState } from '../../shared/types/models';
+import zxcvbn from 'zxcvbn';
 
 // Material UI
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 
 interface NewPasswordProps {
     token: string;
-}
-
-export interface PasswordState {
-    value: string;
-    visible: boolean;
 }
 
 export const NewPassword = ({ token }: NewPasswordProps) => {
@@ -27,105 +23,158 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
 
     const [password, setPassword] = useState<PasswordState>({
         value: '',
+        valid: true,
         visible: false,
+        message: null,
     });
     const [confirmPassword, setConfirmPassword] = useState<PasswordState>({
         value: '',
+        valid: true,
         visible: false,
+        message: null,
     });
-    const [areEquivalent, setAreEquivalent] = useState<string>('');
+    const [passwordMessage, setPasswordMessage] = useState<string>('');
     const [openModal, setOpenModal] = useState<boolean>(false);
+    const testedResult = zxcvbn(password.value);
 
-    function submitNewPassword(newPassword: string, confirmPassword: string) {
-        if (newPassword !== confirmPassword)
-            setAreEquivalent("Passwords aren't the same");
-        else {
-            dispatch(resetPassword(token, newPassword));
+    function onHandlePassword(newPassword: PasswordState) {
+        if (!password.valid) {
+            setPassword({
+                ...password,
+                valid: true,
+                message: '',
+                value: newPassword.value,
+            });
+        } else setPassword({ ...password, value: newPassword.value });
+    }
+    function onHandleConfirmPassword(newConfirmPassword: PasswordState) {
+        if (!confirmPassword.valid)
+            setConfirmPassword({
+                ...confirmPassword,
+                valid: true,
+                message: '',
+                value: newConfirmPassword.value,
+            });
+        else setConfirmPassword({ ...confirmPassword, value: newConfirmPassword.value });
+    }
+
+    function createPasswordLabel(result: any) {
+        switch (result.score) {
+            case 0:
+                return 'Weak';
+            case 1:
+                return 'Weak';
+            case 2:
+                return 'Fair';
+            case 3:
+                return 'Good';
+            case 4:
+                return 'Strong';
+            default:
+                return 'Weak';
+        }
+    }
+    function submitNewPassword(
+        newPasswordValue: string,
+        confirmPasswordValue: string,
+        event?: FormEvent<HTMLFormElement>,
+    ) {
+        event?.preventDefault();
+        if (newPasswordValue.length === 0)
+            setPassword({
+                ...password,
+                valid: false,
+                message: 'Please enter a password',
+            });
+        if (confirmPasswordValue.length === 0)
+            setConfirmPassword({
+                ...confirmPassword,
+                valid: false,
+                message: 'Please enter a password',
+            });
+        else if (newPasswordValue !== confirmPasswordValue) {
+            setPasswordMessage("Passwords aren't the same");
+            setPassword({
+                ...password,
+                value: '',
+            });
+            setConfirmPassword({
+                ...confirmPassword,
+                value: '',
+            });
+        } else if (createPasswordLabel(testedResult) === 'Weak') {
+            setPassword({ ...password, value: '' });
+            setConfirmPassword({
+                ...confirmPassword,
+                value: '',
+            });
+            setPasswordMessage('Please enter a stronger password');
+        } else {
             setOpenModal(true);
+            setPassword({ ...password, value: '', valid: true, message: '' });
+
+            setConfirmPassword({
+                ...confirmPassword,
+                value: '',
+                valid: true,
+                message: '',
+            });
+            dispatch(resetPassword(token, newPasswordValue));
         }
     }
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
-            <TransitionsModal open={openModal} setOpen={setOpenModal} />
+            <TransitionsModal
+                open={openModal}
+                setOpen={setOpenModal}
+                description={"You've successfully changed your password!"}
+            />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
                     Reset Password
                 </Typography>
-                {areEquivalent ? (
-                    <Typography color="error">{areEquivalent}</Typography>
+                {passwordMessage ? (
+                    <Typography color="error">{passwordMessage}</Typography>
                 ) : (
                     <Typography>Type in your new password</Typography>
                 )}
 
-                <form className={classes.form} noValidate>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        value={password.value}
-                        onChange={(event) =>
-                            setPassword({ ...password, value: event.target.value })
-                        }
-                        id="password"
-                        label="New Password"
-                        name="Password"
-                        type={password.visible ? 'text' : 'password'}
-                        InputProps={{
-                            endAdornment: (
-                                <VisiblePassword
-                                    data={password}
-                                    handleVisible={(event) =>
-                                        setPassword({
-                                            ...password,
-                                            visible: event,
-                                        })
-                                    }
-                                />
-                            ),
-                        }}
-                    ></TextField>
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        value={confirmPassword.value}
-                        onChange={(event) =>
-                            setConfirmPassword({
-                                ...confirmPassword,
-                                value: event.target.value,
-                            })
-                        }
-                        id="confirmPassword"
-                        label="Confirm Password"
-                        name="Confirm Password"
-                        type={confirmPassword.visible ? 'text' : 'password'}
-                        InputProps={{
-                            endAdornment: (
-                                <VisiblePassword
-                                    data={confirmPassword}
-                                    handleVisible={(event) =>
-                                        setConfirmPassword({
-                                            ...confirmPassword,
-                                            visible: event,
-                                        })
-                                    }
-                                />
-                            ),
-                        }}
-                    ></TextField>
-                </form>
-            </div>
-            <div className={classes.buttonRow}>
-                <Button
-                    onClick={() =>
-                        submitNewPassword(password.value, confirmPassword.value)
+                <form
+                    className={classes.form}
+                    noValidate
+                    onSubmit={(event) =>
+                        submitNewPassword(password.value, confirmPassword.value, event)
                     }
                 >
-                    Reset Password
-                </Button>
+                    <PasswordForm
+                        name={'password'}
+                        label={'New Password'}
+                        password={password}
+                        handlePassword={onHandlePassword}
+                    />
+                    <PasswordStrengthMeter
+                        password={password.value}
+                        strength={createPasswordLabel(testedResult)}
+                        testedResult={testedResult}
+                    />
+                    <PasswordForm
+                        name={'confirm_password'}
+                        label={'Confirm Password'}
+                        password={confirmPassword}
+                        handlePassword={onHandleConfirmPassword}
+                    />
+                    <div className={classes.buttonRow}>
+                        <Button
+                            type="submit"
+                            onClick={() =>
+                                submitNewPassword(password.value, confirmPassword.value)
+                            }
+                        >
+                            Reset Password
+                        </Button>
+                    </div>
+                </form>
             </div>
         </Container>
     );
@@ -150,4 +199,10 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(3, 0, 2),
     },
     buttonRow: { display: 'flex', justifyContent: 'space-between' },
+
+    cssOutlinedInput: {
+        '&$cssFocused $notchedOutline': {
+            borderColor: `${theme.palette.primary.main} !important`,
+        },
+    },
 }));

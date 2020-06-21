@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import { ThunkAction } from 'redux-thunk';
 import {
     AuthActionTypes,
@@ -6,7 +5,6 @@ import {
     LOGOUT,
     REMEMBER_ME,
     EmailMemory,
-    SET_AUTH_STATE,
     FORGET_ME,
 } from '../types';
 import { AuthStateActions } from './loadActions';
@@ -26,10 +24,6 @@ export const rememberMe = (remember: EmailMemory): AuthActionTypes => ({
     payload: remember,
 });
 export const forgetMe = (): AuthActionTypes => ({ type: FORGET_ME });
-export const updateAuthState = (payload: any): AuthActionTypes => ({
-    type: SET_AUTH_STATE,
-    payload,
-});
 
 /* Thunk */
 
@@ -88,7 +82,14 @@ export const sendAuthEmail = (
     dispatch(AuthStateActions.Loading());
     try {
         const response = await recoverEmail(email);
-        dispatch(AuthStateActions.Loaded());
+        response.status === 200
+            ? dispatch(AuthStateActions.Loaded())
+            : dispatch(
+                  AuthStateActions.Error({
+                      status: response.status,
+                      message: response.statusText,
+                  }),
+              );
     } catch (error) {
         const errorData = errorDataExtractor(error);
         dispatch(AuthStateActions.Error(errorData));

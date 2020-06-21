@@ -29,9 +29,14 @@ const useStyles = makeStyles((theme: Theme) =>
 interface TransitionsModalProps {
     open: boolean;
     setOpen: (arg0: boolean) => void;
+    description?: string;
 }
 
-export const TransitionsModal = ({ open, setOpen }: TransitionsModalProps) => {
+export const TransitionsModal = ({
+    open,
+    setOpen,
+    description,
+}: TransitionsModalProps) => {
     const classes = useStyles();
     const status = useSelector(({ load }) => load.loadStatus.AUTH);
 
@@ -55,9 +60,12 @@ export const TransitionsModal = ({ open, setOpen }: TransitionsModalProps) => {
                         {status === 'LOADING' ? (
                             <CircularProgress />
                         ) : status === 'LOADED' ? (
-                            <Button component={Link} to="/auth/login">
-                                LOADED
-                            </Button>
+                            <>
+                                <p>{description}</p>
+                                <Button component={Link} to="/auth/login">
+                                    Click to go back to login page
+                                </Button>
+                            </>
                         ) : null}
                     </div>
                 </Fade>
