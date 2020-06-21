@@ -41,7 +41,7 @@ export const TransitionsModal = ({
     const status = useSelector(({ load }) => load.loadStatus.AUTH);
 
     return (
-        <div>
+        <>
             <Modal
                 aria-labelledby="transition-modal-title"
                 aria-describedby="transition-modal-description"
@@ -72,6 +72,6 @@ export const TransitionsModal = ({
                     </div>
                 </Fade>
             </Modal>
-        </div>
+        </>
     );
 };
