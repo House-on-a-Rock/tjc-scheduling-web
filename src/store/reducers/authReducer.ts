@@ -1,44 +1,17 @@
-import {
-    AuthActionTypes,
-    LOGIN,
-    LOGOUT,
-    AuthState,
-    REMEMBER_ME,
-    FORGET_ME,
-    SET_AUTH_STATE,
-} from '../types';
-import {
-    getLocalStorageState,
-    setLocalStorageState,
-    removeLocalStorageState,
-} from '../helpers/localStorage';
+import { AuthActionTypes, LOGIN, LOGOUT, AuthState } from '../types';
 
 const initialState: AuthState = {
     isLoggedIn: false,
     isValidLogin: null,
-    remembered: false,
-    email: '',
-    password: '',
 };
 
-const savedState = {
-    ...initialState,
-    remembered: true,
-    email: getLocalStorageState('auth')?.email,
-};
-
-export const authReducer = (
-    state = getLocalStorageState('auth') ? savedState : initialState,
-    action: AuthActionTypes,
-): AuthState => {
+export const authReducer = (state = initialState, action: AuthActionTypes): AuthState => {
     switch (action.type) {
         case LOGIN:
             return {
                 ...state,
                 isLoggedIn: true,
                 isValidLogin: true,
-                email: state.remembered ? state.email : '',
-                password: '',
             };
         case LOGOUT:
             return {
@@ -46,21 +19,6 @@ export const authReducer = (
                 isLoggedIn: false,
                 isValidLogin: null,
             };
-        case SET_AUTH_STATE:
-            return {
-                ...state,
-                ...action.payload,
-            };
-
-        case REMEMBER_ME:
-            setLocalStorageState('auth', {
-                email: action.payload.email,
-            });
-            return state;
-
-        case FORGET_ME:
-            removeLocalStorageState('auth');
-            return state;
 
         default:
             return state;

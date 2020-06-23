@@ -1,6 +1,6 @@
-import { createStore, combineReducers, compose } from 'redux';
-import { authReducer } from './reducers/authReducer';
-import { Reducer } from 'react';
+import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
+import { authReducer, loadReducer } from './reducers';
+import ReduxThunk from 'redux-thunk';
 
 declare global {
     interface Window {
@@ -10,6 +10,7 @@ declare global {
 
 const rootReducer = combineReducers({
     auth: authReducer,
+    load: loadReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -19,4 +20,7 @@ const composeEnhancers =
         ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
         : compose;
 
-export const store = createStore(rootReducer, composeEnhancers());
+export const store = createStore(
+    rootReducer,
+    composeEnhancers(applyMiddleware(ReduxThunk)),
+);
