@@ -1,17 +1,19 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+
+// Custom
+import { TransitionsModal } from './TransitionsModal';
+import { EmailForm } from './EmailForm';
 import { sendAuthEmail } from '../../store/actions';
 import { HttpError, EmailState } from '../../shared/types/models';
-import { TransitionsModal } from './TransitionsModal';
+import { useQuery, isValidEmail } from '../../shared/helper_functions';
 
 // Material UI
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { useQuery, isValidEmail } from '../../shared/helper_functions';
-import { EmailForm } from './EmailForm';
 
 const useStyles = makeStyles((theme) => ({
     paper: {

@@ -1,4 +1,3 @@
-export * from './NewPassword';
-export * from './NewPassword';
+export * from './ResetPassword';
 export * from './ErrorPage';
 export * from './Login';

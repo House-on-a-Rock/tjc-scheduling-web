@@ -8,7 +8,7 @@ export const ErrorPage = () => {
     console.log(query.get('message'), query.get('status'));
     return (
         <>
-            You on a wrong page son{query.get('status')}: {query.get('message')}
+            You on a wrong page son {query.get('status')}: {query.get('message')}
         </>
     );
 };

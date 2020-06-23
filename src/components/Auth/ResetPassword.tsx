@@ -1,10 +1,13 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
+import zxcvbn from 'zxcvbn';
+
+// Custom
 import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
 import { PasswordState } from '../../shared/types/models';
-import zxcvbn from 'zxcvbn';
+import { useQuery } from '../../shared/helper_functions';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -17,9 +20,11 @@ interface NewPasswordProps {
     token: string;
 }
 
-export const NewPassword = ({ token }: NewPasswordProps) => {
+export const ResetPassword = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const query = useQuery();
+    const token = query.get('token');
 
     const [password, setPassword] = useState<PasswordState>({
         value: '',

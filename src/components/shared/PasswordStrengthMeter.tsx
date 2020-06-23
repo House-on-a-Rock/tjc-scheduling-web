@@ -1,5 +1,4 @@
 import React from 'react';
-import zxcvbn from 'zxcvbn';
 import './PasswordStrengthMeter.css';
 
 export const PasswordStrengthMeter = ({ password, strength, testedResult }: any) => {
