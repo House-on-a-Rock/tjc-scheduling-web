@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { ResetPassword } from './ResetPassword';
-import { ErrorPage, Login } from '../../components/Auth';
+import { ErrorPage, Login, ResetPassword } from '../../components/Auth';
 import { AuthEmail } from '../../components/shared';
 
 const Auth = () => {
