@@ -20,6 +20,8 @@ const config: webpack.Configuration = {
     },
     devServer: {
         historyApiFallback: true,
+        inline: true,
+        port: 8081,
     },
     module: {
         rules: [
