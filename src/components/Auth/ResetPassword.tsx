@@ -1,10 +1,13 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
+import zxcvbn from 'zxcvbn';
+
+// Custom
 import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
 import { PasswordState } from '../../shared/types/models';
-import zxcvbn from 'zxcvbn';
+import { useQuery } from '../../shared/helper_functions';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -17,9 +20,11 @@ interface NewPasswordProps {
     token: string;
 }
 
-export const NewPassword = ({ token }: NewPasswordProps) => {
+export const ResetPassword = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const query = useQuery();
+    const token = query.get('token');
 
     const [password, setPassword] = useState<PasswordState>({
         value: '',
@@ -45,7 +50,12 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
                 message: '',
                 value: newPassword.value,
             });
-        } else setPassword({ ...password, value: newPassword.value });
+        } else
+            setPassword({
+                ...password,
+                value: newPassword.value,
+                visible: newPassword.visible,
+            });
     }
     function onHandleConfirmPassword(newConfirmPassword: PasswordState) {
         if (!confirmPassword.valid)
@@ -55,7 +65,12 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
                 message: '',
                 value: newConfirmPassword.value,
             });
-        else setConfirmPassword({ ...confirmPassword, value: newConfirmPassword.value });
+        else
+            setConfirmPassword({
+                ...confirmPassword,
+                value: newConfirmPassword.value,
+                visible: newConfirmPassword.visible,
+            });
     }
 
     function createPasswordLabel(result: any) {
@@ -86,6 +101,7 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
                 valid: false,
                 message: 'Please enter a password',
             });
+
         if (confirmPasswordValue.length === 0)
             setConfirmPassword({
                 ...confirmPassword,
@@ -111,15 +127,14 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
             setPasswordMessage('Please enter a stronger password');
         } else {
             setOpenModal(true);
+            dispatch(resetPassword(token, newPasswordValue));
             setPassword({ ...password, value: '', valid: true, message: '' });
-
             setConfirmPassword({
                 ...confirmPassword,
                 value: '',
                 valid: true,
                 message: '',
             });
-            dispatch(resetPassword(token, newPasswordValue));
         }
     }
     return (
@@ -167,7 +182,7 @@ export const NewPassword = ({ token }: NewPasswordProps) => {
                     <div className={classes.buttonRow}>
                         <Button
                             type="submit"
-                            onClick={() =>
+                            onSubmit={() =>
                                 submitNewPassword(password.value, confirmPassword.value)
                             }
                         >
