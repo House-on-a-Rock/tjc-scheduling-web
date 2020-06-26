@@ -1,7 +1,7 @@
 import { AuthActionTypes, LOGIN, LOGOUT, AuthState } from '../types';
 
 const initialState: AuthState = {
-    isLoggedIn: false,
+    isLoggedIn: true,
     isValidLogin: null,
 };
 

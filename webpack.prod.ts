@@ -11,22 +11,37 @@ const config: webpack.Configuration = {
     mode: 'production',
     entry: './src/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'dist'),
         filename: 'bundle.[hash].js',
-        publicPath: '/',
+        publicPath: 'http://localhost:8081/public/',
     },
     devServer: {
         historyApiFallback: true,
     },
     resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json'],
     },
 
     module: {
         rules: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
             { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.(gif|png|jpe?g|svg)$/i,
+                use: [
+                    'file-loader',
+                    {
+                        loader: 'image-webpack-loader',
+                        options: {
+                            bypassOnDebug: true, // webpack@1.x
+                            disable: true, // webpack@2.x and newer
+                        },
+                    },
+                ],
+            },
         ],
     },
     plugins: [htmlPlugin],

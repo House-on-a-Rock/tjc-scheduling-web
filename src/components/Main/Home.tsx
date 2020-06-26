@@ -6,7 +6,6 @@ export const Home = () => {
     const dispatch = useDispatch();
     return (
         <>
-            I'm HOME BABY
             <button
                 onClick={() => {
                     // remove from local storage

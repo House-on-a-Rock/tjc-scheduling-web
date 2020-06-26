@@ -16,10 +16,6 @@ import Typography from '@material-ui/core/Typography';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 
-interface NewPasswordProps {
-    token: string;
-}
-
 export const ResetPassword = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
