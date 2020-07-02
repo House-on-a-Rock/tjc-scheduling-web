@@ -1,3 +1,3 @@
 import React from 'react';
 
-export const Members = () => <>Membership Club!!!</>;
+export const Members = () => <>You a members</>;
