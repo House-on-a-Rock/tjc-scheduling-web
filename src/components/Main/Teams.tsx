@@ -89,11 +89,10 @@ export const Teams = () => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Grid item xs={2}>
+          <Grid item xs={2} style={{ paddingLeft: '30px' }}>
             <UserBank members={MEMBERS} droppableId="USERBANK" className="userbank" />
           </Grid>
           <Grid item xs={10}>
-            <Typography variant="h3">Teams</Typography>
             <TeamList teams={teams} />
           </Grid>
         </DragDropContext>
@@ -101,20 +100,6 @@ export const Teams = () => {
     </div>
   );
 };
-
-const useStyles = makeStyles((theme) => ({
-  cardRoot: {
-    marginTop: -1,
-  },
-  cardContent: {
-    padding: 12,
-    '&:last-child': {
-      paddingBottom: 16,
-    },
-  },
-
-  gridItem: {},
-}));
 
 const TEAMS: BackendTeamsData[] = [
   {
