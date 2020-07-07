@@ -1,4 +1,4 @@
 export * from './Home';
 export * from './Members';
-export * from './Teams';
-export * from './TeamCard';
+export * from './Teams/Teams';
+export * from './Teams/TeamCard';
