@@ -1,0 +1,11 @@
+.react-beautiful-dnd-copy {
+    background: lightblue;
+}
+
+.react-beautiful-dnd-copy~* {
+    transform: none !important;
+}
+
+.react-beautiful-dnd-copy~[data-rbd-placeholder-context-id] {
+    display: none !important;
+}
