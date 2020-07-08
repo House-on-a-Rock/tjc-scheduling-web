@@ -30,7 +30,6 @@ interface UserBankProps {
 export const UserBank = ({ members, className, droppableId, mode }: UserBankProps) => {
   const classes = useStyles();
   const churchName = 'Philadelphia';
-  console.log('className', className);
   return (
     <Paper>
       {mode === 'edit' ? (

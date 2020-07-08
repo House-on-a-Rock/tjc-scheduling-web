@@ -24,7 +24,6 @@ interface TeamCardProps {
 }
 
 export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) => {
-  console.log('TeamCard', role, members, draggedItem, mode);
   const classes = useStyles();
   const canDrop: () => boolean = () =>
     draggedItem.source === 'USERBANK'
@@ -48,9 +47,9 @@ export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) =>
         {mode === 'edit' ? (
           <DroppableMembers role={role} canDrop={canDrop} members={members} />
         ) : (
-          <List dense className={classes.list}>
+          <List dense className={classes.list} key={role}>
             {members.map((member: MembersData, index: number) => (
-              <ListItem>{member.name}</ListItem>
+              <ListItem key={`${role}-${index}`}>{member.name}</ListItem>
             ))}
           </List>
         )}
@@ -68,7 +67,7 @@ interface DroppableMembersProps {
 const DroppableMembers = ({ role, members, canDrop }: DroppableMembersProps) => {
   const classes = useStyles();
   return (
-    <Droppable droppableId={role} key={name} isDropDisabled={canDrop()}>
+    <Droppable droppableId={role} key={role} isDropDisabled={canDrop()}>
       {(provided: DroppableProvided) => (
         <List dense ref={provided.innerRef} className={classes.list}>
           {members.map((member: MembersData, index: number) => (

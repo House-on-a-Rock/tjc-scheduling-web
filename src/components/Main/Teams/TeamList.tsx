@@ -18,26 +18,24 @@ interface TeamListProps {
   handleMode: (mode: string) => void;
 }
 
-export const TeamList = ({ teams, draggedMember, mode, handleMode }: TeamListProps) => {
-  return (
-    <>
-      <Typography variant="h4">Teams</Typography>
-      <Button onClick={() => handleMode(mode === 'view' ? 'edit' : 'view')}>
-        {mode === 'view' ? 'edit' : 'view'}
-      </Button>
-      {Object.keys(teams).map((role, index) => (
-        <TeamCard
-          key={`team-${index}`}
-          role={role}
-          members={Object.values(teams)[index]}
-          draggedItem={draggedMember}
-          mode={mode}
-        />
-      ))}
-      <NewTeamCard />
-    </>
-  );
-};
+export const TeamList = ({ teams, draggedMember, mode, handleMode }: TeamListProps) => (
+  <>
+    <Typography variant="h4">Teams</Typography>
+    <Button onClick={() => handleMode(mode === 'view' ? 'edit' : 'view')}>
+      {mode === 'view' ? 'edit' : 'view'}
+    </Button>
+    {Object.keys(teams).map((role, index) => (
+      <TeamCard
+        key={`team-${index}`}
+        role={role}
+        members={Object.values(teams)[index]}
+        draggedItem={draggedMember}
+        mode={mode}
+      />
+    ))}
+    <NewTeamCard />
+  </>
+);
 
 const NewTeamCard = () => {
   const classes = useStyles();
