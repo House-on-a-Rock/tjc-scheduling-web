@@ -1,4 +1,5 @@
 import { v4 as uuid } from 'uuid';
+import { BackendTeamsData, AllMembersData } from './models';
 
 export const TEAMS: BackendTeamsData[] = [
   {
@@ -46,21 +47,3 @@ export const MEMBERS: AllMembersData[] = [
   { id: uuid(), name: 'Michelle Lin' },
   { id: uuid(), name: 'Alan Lin' },
 ];
-
-export interface BackendTeamsData {
-  role: string;
-  members: TeamData[];
-}
-export interface TeamData {
-  id: string;
-  name: string;
-}
-
-export interface AllMembersData {
-  id: string;
-  name: string;
-}
-
-export interface TeamState {
-  [key: string]: TeamData[];
-}

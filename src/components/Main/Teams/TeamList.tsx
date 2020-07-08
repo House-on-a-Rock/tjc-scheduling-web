@@ -1,15 +1,15 @@
 import React from 'react';
 import { TeamCard } from './TeamCard';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import { TeamState, AllMembersData } from './models';
+
+// Material UI Components
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import { TeamState, AllMembersData } from './database';
+import Typography from '@material-ui/core/Typography';
 
 interface TeamListProps {
   teams: TeamState;
@@ -23,7 +23,7 @@ export const TeamList = ({ teams, draggedItem, mode, handleMode }: TeamListProps
     <>
       <Typography variant="h4">Teams</Typography>
       <Button onClick={() => handleMode(mode === 'view' ? 'edit' : 'view')}>
-        {mode}
+        {mode === 'view' ? 'edit' : 'view'}
       </Button>
       {Object.keys(teams).map((list, index) => (
         <TeamCard
