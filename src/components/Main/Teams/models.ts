@@ -7,11 +7,16 @@ export interface TeamData {
   name: string;
 }
 
-export interface AllMembersData {
+export interface MembersData {
   id: string;
   name: string;
 }
 
 export interface TeamState {
   [key: string]: TeamData[];
+}
+
+export interface DraggedItem {
+  member: MembersData;
+  source: string;
 }

@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { BackendTeamsData, AllMembersData } from './models';
+import { BackendTeamsData, MembersData } from './models';
 
 export const TEAMS: BackendTeamsData[] = [
   {
@@ -40,7 +40,7 @@ export const TEAMS: BackendTeamsData[] = [
   },
 ];
 
-export const MEMBERS: AllMembersData[] = [
+export const MEMBERS: MembersData[] = [
   { id: uuid(), name: 'Shaun Tung' },
   { id: uuid(), name: 'Ted Chen' },
   { id: uuid(), name: 'Ian Lin' },

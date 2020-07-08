@@ -1,5 +1,11 @@
 import React from 'react';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import {
+  Droppable,
+  Draggable,
+  DraggableProvided,
+  DroppableProvided,
+} from 'react-beautiful-dnd';
+import { MembersData, DraggedItem } from './models';
 
 // Material UI Components
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -10,11 +16,21 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 
-export const TeamCard = ({ role, members, draggedItem, mode }: any) => {
+interface TeamCardProps {
+  role: string;
+  members: MembersData[];
+  draggedItem: DraggedItem;
+  mode: string;
+}
+
+export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) => {
+  console.log('TeamCard', role, members, draggedItem, mode);
   const classes = useStyles();
   const canDrop: () => boolean = () =>
     draggedItem.source === 'USERBANK'
-      ? members.map((member: any) => member.name).includes(draggedItem.member.name)
+      ? members
+          .map((member: MembersData) => member.name)
+          .includes(draggedItem.member.name)
       : !(draggedItem.source === role);
 
   return (
@@ -30,15 +46,10 @@ export const TeamCard = ({ role, members, draggedItem, mode }: any) => {
       <Divider orientation="vertical" flexItem />
       <CardContent className={classes.list}>
         {mode === 'edit' ? (
-          <DroppableMembers
-            role={role}
-            canDrop={canDrop}
-            members={members}
-            classes={classes}
-          />
+          <DroppableMembers role={role} canDrop={canDrop} members={members} />
         ) : (
           <List dense className={classes.list}>
-            {members.map((member: any, index: number) => (
+            {members.map((member: MembersData, index: number) => (
               <ListItem>{member.name}</ListItem>
             ))}
           </List>
@@ -48,28 +59,37 @@ export const TeamCard = ({ role, members, draggedItem, mode }: any) => {
   );
 };
 
-const DroppableMembers = ({ role, canDrop, members, classes }: any) => (
-  <Droppable droppableId={role} key={name} isDropDisabled={canDrop()}>
-    {(provided) => (
-      <List dense ref={provided.innerRef} className={classes.list}>
-        {members.map((member: any, index: number) => (
-          <Draggable draggableId={member.id} index={index} key={member.id}>
-            {(provided) => (
-              <ListItem
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
-                {member.name}
-              </ListItem>
-            )}
-          </Draggable>
-        ))}
-        {provided.placeholder}
-      </List>
-    )}
-  </Droppable>
-);
+interface DroppableMembersProps {
+  role: string;
+  members: MembersData[];
+  canDrop: () => boolean;
+}
+
+const DroppableMembers = ({ role, members, canDrop }: DroppableMembersProps) => {
+  const classes = useStyles();
+  return (
+    <Droppable droppableId={role} key={name} isDropDisabled={canDrop()}>
+      {(provided: DroppableProvided) => (
+        <List dense ref={provided.innerRef} className={classes.list}>
+          {members.map((member: MembersData, index: number) => (
+            <Draggable draggableId={member.id} index={index} key={member.id}>
+              {(provided: DraggableProvided) => (
+                <ListItem
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                >
+                  {member.name}
+                </ListItem>
+              )}
+            </Draggable>
+          ))}
+          {provided.placeholder}
+        </List>
+      )}
+    </Droppable>
+  );
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

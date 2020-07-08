@@ -1,6 +1,6 @@
 import React from 'react';
 import { TeamCard } from './TeamCard';
-import { TeamState, AllMembersData } from './models';
+import { TeamState, DraggedItem } from './models';
 
 // Material UI Components
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -13,24 +13,24 @@ import Typography from '@material-ui/core/Typography';
 
 interface TeamListProps {
   teams: TeamState;
-  draggedItem: AllMembersData;
+  draggedMember: DraggedItem;
   mode: string;
   handleMode: (mode: string) => void;
 }
 
-export const TeamList = ({ teams, draggedItem, mode, handleMode }: TeamListProps) => {
+export const TeamList = ({ teams, draggedMember, mode, handleMode }: TeamListProps) => {
   return (
     <>
       <Typography variant="h4">Teams</Typography>
       <Button onClick={() => handleMode(mode === 'view' ? 'edit' : 'view')}>
         {mode === 'view' ? 'edit' : 'view'}
       </Button>
-      {Object.keys(teams).map((list, index) => (
+      {Object.keys(teams).map((role, index) => (
         <TeamCard
           key={`team-${index}`}
-          role={list}
+          role={role}
           members={Object.values(teams)[index]}
-          draggedItem={draggedItem}
+          draggedItem={draggedMember}
           mode={mode}
         />
       ))}

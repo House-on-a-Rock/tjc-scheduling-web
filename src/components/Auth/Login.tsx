@@ -66,7 +66,7 @@ export const Login = () => {
     message: null,
   });
 
-  function handleLogin(event?: FormEvent<HTMLFormElement>) {
+  function handleLogin(event?: FormEvent<HTMLFormElement>): void {
     event?.preventDefault();
     setEmail({ ...email, valid: true, message: '' });
     setPassword({ ...password, valid: true, message: '' });

@@ -5,7 +5,7 @@ import { UserBank } from './UserBank';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { TeamList } from './TeamList';
 import { TEAMS, MEMBERS } from './database';
-import { TeamState } from './models';
+import { TeamState, DraggedItem } from './models';
 import { add, reorder } from './services';
 
 export const Teams = () => {
@@ -15,7 +15,7 @@ export const Teams = () => {
 
   const [teams, setTeams] = useState<TeamState>(initialState);
   const [mode, setMode] = useState<string>('view');
-  const [draggedItem, setDraggedItem] = useState<any>({
+  const [draggedItem, setDraggedItem] = useState<DraggedItem>({
     member: { id: '', name: '' },
     source: '',
   });
@@ -24,38 +24,50 @@ export const Teams = () => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <DragDropContextWrapper
+          teams={teams}
           handleTeams={setTeams}
           handleDraggedItem={setDraggedItem}
           mode={mode}
         >
-          <Grid item xs={2} style={{ paddingLeft: '30px' }}>
-            <UserBank
-              members={MEMBERS}
-              droppableId="USERBANK"
-              className="userbank"
-              mode={mode}
-            />
-          </Grid>
-          <Grid item xs={10}>
-            <TeamList
-              teams={teams}
-              draggedItem={draggedItem}
-              mode={mode}
-              handleMode={setMode}
-            />
-          </Grid>
+          <>
+            <Grid item xs={2} style={{ paddingLeft: '30px' }}>
+              <UserBank
+                members={MEMBERS}
+                droppableId="USERBANK"
+                className="userbank"
+                mode={mode}
+              />
+            </Grid>
+            <Grid item xs={10}>
+              <TeamList
+                teams={teams}
+                draggedMember={draggedItem}
+                mode={mode}
+                handleMode={setMode}
+              />
+            </Grid>
+          </>
         </DragDropContextWrapper>
       </Grid>
     </div>
   );
 };
 
+interface DragDropContextWrapperProps {
+  teams: TeamState;
+  handleTeams: (state: TeamState) => void;
+  handleDraggedItem: (draggedMember: DraggedItem) => void;
+  mode: String;
+  children: JSX.Element;
+}
+
 const DragDropContextWrapper = ({
+  teams,
   handleTeams,
   handleDraggedItem,
   mode,
   children,
-}: any) => {
+}: DragDropContextWrapperProps) => {
   const onDragStart: (result: DropResult) => void = useCallback(
     ({ source }: DropResult) => {
       handleDraggedItem({ member: MEMBERS[source.index], source: source.droppableId });
@@ -68,10 +80,10 @@ const DragDropContextWrapper = ({
       if (!destination) return;
       switch (source.droppableId) {
         case destination.droppableId:
-          handleTeams((state: TeamState) => reorder(state, source, destination));
+          handleTeams(reorder(teams, source, destination));
           break;
         case 'USERBANK':
-          handleTeams((state: TeamState) => add(MEMBERS, state, source, destination));
+          handleTeams(add(MEMBERS, teams, source, destination));
           break;
         default:
           break;
