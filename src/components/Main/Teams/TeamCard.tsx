@@ -14,7 +14,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Typography from '@material-ui/core/Typography';
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
 
 interface TeamCardProps {
   role: string;
@@ -43,13 +47,20 @@ export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) =>
         </Typography>
       </CardContent>
       <Divider orientation="vertical" flexItem />
-      <CardContent className={classes.list}>
+      <CardContent className={classes.list} style={{ overflow: 'auto' }}>
         {mode === 'edit' ? (
-          <DroppableMembers role={role} canDrop={canDrop} members={members} />
+          <DroppableMembers
+            role={role}
+            canDrop={canDrop}
+            members={members}
+            draggedItem={draggedItem}
+          />
         ) : (
           <List dense className={classes.list} key={role}>
             {members.map((member: MembersData, index: number) => (
-              <ListItem key={`${role}-${index}`}>{member.name}</ListItem>
+              <ListItem key={`${role}-${index}`} style={{ margin: '1px' }}>
+                <ListItemText id={member.id} primary={member.name} />
+              </ListItem>
             ))}
           </List>
         )}
@@ -62,27 +73,52 @@ interface DroppableMembersProps {
   role: string;
   members: MembersData[];
   canDrop: () => boolean;
+  draggedItem: DraggedItem;
 }
 
-const DroppableMembers = ({ role, members, canDrop }: DroppableMembersProps) => {
+const DroppableMembers = ({
+  role,
+  members,
+  canDrop,
+  draggedItem,
+}: DroppableMembersProps) => {
   const classes = useStyles();
+  console.log(draggedItem);
   return (
     <Droppable droppableId={role} key={role} isDropDisabled={canDrop()}>
       {(provided: DroppableProvided) => (
         <List dense ref={provided.innerRef} className={classes.list}>
-          {members.map((member: MembersData, index: number) => (
-            <Draggable draggableId={member.id} index={index} key={member.id}>
-              {(provided: DraggableProvided) => (
-                <ListItem
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                >
-                  {member.name}
+          {members.map((member: MembersData, index: number) => {
+            return draggedItem.source === '' || !(draggedItem.source === 'USERBANK') ? (
+              <Draggable draggableId={member.id} index={index} key={member.id}>
+                {(provided: DraggableProvided) => (
+                  <ListItem
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <ListItemText id={member.id} primary={member.name} />
+                    <ListItemSecondaryAction>
+                      <IconButton onClick={() => console.log(member, role, index)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                )}
+              </Draggable>
+            ) : (
+              <>
+                <ListItem>
+                  <ListItemText id={member.id} primary={member.name} />
+                  <ListItemSecondaryAction>
+                    <IconButton onClick={() => console.log(member, role, index)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
                 </ListItem>
-              )}
-            </Draggable>
-          ))}
+              </>
+            );
+          })}
           {provided.placeholder}
         </List>
       )}

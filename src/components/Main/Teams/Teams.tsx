@@ -81,9 +81,17 @@ const DragDropContextWrapper = ({
       switch (source.droppableId) {
         case destination.droppableId:
           handleTeams(reorder(teams, source, destination));
+          handleDraggedItem({
+            member: { id: '', name: '' },
+            source: '',
+          });
           break;
         case 'USERBANK':
           handleTeams(add(MEMBERS, teams, source, destination));
+          handleDraggedItem({
+            member: { id: '', name: '' },
+            source: '',
+          });
           break;
         default:
           break;

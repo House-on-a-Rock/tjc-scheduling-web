@@ -40,8 +40,7 @@ export function add(
 ): TeamState {
   const stateClone: TeamData[] = teamsState[droppableDestination.droppableId];
   const member = members[droppableSource.index];
-  if (stateClone.map((item) => item.name).includes(member.name)) return teamsState;
-  stateClone.splice(droppableDestination.index, 0, { ...member, id: uuid() });
+  stateClone.push({ ...member, id: uuid() });
   return { ...teamsState, [droppableDestination.droppableId]: stateClone };
 }
 
