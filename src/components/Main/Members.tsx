@@ -29,8 +29,21 @@ import data from './membersDatabase';
 
 // types
 import {UserType} from '../../shared/types/membersModel';
+import { blue } from '@material-ui/core/colors';
 
 let index = -1;
+
+const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+    },
+  }),
+)(TableCell);
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold'
@@ -40,6 +53,7 @@ export const Members = () => {
     const classes = useStyles();
     const rows = data;
     const [selected, setSelected] = useState<string[]>([]);
+    const [searchfield, setSearchField] = useState<string>('');
     const isSelected = (name: string) => selected.indexOf(name) !== -1;
     const [selectUser, setSelectUser] = useState<UserType>({
       firstName: '',
@@ -55,10 +69,34 @@ export const Members = () => {
       setSelectUser(row);
       setSelected([newSelected]);
     }
+
+    const onSearchChange = (event: any) => {
+      setSearchField(event.target.value);
+      console.log(filteredUsers);
+    }
+
+    function mergeArrays(...arrays: any[]) {
+        let jointArray: object[] = []
+    
+        arrays.forEach(array => {
+            jointArray = [...jointArray, ...array]
+        })
+        const uniqueArray = jointArray.filter((item,index) => jointArray.indexOf(item) === index)
+        return uniqueArray
+    }
+
+    const filteredUsers = rows.filter(function(row: any) {
+      for (var key in row) {
+        if (key === 'roles') break;
+        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+      }
+      return false;
+    })
+
     return (
       <Grid container spacing={3}>
-        <Grid component={Paper} item xs={3}>
-          <List component="nav" subheader={
+        <Grid item xs={3}>
+          <List className={classes.sidebar} component={Paper} subheader={
             <ListSubheader component="div">
               Info
             </ListSubheader>}
@@ -77,7 +115,7 @@ export const Members = () => {
             </ListItem>
           </List>
           <Divider/>
-          <List component="nav"
+          <List component={Paper}
             subheader={
             <ListSubheader component="div">
               Roles
@@ -94,9 +132,10 @@ export const Members = () => {
         </Grid>
         <Grid item xs={9}>
             <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                    <TableHead>
-                      <TableRow >
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead className={classes.header}>
+                  <TableRow >
+                      <TableCell>
                         <div className={classes.search}>
                           <div className={classes.searchIcon}>
                             <SearchIcon />
@@ -108,39 +147,47 @@ export const Members = () => {
                               input: classes.inputInput,
                             }}
                             inputProps={{ 'aria-label': 'search' }}
+                            onChange={onSearchChange}
                           />
                         </div>
-                      </TableRow>
-                      <TableRow >
-                          <TableCell style={styleHead} align="left">First&nbsp;Name</TableCell>
-                          <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                          <TableCell style={styleHead} align="left">Email</TableCell>
-                          <TableCell style={styleHead} align="left">Church</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows.map((row) => {
-                        const isitemSelected = isSelected(row.firstName);
+                      </TableCell>
+                  </TableRow>
+                </TableHead>
+              </Table>
+            </TableContainer>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableHead>
+                    <TableRow >
+                        <TableCell style={styleHead} align="left">First&nbsp;Name</TableCell>
+                        <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
+                        <TableCell style={styleHead} align="left">Email</TableCell>
+                        <TableCell style={styleHead} align="left">Church</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredUsers.map((row) => {
+                      const isitemSelected = isSelected(row.firstName);
 
-                        return (
-                          <TableRow
-                            hover
-                            onClick={event => {
-                              handleClick(event, row)
-                            }}
-                            selected={isitemSelected} 
-                            key={row.firstName}
-                          >
-                            <TableCell component="th" scope="row">
-                                {row.firstName}
-                            </TableCell>
-                            <TableCell align="left">{row.lastName}</TableCell>
-                            <TableCell align="left">{row.email}</TableCell>
-                            <TableCell align="left">{row.church}</TableCell>
-                          </TableRow>
-                      )})  
-                      }
-                    </TableBody>
+                      return (
+                        <TableRow
+                          hover
+                          onClick={event => {
+                            handleClick(event, row)
+                          }}
+                          selected={isitemSelected} 
+                          key={row.firstName}
+                        >
+                          <TableCell component="th" scope="row">
+                              {row.firstName}
+                          </TableCell>
+                          <TableCell align="left">{row.lastName}</TableCell>
+                          <TableCell align="left">{row.email}</TableCell>
+                          <TableCell align="left">{row.church}</TableCell>
+                        </TableRow>
+                    )})  
+                    }
+                  </TableBody>
                 </Table>
             </TableContainer>
         </Grid>
@@ -150,6 +197,12 @@ export const Members = () => {
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
+    header: {
+      backgroundColor: theme.palette.primary.light
+    },
+    sidebar: {
+      backgroundColor: 'white'
+    },
     search: {
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
@@ -161,8 +214,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 0,
       width: '100%',
       [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
+        width: '200px',
       },
     },
     searchIcon: {
