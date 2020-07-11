@@ -74,6 +74,10 @@ export const Members = () => {
     }
 
     const filteredUsers = rows.filter(function(row: any) {
+      // const keys = Object.keys(row)
+      // return keys.map(key => {
+      //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
+      // })
       for (var key in row) {
         if (key === 'roles') break;
         if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
