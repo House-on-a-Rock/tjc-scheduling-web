@@ -19,6 +19,12 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import { green } from '@material-ui/core/colors';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CSS from 'csstype';
 
 // actions
@@ -68,9 +74,8 @@ export const Members = () => {
       setSelected([newSelected]);
     }
 
-    const onSearchChange = (event: any) => {
+    const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchField(event.target.value);
-      console.log(filteredUsers);
     }
 
     const filteredUsers = rows.filter(function(row: any) {
@@ -144,6 +149,14 @@ export const Members = () => {
                           />
                         </div>
                       </TableCell>
+                      <TableCell>
+                        <IconButton component="span">
+                          <AddCircleIcon /*style={{ color: green[500] }}*//>
+                        </IconButton>
+                        <IconButton component="span">
+                          <RemoveCircleIcon /*style={{ color: green[500] }}*//>
+                        </IconButton>
+                      </TableCell>
                   </TableRow>
                 </TableHead>
               </Table>
@@ -152,7 +165,7 @@ export const Members = () => {
                 <Table className={classes.table} aria-label="simple table">
                   <TableHead>
                     <TableRow >
-                        <TableCell style={styleHead} align="left">First&nbsp;Name</TableCell>
+                        <TableCell style={styleHead}>First&nbsp;Name</TableCell>
                         <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
                         <TableCell style={styleHead} align="left">Email</TableCell>
                         <TableCell style={styleHead} align="left">Church</TableCell>
@@ -171,12 +184,12 @@ export const Members = () => {
                           selected={isitemSelected} 
                           key={row.id}
                         >
-                          <TableCell component="th" scope="row">
+                          <TableCell component="th" variant="body" scope="row">
                               {row.firstName}
                           </TableCell>
-                          <TableCell align="left">{row.lastName}</TableCell>
-                          <TableCell align="left">{row.email}</TableCell>
-                          <TableCell align="left">{row.church}</TableCell>
+                          <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
+                          <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
+                          <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
                         </TableRow>
                     )})  
                     }
