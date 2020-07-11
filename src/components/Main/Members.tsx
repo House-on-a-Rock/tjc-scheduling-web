@@ -31,8 +31,6 @@ import data from './membersDatabase';
 import {UserType} from '../../shared/types/membersModel';
 import { blue } from '@material-ui/core/colors';
 
-let index = -1;
-
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
     head: {
@@ -54,8 +52,9 @@ export const Members = () => {
     const rows = data;
     const [selected, setSelected] = useState<string[]>([]);
     const [searchfield, setSearchField] = useState<string>('');
-    const isSelected = (name: string) => selected.indexOf(name) !== -1;
+    const isSelected = (id: string) => selected.indexOf(id) !== -1;
     const [selectUser, setSelectUser] = useState<UserType>({
+      id: '',
       firstName: '',
       lastName: '',
       email: '',
@@ -64,8 +63,7 @@ export const Members = () => {
     });
 
     const handleClick = (event: React.MouseEvent<unknown>, row: UserType) => {
-      let newSelected: string = row.firstName;
-      index = rows.findIndex(rows => rows.firstName === newSelected);
+      let newSelected: string = row.id;
       setSelectUser(row);
       setSelected([newSelected]);
     }
@@ -75,20 +73,11 @@ export const Members = () => {
       console.log(filteredUsers);
     }
 
-    function mergeArrays(...arrays: any[]) {
-        let jointArray: object[] = []
-    
-        arrays.forEach(array => {
-            jointArray = [...jointArray, ...array]
-        })
-        const uniqueArray = jointArray.filter((item,index) => jointArray.indexOf(item) === index)
-        return uniqueArray
-    }
-
     const filteredUsers = rows.filter(function(row: any) {
       for (var key in row) {
         if (key === 'roles') break;
         if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+        console.log(key)
       }
       return false;
     })
@@ -167,7 +156,7 @@ export const Members = () => {
                   </TableHead>
                   <TableBody>
                     {filteredUsers.map((row) => {
-                      const isitemSelected = isSelected(row.firstName);
+                      const isitemSelected = isSelected(row.id);
 
                       return (
                         <TableRow
@@ -176,7 +165,7 @@ export const Members = () => {
                             handleClick(event, row)
                           }}
                           selected={isitemSelected} 
-                          key={row.firstName}
+                          key={row.id}
                         >
                           <TableCell component="th" scope="row">
                               {row.firstName}

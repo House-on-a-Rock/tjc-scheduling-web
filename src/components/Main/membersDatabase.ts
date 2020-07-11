@@ -1,5 +1,9 @@
-const userData = [
+import { v4 as uuid } from 'uuid';
+import { UserType } from '../../shared/types/membersModel';
+
+const userData: UserType[] = [
   {
+    id: uuid(),
     firstName: 'Alan',
     lastName: 'Lin',
     email: 'alan.lin@gmail.com',
@@ -7,6 +11,7 @@ const userData = [
     roles: ['Pianist', 'AV'],
   },
   {
+    id: uuid(),
     firstName: 'Shaun',
     lastName: 'Tung',
     email: 'shaun.tung@gmail.com',
@@ -14,6 +19,7 @@ const userData = [
     roles: ['RE', 'AV'],
   },
   {
+    id: uuid(),
     firstName: 'Ted',
     lastName: 'Chen',
     email: 'ted.chen@gmail.com',
@@ -21,6 +27,71 @@ const userData = [
     roles: ['RE', 'AV', 'Translation'],
   },
   {
+    id: uuid(),
+    firstName: 'Ian',
+    lastName: 'Lin',
+    email: 'ian.lin@gmail.com',
+    church: 'Toronto',
+    roles: ['RE', 'AV', 'Sermon Speaking', 'Translation'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Alan',
+    lastName: 'Lin',
+    email: 'alan.lin@gmail.com',
+    church: 'Toronto',
+    roles: ['Pianist', 'AV'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Shaun',
+    lastName: 'Tung',
+    email: 'shaun.tung@gmail.com',
+    church: 'Hillsborough',
+    roles: ['RE', 'AV'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Ted',
+    lastName: 'Chen',
+    email: 'ted.chen@gmail.com',
+    church: 'Hillsborough',
+    roles: ['RE', 'AV', 'Translation'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Ian',
+    lastName: 'Lin',
+    email: 'ian.lin@gmail.com',
+    church: 'Toronto',
+    roles: ['RE', 'AV', 'Sermon Speaking', 'Translation'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Alan',
+    lastName: 'Lin',
+    email: 'alan.lin@gmail.com',
+    church: 'Toronto',
+    roles: ['Pianist', 'AV'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Shaun',
+    lastName: 'Tung',
+    email: 'shaun.tung@gmail.com',
+    church: 'Hillsborough',
+    roles: ['RE', 'AV'],
+  },
+  {
+    id: uuid(),
+    firstName: 'Ted',
+    lastName: 'Chen',
+    email: 'ted.chen@gmail.com',
+    church: 'Hillsborough',
+    roles: ['RE', 'AV', 'Translation'],
+  },
+  {
+    id: uuid(),
     firstName: 'Ian',
     lastName: 'Lin',
     email: 'ian.lin@gmail.com',
