@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { v4 as uuid } from 'uuid';
 
 // material UI
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -25,11 +26,11 @@ import IconButton from '@material-ui/core/IconButton';
 import { green, red, amber } from '@material-ui/core/colors';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
 import CSS from 'csstype';
+
+// other components
+import { ConfirmDialog } from '../shared/ConfirmDialogue';
+import { AddUserDialog } from '../shared/AddUserDialogue';
 
 // actions
 import { getAllUsers } from '../../store/apis';
@@ -39,15 +40,8 @@ import data from './membersDatabase';
 
 // types
 import {UserType} from '../../shared/types/membersModel';
-import { blue } from '@material-ui/core/colors';
 
 var rows = data;
-
-export interface SimpleDialogProps {
-  open: boolean;
-  selectedValue: boolean;
-  onClose: (value: boolean) => void;
-}
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -71,6 +65,7 @@ export const Members = () => {
     const [selected, setSelected] = useState<string[]>([]);
     const [searchfield, setSearchField] = useState<string>('');
     const [openConfirm, setOpenConfirm] = React.useState(false);
+    const [openAdd, setOpenAdd] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState(false);
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
     const [selectUser, setSelectUser] = useState<UserType>({
@@ -82,56 +77,40 @@ export const Members = () => {
       roles: []
     });
 
-    function ConfirmDialog(props: SimpleDialogProps) {
-      const classes = useStyles();
-      const { onClose, selectedValue, open } = props;
-    
-      const handleClose = () => {
-        onClose(selectedValue);
-      };
-    
-      const handleOptionClick = (value: boolean) => {
-        if (value) {
-          // remove users from database
-          selected.map(selectedRow => {
-            rows = rows.filter(function(row) { return row.id !== selectedRow})
-          })
-          setDatabase(rows);
-          setSelected([]);
-        }
-        onClose(value);
-      };
-    
-      return (
-        <Dialog onClose={handleClose} open={open}>
-          <DialogTitle id='confirm-dialog'>Confirm Delete Action</DialogTitle>
-          <List>
-            <ListItem button onClick={() => handleOptionClick(true)} key="yes-button">
-              <ListItemIcon style={{color: green[500] }}>
-                <CheckIcon/>
-              </ListItemIcon>
-              <ListItemText primary="YES"/>
-            </ListItem>
-            <ListItem button onClick={() => handleOptionClick(false)} key="no-button">
-              <ListItemIcon style={{color: '#ba000d' }}>
-                <ClearIcon/>
-              </ListItemIcon>
-              <ListItemText primary="NO"/>
-            </ListItem>
-          </List>
-        </Dialog>
-      )
-    }
-
-    const handleClickOpen = () => {
+    const handleDeleteOpen = () => {
       console.log(selected)
       if (selected.length > 0) setOpenConfirm(true);
     };
-  
-    const handleClose = (value: boolean) => {
+    
+    const handleAddOpen = () => {
+      setOpenAdd(true);
+    }
+    const handleDeleteClose = (value: boolean) => {
       setOpenConfirm(false);
       setSelectedValue(value);
+      if (value) {
+        selected.map(selectedRow => {
+          rows = rows.filter(function(row) { return row.id !== selectedRow})
+        })
+        setDatabase(rows);
+        setSelected([]);
+      }
     };
+
+    const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
+      setOpenAdd(false);
+      setSelectedValue(value);
+      if (value && firstName && lastName && email && church) {
+        rows.push({
+          id: uuid(),
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          church: church,
+          roles: []
+        })
+      }
+    }
 
     const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
       const selectedIndex = selected.indexOf(row.id);
@@ -152,13 +131,6 @@ export const Members = () => {
       setSelectUser(row);
       setSelected(newSelected);
     }
-
-    // const handleRemoveClick = () => {
-    //   selected.map(selectedRow => {
-    //     rows = rows.filter(function(row) { return row.id !== selectedRow})
-    //   })
-    //   setDatabase(rows);
-    // }
 
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchField(event.target.value);
@@ -215,88 +187,92 @@ export const Members = () => {
           </List>
         </Grid>
         <Grid item xs={9}>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead className={classes.header}>
-                  <TableRow >
-                      <TableCell>
-                        <div className={classes.search}>
-                          <div className={classes.searchIcon}>
-                            <SearchIcon />
-                          </div>
-                          <InputBase
-                            placeholder="Search…"
-                            classes={{
-                              root: classes.inputRoot,
-                              input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                            onChange={onSearchChange}
-                          />
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead className={classes.header}>
+                <TableRow >
+                    <TableCell>
+                      <div className={classes.search}>
+                        <div className={classes.searchIcon}>
+                          <SearchIcon style={{color: '#FFFAF0'}}/>
                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <IconButton component="span">
-                          <AddCircleIcon 
-                            style={{ 
-                              fontSize: 35, 
-                              //color: green[500] 
-                            }}
-                          />
-                        </IconButton>
-                        <IconButton 
-                          component="span"
-                          onClick={handleClickOpen}
-                        >
-                          <RemoveCircleIcon 
-                            style={{ 
-                              fontSize: 35, 
-                              //color: red[700] 
-                            }}
-                          />
-                        </IconButton>
-                      </TableCell>
+                        <InputBase
+                          placeholder="Search…"
+                          classes={{
+                            root: classes.inputRoot,
+                            input: classes.inputInput,
+                          }}
+                          inputProps={{ 'aria-label': 'search' }}
+                          onChange={onSearchChange}
+                        />
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton 
+                        component="span"
+                        onClick={handleAddOpen}
+                      >
+                        <AddCircleIcon 
+                          style={{ 
+                            fontSize: 35, 
+                            color: '#FFFAF0'
+                          }}
+                        />
+                      </IconButton>
+                      <IconButton 
+                        component="span"
+                        onClick={handleDeleteOpen}
+                      >
+                        <RemoveCircleIcon 
+                          style={{ 
+                            fontSize: 35, 
+                            color: '#FFFAF0'
+                          }}
+                        />
+                      </IconButton>
+                    </TableCell>
+                </TableRow>
+              </TableHead>
+            </Table>
+          </TableContainer>
+          <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableHead>
+                  <TableRow >
+                      <TableCell style={styleHead}>First&nbsp;Name</TableCell>
+                      <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
+                      <TableCell style={styleHead} align="left">Email</TableCell>
+                      <TableCell style={styleHead} align="left">Church</TableCell>
                   </TableRow>
                 </TableHead>
-              </Table>
-            </TableContainer>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="simple table">
-                  <TableHead>
-                    <TableRow >
-                        <TableCell style={styleHead}>First&nbsp;Name</TableCell>
-                        <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                        <TableCell style={styleHead} align="left">Email</TableCell>
-                        <TableCell style={styleHead} align="left">Church</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredUsers.map((row) => {
-                      const isitemSelected = isSelected(row.id);
+                <TableBody>
+                  {filteredUsers.map((row) => {
+                    const isitemSelected = isSelected(row.id);
 
-                      return (
-                        <TableRow
-                          hover
-                          onClick={event => {
-                            handleRowClick(event, row)
-                          }}
-                          selected={isitemSelected} 
-                          key={row.id}
-                        >
-                          <TableCell component="th" variant="body" scope="row">
-                              {row.firstName}
-                          </TableCell>
-                          <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
-                          <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                          <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
-                        </TableRow>
-                    )})  
-                    }
-                  </TableBody>
-                </Table>
-            </TableContainer>
+                    return (
+                      <TableRow
+                        hover
+                        onClick={event => {
+                          handleRowClick(event, row)
+                        }}
+                        selected={isitemSelected} 
+                        key={row.id}
+                      >
+                        <TableCell component="th" variant="body" scope="row">
+                            {row.firstName}
+                        </TableCell>
+                        <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
+                        <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
+                        <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
+                      </TableRow>
+                  )})  
+                  }
+                </TableBody>
+              </Table>
+          </TableContainer>
         </Grid>
-        <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleClose} />
+        <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleDeleteClose} title='Confirm Delete Action'/>
+        <AddUserDialog selectedValue={selectedValue} open={openAdd} onClose={handleAddClose} title='Add User'/>
       </Grid>
     );
 };
@@ -345,6 +321,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         width: '20ch',
       },
+      color: '#FFFAF0'
     },
     table: {
       minWidth: 650,
