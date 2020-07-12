@@ -22,7 +22,7 @@ import InputBase from '@material-ui/core/InputBase';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import { green } from '@material-ui/core/colors';
+import { green, red } from '@material-ui/core/colors';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CSS from 'csstype';
@@ -55,7 +55,8 @@ const styleHead: CSS.Properties = {
 
 export const Members = () => {
     const classes = useStyles();
-    const rows = data;
+    var rows = data;
+    const [database, setDatabase] = useState<UserType[]>(data);
     const [selected, setSelected] = useState<string[]>([]);
     const [searchfield, setSearchField] = useState<string>('');
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
@@ -68,17 +69,38 @@ export const Members = () => {
       roles: []
     });
 
-    const handleClick = (event: React.MouseEvent<unknown>, row: UserType) => {
-      let newSelected: string = row.id;
+    const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
+      const selectedIndex = selected.indexOf(row.id);
+      let newSelected: string[] = [];
+
+      if (selectedIndex === -1) {
+        newSelected = newSelected.concat(selected, row.id);
+      } else if (selectedIndex === 0) {
+        newSelected = newSelected.concat(selected.slice(1));
+      } else if (selectedIndex === selected.length -1) {
+        newSelected = newSelected.concat(selected.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelected = newSelected.concat(
+          selected.slice(0, selectedIndex),
+          selected.slice(selectedIndex + 1),
+        );
+      }
       setSelectUser(row);
-      setSelected([newSelected]);
+      setSelected(newSelected);
+    }
+
+    const handleRemoveClick = (event: React.MouseEvent<unknown>) => {
+      selected.map(selectedRow => {
+        rows = rows.filter(function(row) { return row.id !== selectedRow})
+      })
+      setDatabase(rows);
     }
 
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchField(event.target.value);
     }
 
-    const filteredUsers = rows.filter(function(row: any) {
+    const filteredUsers = database.filter(function(row: any) {
       // const keys = Object.keys(row)
       // return keys.map(key => {
       //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
@@ -151,10 +173,23 @@ export const Members = () => {
                       </TableCell>
                       <TableCell>
                         <IconButton component="span">
-                          <AddCircleIcon /*style={{ color: green[500] }}*//>
+                          <AddCircleIcon 
+                            style={{ 
+                              fontSize: 35, 
+                              //color: green[500] 
+                            }}
+                          />
                         </IconButton>
                         <IconButton component="span">
-                          <RemoveCircleIcon /*style={{ color: green[500] }}*//>
+                          <RemoveCircleIcon 
+                            onClick={event => {
+                              handleRemoveClick(event)
+                            }}
+                            style={{ 
+                              fontSize: 35, 
+                              //color: red[700] 
+                            }}
+                          />
                         </IconButton>
                       </TableCell>
                   </TableRow>
@@ -179,7 +214,7 @@ export const Members = () => {
                         <TableRow
                           hover
                           onClick={event => {
-                            handleClick(event, row)
+                            handleRowClick(event, row)
                           }}
                           selected={isitemSelected} 
                           key={row.id}
