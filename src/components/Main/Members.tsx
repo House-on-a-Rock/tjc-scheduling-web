@@ -116,8 +116,8 @@ export const Members = () => {
     return (
       <Grid container spacing={3}>
         <Grid item xs={3}>
-          <List className={classes.sidebar} component={Paper} subheader={
-            <ListSubheader component="div">
+          <List component={Paper} subheader={
+            <ListSubheader className={classes.sidebar} component={Paper}>
               Info
             </ListSubheader>}
           >
@@ -137,7 +137,7 @@ export const Members = () => {
           <Divider/>
           <List component={Paper}
             subheader={
-            <ListSubheader component="div">
+            <ListSubheader className={classes.sidebar} component={Paper}>
               Roles
             </ListSubheader>
             }>
@@ -242,7 +242,8 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.light
     },
     sidebar: {
-      backgroundColor: 'white'
+      backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.contrastText
     },
     search: {
       position: 'relative',
