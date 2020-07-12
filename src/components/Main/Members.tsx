@@ -89,7 +89,7 @@ export const Members = () => {
       setSelected(newSelected);
     }
 
-    const handleRemoveClick = (event: React.MouseEvent<unknown>) => {
+    const handleRemoveClick = () => {
       selected.map(selectedRow => {
         rows = rows.filter(function(row) { return row.id !== selectedRow})
       })
@@ -121,16 +121,16 @@ export const Members = () => {
               Info
             </ListSubheader>}
           >
-            <ListItem button>
+            <ListItem key="firstname" button>
               <ListItemText primary={selectUser.firstName} secondary="firstname"/>
             </ListItem>
-            <ListItem button>
+            <ListItem key="lastname" button>
               <ListItemText primary={selectUser.lastName} secondary="lastname"/>
             </ListItem>
-            <ListItem button>
+            <ListItem key="email" button>
               <ListItemText primary={selectUser.email} secondary="email"/>
             </ListItem>
-            <ListItem button>
+            <ListItem key="church" button>
               <ListItemText primary={selectUser.church} secondary="church"/>
             </ListItem>
           </List>
@@ -143,7 +143,7 @@ export const Members = () => {
             }>
             {selectUser.roles.map((role: string) => {
               return (
-                <ListItem button>
+                <ListItem key={role} button>
                   <ListItemText primary={role}/>
                 </ListItem>
               )
@@ -180,11 +180,11 @@ export const Members = () => {
                             }}
                           />
                         </IconButton>
-                        <IconButton component="span">
+                        <IconButton 
+                          component="span"
+                          onClick={(event: React.MouseEvent<unknown>) => handleRemoveClick()}
+                        >
                           <RemoveCircleIcon 
-                            onClick={event => {
-                              handleRemoveClick(event)
-                            }}
                             style={{ 
                               fontSize: 35, 
                               //color: red[700] 
