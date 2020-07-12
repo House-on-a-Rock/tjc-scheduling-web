@@ -22,9 +22,13 @@ import InputBase from '@material-ui/core/InputBase';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import { green, red } from '@material-ui/core/colors';
+import { green, red, amber } from '@material-ui/core/colors';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 import CSS from 'csstype';
 
 // actions
@@ -36,6 +40,14 @@ import data from './membersDatabase';
 // types
 import {UserType} from '../../shared/types/membersModel';
 import { blue } from '@material-ui/core/colors';
+
+var rows = data;
+
+export interface SimpleDialogProps {
+  open: boolean;
+  selectedValue: boolean;
+  onClose: (value: boolean) => void;
+}
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -55,10 +67,11 @@ const styleHead: CSS.Properties = {
 
 export const Members = () => {
     const classes = useStyles();
-    var rows = data;
     const [database, setDatabase] = useState<UserType[]>(data);
     const [selected, setSelected] = useState<string[]>([]);
     const [searchfield, setSearchField] = useState<string>('');
+    const [openConfirm, setOpenConfirm] = React.useState(false);
+    const [selectedValue, setSelectedValue] = React.useState(false);
     const isSelected = (id: string) => selected.indexOf(id) !== -1;
     const [selectUser, setSelectUser] = useState<UserType>({
       id: '',
@@ -68,6 +81,57 @@ export const Members = () => {
       church: '',
       roles: []
     });
+
+    function ConfirmDialog(props: SimpleDialogProps) {
+      const classes = useStyles();
+      const { onClose, selectedValue, open } = props;
+    
+      const handleClose = () => {
+        onClose(selectedValue);
+      };
+    
+      const handleOptionClick = (value: boolean) => {
+        if (value) {
+          // remove users from database
+          selected.map(selectedRow => {
+            rows = rows.filter(function(row) { return row.id !== selectedRow})
+          })
+          setDatabase(rows);
+          setSelected([]);
+        }
+        onClose(value);
+      };
+    
+      return (
+        <Dialog onClose={handleClose} open={open}>
+          <DialogTitle id='confirm-dialog'>Confirm Delete Action</DialogTitle>
+          <List>
+            <ListItem button onClick={() => handleOptionClick(true)} key="yes-button">
+              <ListItemIcon style={{color: green[500] }}>
+                <CheckIcon/>
+              </ListItemIcon>
+              <ListItemText primary="YES"/>
+            </ListItem>
+            <ListItem button onClick={() => handleOptionClick(false)} key="no-button">
+              <ListItemIcon style={{color: '#ba000d' }}>
+                <ClearIcon/>
+              </ListItemIcon>
+              <ListItemText primary="NO"/>
+            </ListItem>
+          </List>
+        </Dialog>
+      )
+    }
+
+    const handleClickOpen = () => {
+      console.log(selected)
+      if (selected.length > 0) setOpenConfirm(true);
+    };
+  
+    const handleClose = (value: boolean) => {
+      setOpenConfirm(false);
+      setSelectedValue(value);
+    };
 
     const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
       const selectedIndex = selected.indexOf(row.id);
@@ -89,12 +153,12 @@ export const Members = () => {
       setSelected(newSelected);
     }
 
-    const handleRemoveClick = () => {
-      selected.map(selectedRow => {
-        rows = rows.filter(function(row) { return row.id !== selectedRow})
-      })
-      setDatabase(rows);
-    }
+    // const handleRemoveClick = () => {
+    //   selected.map(selectedRow => {
+    //     rows = rows.filter(function(row) { return row.id !== selectedRow})
+    //   })
+    //   setDatabase(rows);
+    // }
 
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchField(event.target.value);
@@ -182,7 +246,7 @@ export const Members = () => {
                         </IconButton>
                         <IconButton 
                           component="span"
-                          onClick={(event: React.MouseEvent<unknown>) => handleRemoveClick()}
+                          onClick={handleClickOpen}
                         >
                           <RemoveCircleIcon 
                             style={{ 
@@ -232,6 +296,7 @@ export const Members = () => {
                 </Table>
             </TableContainer>
         </Grid>
+        <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleClose} />
       </Grid>
     );
 };
@@ -283,6 +348,17 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     table: {
       minWidth: 650,
-    }
+    },
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
   })
 )
