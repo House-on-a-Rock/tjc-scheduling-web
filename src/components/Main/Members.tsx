@@ -19,6 +19,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
 import InputBase from '@material-ui/core/InputBase';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
@@ -31,17 +32,16 @@ import CSS from 'csstype';
 // other components
 import { ConfirmDialog } from '../shared/ConfirmDialogue';
 import { AddUserDialog } from '../shared/AddUserDialogue';
+import { AddRoleDialog } from '../shared/AddRoleDialogue';
 
 // actions
 import { getAllUsers } from '../../store/apis';
 
 // dummy data
-import data from './membersDatabase';
+import {userData} from './membersDatabase';
 
 // types
 import {UserType} from '../../shared/types/membersModel';
-
-var rows = data;
 
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -60,62 +60,87 @@ const styleHead: CSS.Properties = {
 }
 
 export const Members = () => {
-    const classes = useStyles();
-    const [database, setDatabase] = useState<UserType[]>(data);
-    const [selected, setSelected] = useState<string[]>([]);
-    const [searchfield, setSearchField] = useState<string>('');
-    const [openConfirm, setOpenConfirm] = React.useState(false);
-    const [openAdd, setOpenAdd] = React.useState(false);
-    const [selectedValue, setSelectedValue] = React.useState(false);
-    const isSelected = (id: string) => selected.indexOf(id) !== -1;
-    const [selectUser, setSelectUser] = useState<UserType>({
-      id: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      church: '',
-      roles: []
-    });
+  var rows = userData;
+  const classes = useStyles();
+  const [database, setDatabase] = useState<UserType[]>(userData);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [searchfield, setSearchField] = useState<string>('');
+  const [openConfirm, setOpenConfirm] = React.useState(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const [openAddRole, setOpenAddRole] = React.useState(false);
+  const [selectedValue, setSelectedValue] = React.useState(false);
+  const [selectionExists, setSelectionExists] = React.useState(true);
+  const isSelected = (id: string) => selected.indexOf(id) !== -1;
+  const [selectUser, setSelectUser] = useState<UserType>({
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    church: '',
+    roles: []
+  });
 
-    const handleDeleteOpen = () => {
-      console.log(selected)
-      if (selected.length > 0) setOpenConfirm(true);
-    };
-    
-    const handleAddOpen = () => {
-      setOpenAdd(true);
+  const handleAddRoleOpen = () => {
+    if (selected.length > 0) setOpenAddRole(true);
+  }
+  const handleDeleteOpen = () => {
+    console.log(selected)
+    if (selected.length > 0) setOpenConfirm(true);
+  };
+  
+  const handleAddOpen = () => {
+    setOpenAdd(true);
+  }
+  const handleDeleteClose = (value: boolean) => {
+    setOpenConfirm(false);
+    setSelectedValue(value);
+    if (value) {
+      selected.map(selectedRow => {
+        rows = rows.filter(function(row) { return row.id !== selectedRow})
+      })
+      setDatabase(rows);
+      setSelected([]);
     }
-    const handleDeleteClose = (value: boolean) => {
-      setOpenConfirm(false);
-      setSelectedValue(value);
-      if (value) {
-        selected.map(selectedRow => {
-          rows = rows.filter(function(row) { return row.id !== selectedRow})
-        })
-        setDatabase(rows);
-        setSelected([]);
-      }
-    };
+  };
 
-    const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
-      setOpenAdd(false);
-      setSelectedValue(value);
-      if (value && firstName && lastName && email && church) {
-        rows.push({
-          id: uuid(),
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          church: church,
-          roles: []
-        })
-      }
+  const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
+    setOpenAdd(false);
+    setSelectedValue(value);
+    if (value && firstName && lastName && email && church) {
+      rows.push({
+        id: uuid(),
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        church: church,
+        roles: []
+      })
     }
+  }
 
-    const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
-      const selectedIndex = selected.indexOf(row.id);
-      let newSelected: string[] = [];
+  const handleAddRoleClose = (value: boolean, role: string) => {
+    let existingRole = false;
+    setOpenAddRole(false);
+    setSelectedValue(value);
+    if (value && selected.length > 0) {
+      rows.map(row => {
+        for (let i = 0; i < selected.length; i++) {
+          if (selected[i] === row.id) {
+            for (let i = 0; i < row.roles.length; i++) {
+              if (row.roles[i] === role) existingRole = true;
+            }
+            if (!existingRole) row.roles.push(role);
+          }
+        }
+      })
+    }
+  }
 
+  const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
+    event.stopPropagation();
+    const selectedIndex = selected.indexOf(row.id);
+    let newSelected: string[] = [];
+    if (event.ctrlKey) {
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, row.id);
       } else if (selectedIndex === 0) {
@@ -128,153 +153,174 @@ export const Members = () => {
           selected.slice(selectedIndex + 1),
         );
       }
-      setSelectUser(row);
-      setSelected(newSelected);
+    } else {
+      newSelected = [row.id]
     }
-
-    const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearchField(event.target.value);
+    setSelectUser(row);
+    setSelected(newSelected);
+    if (newSelected.length > 0) {
+      setSelectionExists(false);
+    } else {
+      setSelectionExists(true);
     }
+  }
 
-    const filteredUsers = database.filter(function(row: any) {
-      // const keys = Object.keys(row)
-      // return keys.map(key => {
-      //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
-      // })
-      for (var key in row) {
-        if (key === 'roles') break;
-        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
-        console.log(key)
-      }
-      return false;
-    })
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchField(event.target.value);
+  }
 
-    return (
-      <Grid container spacing={3}>
-        <Grid item xs={3}>
-          <List component={Paper} subheader={
-            <ListSubheader className={classes.sidebar} component={Paper}>
-              Info
-            </ListSubheader>}
-          >
-            <ListItem key="firstname" button>
-              <ListItemText primary={selectUser.firstName} secondary="firstname"/>
-            </ListItem>
-            <ListItem key="lastname" button>
-              <ListItemText primary={selectUser.lastName} secondary="lastname"/>
-            </ListItem>
-            <ListItem key="email" button>
-              <ListItemText primary={selectUser.email} secondary="email"/>
-            </ListItem>
-            <ListItem key="church" button>
-              <ListItemText primary={selectUser.church} secondary="church"/>
-            </ListItem>
-          </List>
-          <Divider/>
-          <List component={Paper}
-            subheader={
-            <ListSubheader className={classes.sidebar} component={Paper}>
-              Roles
-            </ListSubheader>
-            }>
-            {selectUser.roles.map((role: string) => {
-              return (
-                <ListItem key={role} button>
-                  <ListItemText primary={role}/>
-                </ListItem>
-              )
-            })}
-          </List>
-        </Grid>
-        <Grid item xs={9}>
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead className={classes.header}>
-                <TableRow >
-                    <TableCell>
-                      <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                          <SearchIcon style={{color: '#FFFAF0'}}/>
-                        </div>
-                        <InputBase
-                          placeholder="Search…"
-                          classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                          }}
-                          inputProps={{ 'aria-label': 'search' }}
-                          onChange={onSearchChange}
-                        />
+  const filteredUsers = database.filter(function(row: any) {
+    // const keys = Object.keys(row)
+    // return keys.map(key => {
+    //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
+    // })
+    for (var key in row) {
+      if (key === 'roles') break;
+      if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+      console.log(key)
+    }
+    return false;
+  })
+
+  return (
+    <Grid container spacing={3}>
+      <Grid item xs={3}>
+        <List component={Paper} subheader={
+          <ListSubheader className={classes.sidebar} component={Paper}>
+            Info
+          </ListSubheader>}
+        >
+          <ListItem key="firstname" button>
+            <ListItemText primary={selectUser.firstName} secondary="firstname"/>
+          </ListItem>
+          <ListItem key="lastname" button>
+            <ListItemText primary={selectUser.lastName} secondary="lastname"/>
+          </ListItem>
+          <ListItem key="email" button>
+            <ListItemText primary={selectUser.email} secondary="email"/>
+          </ListItem>
+          <ListItem key="church" button>
+            <ListItemText primary={selectUser.church} secondary="church"/>
+          </ListItem>
+        </List>
+        <Divider/>
+        <List component={Paper}
+          subheader={
+          <ListSubheader className={classes.sidebar} component={Paper}>
+            Roles
+          </ListSubheader>
+          }>
+          {selectUser.roles.map((role: string) => {
+            return (
+              <ListItem key={role} button>
+                <ListItemText primary={role}/>
+              </ListItem>
+            )
+          })}
+        </List>
+      </Grid>
+      <Grid item xs={9}>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead className={classes.header}>
+              <TableRow >
+                  <TableCell>
+                    <div className={classes.search}>
+                      <div className={classes.searchIcon}>
+                        <SearchIcon style={{color: '#FFFAF0'}}/>
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <IconButton 
-                        component="span"
-                        onClick={handleAddOpen}
-                      >
-                        <AddCircleIcon 
-                          style={{ 
-                            fontSize: 35, 
-                            color: '#FFFAF0'
-                          }}
-                        />
-                      </IconButton>
-                      <IconButton 
-                        component="span"
-                        onClick={handleDeleteOpen}
-                      >
-                        <RemoveCircleIcon 
-                          style={{ 
-                            fontSize: 35, 
-                            color: '#FFFAF0'
-                          }}
-                        />
-                      </IconButton>
-                    </TableCell>
+                      <InputBase
+                        placeholder="Search…"
+                        classes={{
+                          root: classes.inputRoot,
+                          input: classes.inputInput,
+                        }}
+                        inputProps={{ 'aria-label': 'search' }}
+                        onChange={onSearchChange}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Button 
+                      variant="contained" 
+                      size="medium" 
+                      color="primary" 
+                      style={{padding: '6px 10px'}} 
+                      disabled={selectionExists}
+                      onClick={handleAddRoleOpen}
+                    >
+                      <AddIcon style={{ color: green[500] }}/>Add Role
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton 
+                      component="span"
+                      onClick={handleAddOpen}
+                    >
+                      <AddCircleIcon 
+                        style={{ 
+                          fontSize: 35, 
+                          color: '#FFFAF0'
+                        }}
+                      />
+                    </IconButton>
+                    <IconButton 
+                      component="span"
+                      onClick={handleDeleteOpen}
+                    >
+                      <RemoveCircleIcon 
+                        style={{ 
+                          fontSize: 35, 
+                          color: '#FFFAF0'
+                        }}
+                      />
+                    </IconButton>
+                  </TableCell>
+              </TableRow>
+            </TableHead>
+          </Table>
+        </TableContainer>
+        <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow >
+                    <TableCell style={styleHead}>First&nbsp;Name</TableCell>
+                    <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
+                    <TableCell style={styleHead} align="left">Email</TableCell>
+                    <TableCell style={styleHead} align="left">Church</TableCell>
                 </TableRow>
               </TableHead>
-            </Table>
-          </TableContainer>
-          <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
-                <TableHead>
-                  <TableRow >
-                      <TableCell style={styleHead}>First&nbsp;Name</TableCell>
-                      <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                      <TableCell style={styleHead} align="left">Email</TableCell>
-                      <TableCell style={styleHead} align="left">Church</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredUsers.map((row) => {
-                    const isitemSelected = isSelected(row.id);
+              <TableBody>
+                {filteredUsers.map((row) => {
+                  const isitemSelected = isSelected(row.id);
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={event => {
-                          handleRowClick(event, row)
-                        }}
-                        selected={isitemSelected} 
-                        key={row.id}
-                      >
-                        <TableCell component="th" variant="body" scope="row">
-                            {row.firstName}
-                        </TableCell>
-                        <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
-                        <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                        <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
-                      </TableRow>
-                  )})  
-                  }
-                </TableBody>
-              </Table>
-          </TableContainer>
-        </Grid>
-        <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleDeleteClose} title='Confirm Delete Action'/>
-        <AddUserDialog selectedValue={selectedValue} open={openAdd} onClose={handleAddClose} title='Add User'/>
+                  return (
+                    <TableRow
+                      hover
+                      onClick={event => {
+                        handleRowClick(event, row)
+                      }}
+                      selected={isitemSelected} 
+                      key={row.id}
+                    >
+                      <TableCell component="th" variant="body" scope="row">
+                          {row.firstName}
+                      </TableCell>
+                      <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
+                      <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
+                      <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
+                    </TableRow>
+                )})  
+                }
+              </TableBody>
+            </Table>
+        </TableContainer>
       </Grid>
-    );
+      <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleDeleteClose} title='Confirm Delete Action'/>
+      <AddUserDialog selectedValue={selectedValue} open={openAdd} onClose={handleAddClose} title='Add User'/>
+      <AddRoleDialog selectedValue={selectedValue} open={openAddRole} onClose={handleAddRoleClose} title='Add Role'/>
+    </Grid>
+  );
 };
 
 const useStyles = makeStyles((theme: Theme) => 

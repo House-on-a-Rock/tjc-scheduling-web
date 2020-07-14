@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { UserType } from '../../shared/types/membersModel';
 
-const userData: UserType[] = [
+export const userData: UserType[] = [
   {
     id: uuid(),
     firstName: 'Alan',
@@ -100,4 +100,4 @@ const userData: UserType[] = [
   },
 ];
 
-export default userData;
+export const roles = ['RE', 'AV', 'Sermon Speaking', 'Translation', 'Pianist'];
