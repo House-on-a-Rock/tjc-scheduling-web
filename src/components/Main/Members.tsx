@@ -43,6 +43,8 @@ import {userData} from './membersDatabase';
 // types
 import {UserType} from '../../shared/types/membersModel';
 
+var rows = userData;
+
 const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
     head: {
@@ -60,7 +62,6 @@ const styleHead: CSS.Properties = {
 }
 
 export const Members = () => {
-  var rows = userData;
   const classes = useStyles();
   const [database, setDatabase] = useState<UserType[]>(userData);
   const [selected, setSelected] = useState<string[]>([]);
@@ -98,8 +99,8 @@ export const Members = () => {
       selected.map(selectedRow => {
         rows = rows.filter(function(row) { return row.id !== selectedRow})
       })
-      setDatabase(rows);
       setSelected([]);
+      setDatabase(rows);
     }
   };
 
@@ -115,6 +116,7 @@ export const Members = () => {
         church: church,
         roles: []
       })
+      setDatabase(rows);
     }
   }
 
