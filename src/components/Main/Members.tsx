@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useSelector } from '../../shared/types/useSelector';
 import { v4 as uuid } from 'uuid';
 
 // material UI
@@ -35,27 +36,15 @@ import { AddUserDialog } from '../shared/AddUserDialogue';
 import { AddRoleDialog } from '../shared/AddRoleDialogue';
 
 // actions
-import { getAllUsers } from '../../store/apis';
+import { onLoadMembers } from '../../store/actions';
 
 // dummy data
-import {userData} from './membersDatabase';
+// import {userData} from './membersDatabase';
 
 // types
-import {UserType} from '../../shared/types/membersModel';
+import {MemberStateData} from '../../store/types';
 
-var rows = userData;
-
-const StyledTableCell = withStyles((theme: Theme) =>
-  createStyles({
-    head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white,
-    },
-    body: {
-      fontSize: 14,
-    },
-  }),
-)(TableCell);
+// var rows = userData;
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold'
@@ -63,22 +52,29 @@ const styleHead: CSS.Properties = {
 
 export const Members = () => {
   const classes = useStyles();
-  const [database, setDatabase] = useState<UserType[]>(userData);
-  const [selected, setSelected] = useState<string[]>([]);
+  const dispatch = useDispatch();
+  // const [database, setDatabase] = useState<UserType[]>(userData);
+  const members = useSelector(({members}) => members.members)
+  const [selected, setSelected] = useState<number[]>([]);
   const [searchfield, setSearchField] = useState<string>('');
-  const [openConfirm, setOpenConfirm] = React.useState(false);
-  const [openAdd, setOpenAdd] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(false);
-  const [selectionExists, setSelectionExists] = React.useState(true);
-  const isSelected = (id: string) => selected.indexOf(id) !== -1;
-  const [selectUser, setSelectUser] = useState<UserType>({
-    id: '',
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+  const [openAdd, setOpenAdd] = useState<boolean>(false);
+  const [selectedValue, setSelectedValue] = useState<boolean>(false);
+  const [selectionExists, setSelectionExists] = useState<boolean>(true);
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+  const [selectUser, setSelectUser] = useState<MemberStateData>({
+    id: -1,
     firstName: '',
     lastName: '',
     email: '',
-    church: '',
+    church: {name: ''},
     roles: []
   });
+
+  useEffect(() => {
+    dispatch(onLoadMembers());
+    console.log(members);
+  }, [])
 
   const handleDeleteOpen = () => {
     console.log(selected)
@@ -93,10 +89,10 @@ export const Members = () => {
     setSelectedValue(value);
     if (value) {
       selected.map(selectedRow => {
-        rows = rows.filter(function(row) { return row.id !== selectedRow})
+        // rows = rows.filter(function(row) { return row.id !== selectedRow})
       })
       setSelected([]);
-      setDatabase(rows);
+      // setDatabase(rows);
     }
   };
 
@@ -104,22 +100,22 @@ export const Members = () => {
     setOpenAdd(false);
     setSelectedValue(value);
     if (value && firstName && lastName && email && church) {
-      rows.push({
-        id: uuid(),
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        church: church,
-        roles: []
-      })
-      setDatabase(rows);
+      // rows.push({
+      //   id: uuid(),
+      //   firstName: firstName,
+      //   lastName: lastName,
+      //   email: email,
+      //   church: {name: church},
+      //   roles: []
+      // })
+      // setDatabase(rows);
     }
   }
 
-  const handleRowClick = (event: React.MouseEvent<unknown>, row: UserType) => {
+  const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
     const selectedIndex = selected.indexOf(row.id);
-    let newSelected: string[] = [];
+    let newSelected: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, row.id);
@@ -146,18 +142,23 @@ export const Members = () => {
   }
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(members)
     setSearchField(event.target.value);
   }
 
-  const filteredUsers = database.filter(function(row: any) {
+  const filteredUsers = members.filter(function(row: any) {
     // const keys = Object.keys(row)
     // return keys.map(key => {
     //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
     // })
     for (var key in row) {
-      if (key === 'roles') break;
-      if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+      if (key === 'roles' || key === 'id' || key === 'ChurchId') continue;
       console.log(key)
+      if (key !== 'church') {
+        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+      } else {
+        if (row[key].name.toLowerCase().includes(searchfield.toLowerCase())) return true;
+      }
     }
     return false;
   })
@@ -180,7 +181,7 @@ export const Members = () => {
             <ListItemText primary={selectUser.email} secondary="email"/>
           </ListItem>
           <ListItem key="church" button>
-            <ListItemText primary={selectUser.church} secondary="church"/>
+            <ListItemText primary={selectUser.church.name} secondary="church"/>
           </ListItem>
         </List>
         <Divider/>
@@ -190,13 +191,13 @@ export const Members = () => {
             Roles
           </ListSubheader>
           }>
-          {selectUser.roles.map((role: string) => {
+          {/* {selectUser.roles.map((role: string) => {
             return (
               <ListItem key={role} button>
                 <ListItemText primary={role}/>
               </ListItem>
             )
-          })}
+          })} */}
         </List>
       </Grid>
       <Grid item xs={9}>
@@ -276,7 +277,7 @@ export const Members = () => {
                       </TableCell>
                       <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
                       <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.church}</TableCell>
+                      <TableCell component="th" variant="body" scope="row" align="left">{row.church.name}</TableCell>
                     </TableRow>
                 )})  
                 }
