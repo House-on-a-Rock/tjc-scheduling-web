@@ -68,7 +68,6 @@ export const Members = () => {
   const [searchfield, setSearchField] = useState<string>('');
   const [openConfirm, setOpenConfirm] = React.useState(false);
   const [openAdd, setOpenAdd] = React.useState(false);
-  const [openAddRole, setOpenAddRole] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(false);
   const [selectionExists, setSelectionExists] = React.useState(true);
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
@@ -81,9 +80,6 @@ export const Members = () => {
     roles: []
   });
 
-  const handleAddRoleOpen = () => {
-    if (selected.length > 0) setOpenAddRole(true);
-  }
   const handleDeleteOpen = () => {
     console.log(selected)
     if (selected.length > 0) setOpenConfirm(true);
@@ -117,24 +113,6 @@ export const Members = () => {
         roles: []
       })
       setDatabase(rows);
-    }
-  }
-
-  const handleAddRoleClose = (value: boolean, role: string) => {
-    let existingRole = false;
-    setOpenAddRole(false);
-    setSelectedValue(value);
-    if (value && selected.length > 0) {
-      rows.map(row => {
-        for (let i = 0; i < selected.length; i++) {
-          if (selected[i] === row.id) {
-            for (let i = 0; i < row.roles.length; i++) {
-              if (row.roles[i] === role) existingRole = true;
-            }
-            if (!existingRole) row.roles.push(role);
-          }
-        }
-      })
     }
   }
 
@@ -243,18 +221,6 @@ export const Members = () => {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Button 
-                      variant="contained" 
-                      size="medium" 
-                      color="primary" 
-                      style={{padding: '6px 10px'}} 
-                      disabled={selectionExists}
-                      onClick={handleAddRoleOpen}
-                    >
-                      <AddIcon style={{ color: green[500] }}/>Add Role
-                    </Button>
-                  </TableCell>
-                  <TableCell>
                     <IconButton 
                       component="span"
                       onClick={handleAddOpen}
@@ -320,7 +286,6 @@ export const Members = () => {
       </Grid>
       <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleDeleteClose} title='Confirm Delete Action'/>
       <AddUserDialog selectedValue={selectedValue} open={openAdd} onClose={handleAddClose} title='Add User'/>
-      <AddRoleDialog selectedValue={selectedValue} open={openAddRole} onClose={handleAddRoleClose} title='Add Role'/>
     </Grid>
   );
 };
