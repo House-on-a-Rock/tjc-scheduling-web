@@ -1,47 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // material ui
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
-import { green, red, amber } from '@material-ui/core/colors';
+import { green } from '@material-ui/core/colors';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
-import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 export interface SimpleDialogProps {
     title: string;
-    open: boolean;
-    selectedValue: boolean;
-    onClose: (value: boolean) => void;
+    isOpen: boolean;
+    handleClose: (value: boolean) => void;
 }
 
-export function ConfirmDialog(props: SimpleDialogProps) {
-    let { onClose, selectedValue, open, title } = props;
-  
-    const handleClose = () => {
-      onClose(selectedValue);
-    };
-  
-    const handleOptionClick = (value: boolean) => {
-      onClose(value);
-    };
+export function ConfirmationDialog({ handleClose, isOpen, title }: SimpleDialogProps) {
   
     return (
-      <Dialog onClose={handleClose} open={open}>
+      <Dialog onClose={() => handleClose(!open)} open={isOpen}>
         <DialogTitle id='confirm-dialog'>{title}</DialogTitle>
         <List>
-          <ListItem button onClick={() => handleOptionClick(true)} key="yes-button">
+          <ListItem button onClick={() => handleClose(true)} key="yes-button">
             <ListItemIcon style={{color: green[500] }}>
               <CheckIcon/>
             </ListItemIcon>
             <ListItemText primary="YES"/>
           </ListItem>
-          <ListItem button onClick={() => handleOptionClick(false)} key="no-button">
+          <ListItem button onClick={() => handleClose(false)} key="no-button">
             <ListItemIcon style={{color: '#ba000d' }}>
               <ClearIcon/>
             </ListItemIcon>

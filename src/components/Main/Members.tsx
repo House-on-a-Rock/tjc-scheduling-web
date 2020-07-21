@@ -7,7 +7,6 @@ import { Redirect } from 'react-router-dom';
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
@@ -20,9 +19,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
 import InputBase from '@material-ui/core/InputBase';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import { green, red, amber } from '@material-ui/core/colors';
@@ -31,9 +30,8 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import CSS from 'csstype';
 
 // other components
-import { ConfirmDialog } from '../shared/ConfirmDialogue';
-import { AddUserDialog } from '../shared/AddUserDialogue';
-import { AddRoleDialog } from '../shared/AddRoleDialogue';
+import { ConfirmationDialog } from '../shared/ConfirmationDialog';
+import { FormDialog } from '../shared/FormDialog';
 
 // actions
 import { onLoadMembers, onLoadUser } from '../../store/actions';
@@ -48,15 +46,16 @@ const styleHead: CSS.Properties = {
 export const Members = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const members = useSelector(({members}) => members.members)
-  const [selected, setSelected] = useState<number[]>([]);
-  const [searchfield, setSearchField] = useState<string>('');
-  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
-  const [openAdd, setOpenAdd] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<boolean>(false);
-  const [selectionExists, setSelectionExists] = useState<boolean>(true);
-  const isSelected = (id: number) => selected.indexOf(id) !== -1;
+
+  const members = useSelector(({members}) => members.members);
   const selectedUser = useSelector(({members}) => members.selectedUser);
+
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [searchfield, setSearchField] = useState<string>('');
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
+  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
+
   // const [selectUser, setSelectUser] = useState<MemberStateData>({
   //   id: -1,
   //   firstName: '',
@@ -72,71 +71,61 @@ export const Members = () => {
   }, [])
 
   const handleDeleteOpen = () => {
-    console.log(selected)
-    if (selected.length > 0) setOpenConfirm(true);
+    if (selectedRows.length > 0) setIsConfirmDialogOpen(true);
   };
   
   const handleAddOpen = () => {
-    setOpenAdd(true);
+    setIsAddDialogOpen(true);
   }
-  const handleDeleteClose = (value: boolean) => {
-    setOpenConfirm(false);
-    setSelectedValue(value);
-    if (value) {
-      selected.map(selectedRow => {
-        // rows = rows.filter(function(row) { return row.id !== selectedRow})
-      })
-      setSelected([]);
-      // setDatabase(rows);
-    }
-  };
+  
+  // const handleDeleteClose = (value: boolean) => {
+  //   setIsConfirmDialogOpen(false);
+  //   if (value) {
+  //     selectedRows.map(selectedRow => {
+  //       // rows = rows.filter(function(row) { return row.id !== selectedRow})
+  //     })
+  //     setSelectedRows([]);
+  //     // setDatabase(rows);
+  //   }
+  // };
 
-  const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
-    setOpenAdd(false);
-    setSelectedValue(value);
-    if (value && firstName && lastName && email && church) {
-      // rows.push({
-      //   id: uuid(),
-      //   firstName: firstName,
-      //   lastName: lastName,
-      //   email: email,
-      //   church: {name: church},
-      //   roles: []
-      // })
-      // setDatabase(rows);
-    }
-  }
+  // const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
+  //   setIsAddDialogOpen(false);
+  //   if (value && firstName && lastName && email && church) {
+  //     // rows.push({
+  //     //   id: uuid(),
+  //     //   firstName: firstName,
+  //     //   lastName: lastName,
+  //     //   email: email,
+  //     //   church: {name: church},
+  //     //   roles: []
+  //     // })
+  //     // setDatabase(rows);
+  //   }
+  // }
 
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
-    const selectedIndex = selected.indexOf(row.id);
+    const selectedIndex = selectedRows.indexOf(row.id);
     console.log(row)
-    let newSelected: number[] = [];
-    if (event.ctrlKey) {
-      if (selectedIndex === -1) {
-        newSelected = newSelected.concat(selected, row.id);
-      } else if (selectedIndex === 0) {
-        newSelected = newSelected.concat(selected.slice(1));
-      } else if (selectedIndex === selected.length -1) {
-        newSelected = newSelected.concat(selected.slice(0, -1));
-      } else if (selectedIndex > 0) {
-        newSelected = newSelected.concat(
-          selected.slice(0, selectedIndex),
-          selected.slice(selectedIndex + 1),
-        );
+    let newSelectedRows: number[] = [];
+    if (event.shiftKey) {
+      switch (selectedIndex) {
+        case -1:
+          newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
+        case 0:
+          newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
+        case selectedRows.length -1:
+          newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
+        default:
+          newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
       }
     } else {
-      newSelected = [row.id]
+      newSelectedRows = [row.id]
     }
     // setSelectUser(row);
-    console.log(selected)
     dispatch(onLoadUser(row));
-    setSelected(newSelected);
-    if (newSelected.length > 0) {
-      setSelectionExists(false);
-    } else {
-      setSelectionExists(true);
-    }
+    setSelectedRows(newSelectedRows);
   }
 
   const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -145,13 +134,8 @@ export const Members = () => {
   }
 
   const filteredUsers = members.filter(function(row: any) {
-    // const keys = Object.keys(row)
-    // return keys.map(key => {
-    //   return key !== "roles" ? row[key].toLowerCase().includes(searchfield.toLowerCase()) : false
-    // })
     for (var key in row) {
       if (key === 'roles' || key === 'id' || key === 'ChurchId') continue;
-      // console.log(key)
       if (key !== 'church') {
         if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
       } else {
@@ -283,8 +267,8 @@ export const Members = () => {
             </Table>
         </TableContainer>
       </Grid>
-      <ConfirmDialog selectedValue={selectedValue} open={openConfirm} onClose={handleDeleteClose} title='Confirm Delete Action'/>
-      <AddUserDialog selectedValue={selectedValue} open={openAdd} onClose={handleAddClose} title='Add User'/>
+      {/* <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
+      <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/> */}
     </Grid>
   );
 };
