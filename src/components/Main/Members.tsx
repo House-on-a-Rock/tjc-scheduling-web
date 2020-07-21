@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../shared/types/useSelector';
-import { v4 as uuid } from 'uuid';
+import { Redirect } from 'react-router-dom';
 
 // material UI
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -51,6 +51,7 @@ const styleHead: CSS.Properties = {
 }
 
 export const Members = () => {
+  const access_token = localStorage.getItem('access_token');
   const classes = useStyles();
   const dispatch = useDispatch();
   // const [database, setDatabase] = useState<UserType[]>(userData);
@@ -72,7 +73,7 @@ export const Members = () => {
   });
 
   useEffect(() => {
-    dispatch(onLoadMembers());
+    dispatch(onLoadMembers(access_token));
     console.log(members);
   }, [])
 
@@ -163,6 +164,9 @@ export const Members = () => {
     return false;
   })
 
+  if (!access_token){
+    return <Redirect to='/' />
+  }
   return (
     <Grid container spacing={3}>
       <Grid item xs={3}>

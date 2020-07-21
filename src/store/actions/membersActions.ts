@@ -28,10 +28,10 @@ export const deleteMembers = (payload: MemberStateData[]): MemberActionTypes => 
 });
 
 //action creators or THUNKS
-export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
+export const onLoadMembers = (token: string): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      const response = await getAllUsers();
+      const response = await getAllUsers(token);
       console.log(response.data);
       dispatch(loadMembers(response.data));
     } catch (error) {
