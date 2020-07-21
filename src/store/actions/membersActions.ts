@@ -3,12 +3,14 @@ import { ThunkAction } from 'redux-thunk';
 import { errorDataExtractor } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
 import { secretIp } from '../../../secrets/secretStuff';
-import { getAllUsers } from '../apis/users';
+import { getAllUsers, getUserTasks } from '../apis';
+
 import {
   MemberActionTypes,
   LOAD_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBERS,
+  LOAD_USER,
   MemberStateData,
 } from '../types';
 
@@ -27,6 +29,11 @@ export const deleteMembers = (payload: MemberStateData[]): MemberActionTypes => 
   payload: payload,
 });
 
+export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
+  type: LOAD_USER,
+  payload: payload,
+});
+
 //action creators or THUNKS
 export const onLoadMembers = (token: string): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
@@ -34,6 +41,31 @@ export const onLoadMembers = (token: string): ThunkAction<any, any, any, Action>
       const response = await getAllUsers(token);
       console.log(response.data);
       dispatch(loadMembers(response.data));
+    } catch (error) {
+      const errorData = errorDataExtractor(error);
+      dispatch(AuthStateActions.Error(errorData));
+    }
+  };
+};
+
+export const onLoadUser = (
+  token: string,
+  rowData: MemberStateData,
+): ThunkAction<any, any, any, Action> => {
+  return async (dispatch) => {
+    try {
+      const userId = rowData.id;
+      let updatedRowData = rowData;
+      let roleList: string[] = [];
+      const taskResponse = await getUserTasks(token, userId.toString());
+      console.log(taskResponse);
+      taskResponse.data.map((task: any) => {
+        roleList.push(task.role.name);
+      });
+      roleList = Array.from(new Set(roleList));
+      updatedRowData.roles = roleList;
+      console.log(roleList);
+      dispatch(loadUser(updatedRowData));
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));

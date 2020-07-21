@@ -36,15 +36,10 @@ import { AddUserDialog } from '../shared/AddUserDialogue';
 import { AddRoleDialog } from '../shared/AddRoleDialogue';
 
 // actions
-import { onLoadMembers } from '../../store/actions';
-
-// dummy data
-// import {userData} from './membersDatabase';
+import { onLoadMembers, onLoadUser } from '../../store/actions';
 
 // types
 import {MemberStateData} from '../../store/types';
-
-// var rows = userData;
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold'
@@ -54,7 +49,6 @@ export const Members = () => {
   const access_token = localStorage.getItem('access_token');
   const classes = useStyles();
   const dispatch = useDispatch();
-  // const [database, setDatabase] = useState<UserType[]>(userData);
   const members = useSelector(({members}) => members.members)
   const [selected, setSelected] = useState<number[]>([]);
   const [searchfield, setSearchField] = useState<string>('');
@@ -63,14 +57,15 @@ export const Members = () => {
   const [selectedValue, setSelectedValue] = useState<boolean>(false);
   const [selectionExists, setSelectionExists] = useState<boolean>(true);
   const isSelected = (id: number) => selected.indexOf(id) !== -1;
-  const [selectUser, setSelectUser] = useState<MemberStateData>({
-    id: -1,
-    firstName: '',
-    lastName: '',
-    email: '',
-    church: {name: ''},
-    roles: []
-  });
+  const selectedUser = useSelector(({members}) => members.selectedUser);
+  // const [selectUser, setSelectUser] = useState<MemberStateData>({
+  //   id: -1,
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   church: {name: ''},
+  //   roles: []
+  // });
 
   useEffect(() => {
     dispatch(onLoadMembers(access_token));
@@ -133,7 +128,8 @@ export const Members = () => {
     } else {
       newSelected = [row.id]
     }
-    setSelectUser(row);
+    // setSelectUser(row);
+    dispatch(onLoadUser(access_token, row));
     setSelected(newSelected);
     if (newSelected.length > 0) {
       setSelectionExists(false);
@@ -154,7 +150,7 @@ export const Members = () => {
     // })
     for (var key in row) {
       if (key === 'roles' || key === 'id' || key === 'ChurchId') continue;
-      console.log(key)
+      // console.log(key)
       if (key !== 'church') {
         if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
       } else {
@@ -176,16 +172,16 @@ export const Members = () => {
           </ListSubheader>}
         >
           <ListItem key="firstname" button>
-            <ListItemText primary={selectUser.firstName} secondary="firstname"/>
+            <ListItemText primary={selectedUser.firstName} secondary="firstname"/>
           </ListItem>
           <ListItem key="lastname" button>
-            <ListItemText primary={selectUser.lastName} secondary="lastname"/>
+            <ListItemText primary={selectedUser.lastName} secondary="lastname"/>
           </ListItem>
           <ListItem key="email" button>
-            <ListItemText primary={selectUser.email} secondary="email"/>
+            <ListItemText primary={selectedUser.email} secondary="email"/>
           </ListItem>
           <ListItem key="church" button>
-            <ListItemText primary={selectUser.church.name} secondary="church"/>
+            <ListItemText primary={selectedUser.church.name} secondary="church"/>
           </ListItem>
         </List>
         <Divider/>
@@ -195,13 +191,13 @@ export const Members = () => {
             Roles
           </ListSubheader>
           }>
-          {/* {selectUser.roles.map((role: string) => {
+          {selectedUser.roles.map((role: string) => {
             return (
               <ListItem key={role} button>
                 <ListItemText primary={role}/>
               </ListItem>
             )
-          })} */}
+          })}
         </List>
       </Grid>
       <Grid item xs={9}>

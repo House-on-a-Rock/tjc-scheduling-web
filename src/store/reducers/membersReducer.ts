@@ -3,11 +3,20 @@ import {
   LOAD_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBERS,
+  LOAD_USER,
   MembersState,
 } from '../types';
 
 const initialState: MembersState = {
   members: [],
+  selectedUser: {
+    id: -1,
+    firstName: '',
+    lastName: '',
+    email: '',
+    church: { name: '' },
+    roles: [],
+  },
 };
 
 export const membersReducer = (
@@ -29,6 +38,11 @@ export const membersReducer = (
       return {
         ...state,
         members: action.payload,
+      };
+    case LOAD_USER:
+      return {
+        ...state,
+        selectedUser: action.payload,
       };
     default:
       return state;

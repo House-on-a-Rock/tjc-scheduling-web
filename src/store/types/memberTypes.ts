@@ -2,6 +2,7 @@
 export const LOAD_MEMBERS = 'LOAD_MEMBERS';
 export const ADD_MEMBER = 'ADD_MEMBER';
 export const DELETE_MEMBERS = 'DELETE_MEMBERS';
+export const LOAD_USER = 'LOAD_USER';
 
 // action payloads
 export interface MemberStateData {
@@ -30,8 +31,18 @@ interface DeleteMemberAction {
   payload: MemberStateData[];
 }
 
-export type MemberActionTypes = LoadMembersAction | AddMemberAction | DeleteMemberAction;
+interface LoadUserDataAction {
+  type: typeof LOAD_USER;
+  payload: MemberStateData;
+}
+
+export type MemberActionTypes =
+  | LoadMembersAction
+  | AddMemberAction
+  | DeleteMemberAction
+  | LoadUserDataAction;
 
 export interface MembersState {
   members: MemberStateData[];
+  selectedUser: MemberStateData;
 }
