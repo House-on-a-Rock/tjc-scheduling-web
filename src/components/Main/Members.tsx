@@ -46,7 +46,6 @@ const styleHead: CSS.Properties = {
 }
 
 export const Members = () => {
-  const access_token = localStorage.getItem('access_token');
   const classes = useStyles();
   const dispatch = useDispatch();
   const members = useSelector(({members}) => members.members)
@@ -68,7 +67,7 @@ export const Members = () => {
   // });
 
   useEffect(() => {
-    dispatch(onLoadMembers(access_token));
+    dispatch(onLoadMembers());
     console.log(members);
   }, [])
 
@@ -129,7 +128,7 @@ export const Members = () => {
       newSelected = [row.id]
     }
     // setSelectUser(row);
-    dispatch(onLoadUser(access_token, row));
+    dispatch(onLoadUser(row));
     setSelected(newSelected);
     if (newSelected.length > 0) {
       setSelectionExists(false);
@@ -160,9 +159,6 @@ export const Members = () => {
     return false;
   })
 
-  if (!access_token){
-    return <Redirect to='/' />
-  }
   return (
     <Grid container spacing={3}>
       <Grid item xs={3}>

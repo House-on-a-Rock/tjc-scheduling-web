@@ -35,10 +35,10 @@ export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
 });
 
 //action creators or THUNKS
-export const onLoadMembers = (token: string): ThunkAction<any, any, any, Action> => {
+export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      const response = await getAllUsers(token);
+      const response = await getAllUsers();
       console.log(response.data);
       dispatch(loadMembers(response.data));
     } catch (error) {
@@ -49,7 +49,6 @@ export const onLoadMembers = (token: string): ThunkAction<any, any, any, Action>
 };
 
 export const onLoadUser = (
-  token: string,
   rowData: MemberStateData,
 ): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
@@ -57,7 +56,7 @@ export const onLoadUser = (
       const userId = rowData.id;
       let updatedRowData = rowData;
       let roleList: string[] = [];
-      const taskResponse = await getUserTasks(token, userId.toString());
+      const taskResponse = await getUserTasks(userId.toString());
       console.log(taskResponse);
       taskResponse.data.map((task: any) => {
         roleList.push(task.role.name);
