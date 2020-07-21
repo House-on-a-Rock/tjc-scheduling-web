@@ -110,6 +110,7 @@ export const Members = () => {
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
     const selectedIndex = selected.indexOf(row.id);
+    console.log(row)
     let newSelected: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
@@ -128,6 +129,7 @@ export const Members = () => {
       newSelected = [row.id]
     }
     // setSelectUser(row);
+    console.log(selected)
     dispatch(onLoadUser(row));
     setSelected(newSelected);
     if (newSelected.length > 0) {
