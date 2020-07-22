@@ -20,6 +20,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
+import Checkbox from '@material-ui/core/Checkbox';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Button from '@material-ui/core/Button';
@@ -56,15 +57,6 @@ export const Members = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
 
-  // const [selectUser, setSelectUser] = useState<MemberStateData>({
-  //   id: -1,
-  //   firstName: '',
-  //   lastName: '',
-  //   email: '',
-  //   church: {name: ''},
-  //   roles: []
-  // });
-
   useEffect(() => {
     dispatch(onLoadMembers());
     console.log(members);
@@ -77,7 +69,16 @@ export const Members = () => {
   const handleAddOpen = () => {
     setIsAddDialogOpen(true);
   }
-  
+
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelectedRows = members.map((member) => member.id);
+      setSelectedRows(newSelectedRows);
+      return;
+    }
+    setSelectedRows([]);
+  }
+
   // const handleDeleteClose = (value: boolean) => {
   //   setIsConfirmDialogOpen(false);
   //   if (value) {
@@ -235,15 +236,20 @@ export const Members = () => {
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
                 <TableRow >
-                    <TableCell style={styleHead}>First&nbsp;Name</TableCell>
-                    <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                    <TableCell style={styleHead} align="left">Email</TableCell>
-                    <TableCell style={styleHead} align="left">Church</TableCell>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      onChange={handleSelectAllClick}
+                    />
+                  </TableCell>
+                  <TableCell style={styleHead}>First&nbsp;Name</TableCell>
+                  <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
+                  <TableCell style={styleHead} align="left">Email</TableCell>
+                  <TableCell style={styleHead} align="left">Church</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {filteredUsers.map((row) => {
-                  const isitemSelected = isSelected(row.id);
+                  const isItemSelected = isSelected(row.id);
 
                   return (
                     <TableRow
@@ -251,9 +257,14 @@ export const Members = () => {
                       onClick={event => {
                         handleRowClick(event, row)
                       }}
-                      selected={isitemSelected} 
+                      selected={isItemSelected} 
                       key={row.id}
                     >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                        />
+                      </TableCell>
                       <TableCell component="th" variant="body" scope="row">
                           {row.firstName}
                       </TableCell>
