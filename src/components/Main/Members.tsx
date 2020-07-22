@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from '../../shared/types/useSelector';
-import { Redirect } from 'react-router-dom';
 
 // material UI
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -13,23 +12,18 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import SearchIcon from '@material-ui/icons/Search';
-import InputBase from '@material-ui/core/InputBase';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import { green, red, amber } from '@material-ui/core/colors';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
-import DeleteIcon from '@material-ui/icons/Delete';
 import CSS from 'csstype';
 
-// other components
+// shared components
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { FormDialog } from '../shared/FormDialog';
+
+// member page components
 import { MembersSidebar } from './Members/MembersSidebar';
 import { MembersHeader } from './Members/MembersHeader';
+import { MembersUsersTable } from './Members/MembersUsersTable';
 
 // actions
 import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../store/actions';
@@ -168,52 +162,13 @@ export const Members = () => {
           handleAddOpen={handleAddOpen}
           handleDeleteOpen={handleDeleteOpen}
         />
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedRows.length > 0}
-                      onChange={handleSelectAllClick}
-                    />
-                  </TableCell>
-                  <TableCell style={styleHead}>First&nbsp;Name</TableCell>
-                  <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                  <TableCell style={styleHead} align="left">Email</TableCell>
-                  <TableCell style={styleHead} align="left">Disabled</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredUsers.map((row) => {
-                  const isItemSelected = isSelected(row.id);
-
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => {
-                        handleRowClick(event, row)
-                      }}
-                      selected={isItemSelected} 
-                      key={row.id}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                        />
-                      </TableCell>
-                      <TableCell component="th" variant="body" scope="row">
-                          {row.firstName}
-                      </TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.disabled.toString()}</TableCell>
-                    </TableRow>
-                )})  
-                }
-              </TableBody>
-            </Table>
-        </TableContainer>
+        <MembersUsersTable 
+          selectedRows={selectedRows}
+          handleSelectAllClick={handleSelectAllClick}
+          filteredUsers={filteredUsers}
+          isSelected={isSelected}
+          handleRowClick={handleRowClick}
+        />
       </Grid>
       <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
       <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/>
