@@ -38,6 +38,9 @@ import { FormDialog } from '../shared/FormDialog';
 // actions
 import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../store/actions';
 
+// other stuffs
+import { validateEmail } from '../../store/actions/helper_functions';
+
 // types
 import {MemberStateData} from '../../store/types';
 
@@ -94,7 +97,7 @@ export const Members = () => {
 
   const handleAddClose = async (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
     setIsAddDialogOpen(false);
-    if (value && firstName && lastName && email && password) {
+    if (value && firstName && lastName && email && password && validateEmail(email)) {
       await dispatch(onAddMember(firstName, lastName, email, password));
       dispatch(onLoadMembers());
     }

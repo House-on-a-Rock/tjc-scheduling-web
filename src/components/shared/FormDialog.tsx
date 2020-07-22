@@ -31,9 +31,9 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  
   // validations needed
   // valid email provided
-  // add to corresponding church
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
