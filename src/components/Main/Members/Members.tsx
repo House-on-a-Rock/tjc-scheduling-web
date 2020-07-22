@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../shared/types/useSelector';
+import { useSelector } from '../../../shared/types/useSelector';
 
 // material UI
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -17,22 +17,22 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CSS from 'csstype';
 
 // shared components
-import { ConfirmationDialog } from '../shared/ConfirmationDialog';
-import { FormDialog } from '../shared/FormDialog';
+import { ConfirmationDialog } from '../../shared/ConfirmationDialog';
+import { FormDialog } from '../../shared/FormDialog';
 
 // member page components
-import { MembersSidebar } from './Members/MembersSidebar';
-import { MembersHeader } from './Members/MembersHeader';
-import { MembersUsersTable } from './Members/MembersUsersTable';
+import { MembersSidebar } from './MembersSidebar';
+import { MembersHeader } from './MembersHeader';
+import { MembersUsersTable } from './MembersUsersTable';
 
 // actions
-import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../store/actions';
+import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../../store/actions';
 
 // other stuffs
-import { validateEmail } from '../../store/actions/helper_functions';
+import { validateEmail } from '../../../store/actions/helper_functions';
 
 // types
-import {MemberStateData} from '../../store/types';
+import {MemberStateData} from '../../../store/types';
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold'
@@ -141,12 +141,12 @@ export const Members = () => {
 
   const filteredUsers = members.filter(function(row: any) {
     for (var key in row) {
-      console.log(key)
       if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church') continue;
       if (key === 'disabled') {
         if (row[key].toString().toLowerCase().includes(searchfield.toLowerCase())) return true;
+      } else {
+        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
       }
-      if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
     }
     return false;
   })
