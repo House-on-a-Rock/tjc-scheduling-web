@@ -5,11 +5,6 @@ import { Redirect } from 'react-router-dom';
 
 // material UI
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -21,7 +16,6 @@ import TableRow from '@material-ui/core/TableRow';
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
 import Checkbox from '@material-ui/core/Checkbox';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -34,6 +28,8 @@ import CSS from 'csstype';
 // other components
 import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { FormDialog } from '../shared/FormDialog';
+import { MembersSidebar } from './Members/MembersSidebar';
+import { MembersHeader } from './Members/MembersHeader';
 
 // actions
 import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../store/actions';
@@ -151,7 +147,8 @@ export const Members = () => {
 
   const filteredUsers = members.filter(function(row: any) {
     for (var key in row) {
-      if (key === 'roles' || key === 'id' || key === 'ChurchId') continue;
+      console.log(key)
+      if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'disabled') continue;
       if (key !== 'church') {
         if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
       } else {
@@ -163,99 +160,14 @@ export const Members = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={3}>
-        <List component={Paper} subheader={
-          <ListSubheader className={classes.sidebar} component={Paper}>
-            Info
-          </ListSubheader>}
-        >
-          <ListItem key="firstname" button>
-            <ListItemText primary={selectedUser.firstName} secondary="firstname"/>
-          </ListItem>
-          <ListItem key="lastname" button>
-            <ListItemText primary={selectedUser.lastName} secondary="lastname"/>
-          </ListItem>
-          <ListItem key="email" button>
-            <ListItemText primary={selectedUser.email} secondary="email"/>
-          </ListItem>
-          <ListItem key="church" button>
-            <ListItemText primary={selectedUser.church.name} secondary="church"/>
-          </ListItem>
-        </List>
-        <Divider/>
-        <List component={Paper}
-          subheader={
-          <ListSubheader className={classes.sidebar} component={Paper}>
-            Roles
-          </ListSubheader>
-          }>
-          {selectedUser.roles.map((role: string) => {
-            return (
-              <ListItem key={role} button>
-                <ListItemText primary={role}/>
-              </ListItem>
-            )
-          })}
-        </List>
-      </Grid>
+      <MembersSidebar selectedUser={selectedUser} />
       <Grid item xs={9}>
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead className={classes.header}>
-              <TableRow >
-                <TableCell>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon style={{color: '#FFFAF0'}}/>
-                    </div>
-                    <InputBase
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ 'aria-label': 'search' }}
-                      onChange={onSearchChange}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell 
-                  align="left"
-                  style={{ 
-                    fontSize: 25, 
-                    color: '#FFFAF0'
-                  }}
-                >
-                  {localChurch}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton 
-                    component="span"
-                    onClick={handleAddOpen}
-                  >
-                    <AddCircleIcon 
-                      style={{ 
-                        fontSize: 35, 
-                        color: '#FFFAF0'
-                      }}
-                    />
-                  </IconButton>
-                  <IconButton 
-                    component="span"
-                    onClick={handleDeleteOpen}
-                  >
-                    <DeleteIcon 
-                      style={{ 
-                        fontSize: 35, 
-                        color: '#FFFAF0'
-                      }}
-                    />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-          </Table>
-        </TableContainer>
+        <MembersHeader 
+          localChurch={localChurch}
+          onSearchChange={onSearchChange}
+          handleAddOpen={handleAddOpen}
+          handleDeleteOpen={handleDeleteOpen}
+        />
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
