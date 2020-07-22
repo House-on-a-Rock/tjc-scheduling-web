@@ -28,6 +28,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { green, red, amber } from '@material-ui/core/colors';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
 import CSS from 'csstype';
 
 // other components
@@ -45,12 +46,16 @@ const styleHead: CSS.Properties = {
 }
 
 export const Members = () => {
+  // hooks
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  // reducer state
   const members = useSelector(({members}) => members.members);
   const selectedUser = useSelector(({members}) => members.selectedUser);
+  const localChurch = useSelector(({members}) => members.localChurch);
 
+  // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [searchfield, setSearchField] = useState<string>('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
@@ -188,46 +193,55 @@ export const Members = () => {
           <Table className={classes.table} aria-label="simple table">
             <TableHead className={classes.header}>
               <TableRow >
-                  <TableCell>
-                    <div className={classes.search}>
-                      <div className={classes.searchIcon}>
-                        <SearchIcon style={{color: '#FFFAF0'}}/>
-                      </div>
-                      <InputBase
-                        placeholder="Search…"
-                        classes={{
-                          root: classes.inputRoot,
-                          input: classes.inputInput,
-                        }}
-                        inputProps={{ 'aria-label': 'search' }}
-                        onChange={onSearchChange}
-                      />
+                <TableCell>
+                  <div className={classes.search}>
+                    <div className={classes.searchIcon}>
+                      <SearchIcon style={{color: '#FFFAF0'}}/>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <IconButton 
-                      component="span"
-                      onClick={handleAddOpen}
-                    >
-                      <AddCircleIcon 
-                        style={{ 
-                          fontSize: 35, 
-                          color: '#FFFAF0'
-                        }}
-                      />
-                    </IconButton>
-                    <IconButton 
-                      component="span"
-                      onClick={handleDeleteOpen}
-                    >
-                      <RemoveCircleIcon 
-                        style={{ 
-                          fontSize: 35, 
-                          color: '#FFFAF0'
-                        }}
-                      />
-                    </IconButton>
-                  </TableCell>
+                    <InputBase
+                      placeholder="Search…"
+                      classes={{
+                        root: classes.inputRoot,
+                        input: classes.inputInput,
+                      }}
+                      inputProps={{ 'aria-label': 'search' }}
+                      onChange={onSearchChange}
+                    />
+                  </div>
+                </TableCell>
+                <TableCell 
+                  align="left"
+                  style={{ 
+                    fontSize: 25, 
+                    color: '#FFFAF0'
+                  }}
+                >
+                  {localChurch}
+                </TableCell>
+                <TableCell align="right">
+                  <IconButton 
+                    component="span"
+                    onClick={handleAddOpen}
+                  >
+                    <AddCircleIcon 
+                      style={{ 
+                        fontSize: 35, 
+                        color: '#FFFAF0'
+                      }}
+                    />
+                  </IconButton>
+                  <IconButton 
+                    component="span"
+                    onClick={handleDeleteOpen}
+                  >
+                    <DeleteIcon 
+                      style={{ 
+                        fontSize: 35, 
+                        color: '#FFFAF0'
+                      }}
+                    />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             </TableHead>
           </Table>
@@ -244,7 +258,7 @@ export const Members = () => {
                   <TableCell style={styleHead}>First&nbsp;Name</TableCell>
                   <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
                   <TableCell style={styleHead} align="left">Email</TableCell>
-                  <TableCell style={styleHead} align="left">Church</TableCell>
+                  <TableCell style={styleHead} align="left">Disabled</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -270,7 +284,7 @@ export const Members = () => {
                       </TableCell>
                       <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
                       <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.church.name}</TableCell>
+                      <TableCell component="th" variant="body" scope="row" align="left">{row.disabled.toString()}</TableCell>
                     </TableRow>
                 )})  
                 }

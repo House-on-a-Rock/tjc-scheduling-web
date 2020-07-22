@@ -27,3 +27,12 @@ export function getOneUser(userId: string): Promise<AxiosResponse> {
     },
   });
 }
+
+export function deleteUser(userId: string): Promise<AxiosResponse> {
+  const accessToken = localStorage.getItem('access_token');
+  return axios.delete(`${secretIp}/api/users/${userId}`, {
+    headers: {
+      authorization: accessToken,
+    },
+  });
+}

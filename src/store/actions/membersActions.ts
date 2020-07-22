@@ -15,9 +15,13 @@ import {
   MemberStateData,
 } from '../types';
 
-export const loadMembers = (payload: MemberStateData[]): MemberActionTypes => ({
+export const loadMembers = (
+  payload: MemberStateData[],
+  church: string,
+): MemberActionTypes => ({
   type: LOAD_MEMBERS,
   payload: payload,
+  church: church,
 });
 
 export const addMember = (payload: MemberStateData[]): MemberActionTypes => ({
@@ -59,7 +63,7 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
         roleList = Array.from(new Set(roleList));
         user.roles = roleList;
       });
-      dispatch(loadMembers(updatedMemberList));
+      dispatch(loadMembers(updatedMemberList, loggedInUserResponse.data.church.name));
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));

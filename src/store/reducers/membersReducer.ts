@@ -15,8 +15,10 @@ const initialState: MembersState = {
     lastName: '',
     email: '',
     church: { name: '' },
+    disabled: false,
     roles: [],
   },
+  localChurch: '',
 };
 
 export const membersReducer = (
@@ -28,6 +30,7 @@ export const membersReducer = (
       return {
         ...state,
         members: action.payload,
+        localChurch: `${action.church} Church`,
       };
     case ADD_MEMBER:
       return {

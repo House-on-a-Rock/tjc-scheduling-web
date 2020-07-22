@@ -12,6 +12,7 @@ export interface MemberStateData {
   email: string;
   ChurchId?: number;
   church: { name: string };
+  disabled: boolean;
   roles: string[];
 }
 
@@ -19,6 +20,7 @@ export interface MemberStateData {
 interface LoadMembersAction {
   type: typeof LOAD_MEMBERS;
   payload: MemberStateData[];
+  church: string;
 }
 
 interface AddMemberAction {
@@ -45,6 +47,7 @@ export type MemberActionTypes =
 export interface MembersState {
   members: MemberStateData[];
   selectedUser: MemberStateData;
+  localChurch: string;
 }
 
 export interface JWTDataType {
