@@ -45,8 +45,21 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       const response = await getAllLocalChurchUsers(
         loggedInUserResponse.data.ChurchId.toString(),
       );
-      console.log(response.data);
-      dispatch(loadMembers(response.data));
+
+      // update users with their roles
+      let updatedMemberList = response.data;
+      updatedMemberList.map(async (user: MemberStateData) => {
+        const userId = user.id;
+        let roleList: string[] = [];
+        const taskResponse = await getUserTasks(userId.toString());
+        console.log(taskResponse);
+        taskResponse.data.map((task: any) => {
+          roleList.push(task.role.name);
+        });
+        roleList = Array.from(new Set(roleList));
+        user.roles = roleList;
+      });
+      dispatch(loadMembers(updatedMemberList));
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));
@@ -59,18 +72,7 @@ export const onLoadUser = (
 ): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      const userId = rowData.id;
-      let updatedRowData = rowData;
-      let roleList: string[] = [];
-      const taskResponse = await getUserTasks(userId.toString());
-      console.log(taskResponse);
-      taskResponse.data.map((task: any) => {
-        roleList.push(task.role.name);
-      });
-      roleList = Array.from(new Set(roleList));
-      updatedRowData.roles = roleList;
-      console.log(roleList);
-      dispatch(loadUser(updatedRowData));
+      dispatch(loadUser(rowData));
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));
