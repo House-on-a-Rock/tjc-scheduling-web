@@ -40,7 +40,6 @@ export const membersReducer = (
     case DELETE_MEMBERS:
       return {
         ...state,
-        members: action.payload,
       };
     case LOAD_USER:
       return {

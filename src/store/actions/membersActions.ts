@@ -1,10 +1,15 @@
 import { AnyAction, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import jwtDecode from 'jwt-decode';
 import { errorDataExtractor } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
 import { secretIp } from '../../../secrets/secretStuff';
-import { getOneUser, getAllUsers, getUserTasks, getAllLocalChurchUsers } from '../apis';
+import {
+  getOneUser,
+  getAllUsers,
+  getUserTasks,
+  getAllLocalChurchUsers,
+  deleteUser,
+} from '../apis';
 import { extractId } from './helper_functions';
 import {
   MemberActionTypes,
@@ -29,9 +34,8 @@ export const addMember = (payload: MemberStateData[]): MemberActionTypes => ({
   payload: payload,
 });
 
-export const deleteMembers = (payload: MemberStateData[]): MemberActionTypes => ({
+export const deleteMembers = (): MemberActionTypes => ({
   type: DELETE_MEMBERS,
-  payload: payload,
 });
 
 export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
@@ -77,6 +81,22 @@ export const onLoadUser = (
   return async (dispatch) => {
     try {
       dispatch(loadUser(rowData));
+    } catch (error) {
+      const errorData = errorDataExtractor(error);
+      dispatch(AuthStateActions.Error(errorData));
+    }
+  };
+};
+
+export const onDeleteMembers = (
+  selectedMembers: number[],
+): ThunkAction<any, any, any, Action> => {
+  return async (dispatch) => {
+    try {
+      selectedMembers.map(async (member) => {
+        await deleteUser(member.toString());
+      });
+      dispatch(deleteMembers());
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));

@@ -30,7 +30,6 @@ interface AddMemberAction {
 
 interface DeleteMemberAction {
   type: typeof DELETE_MEMBERS;
-  payload: MemberStateData[];
 }
 
 interface LoadUserDataAction {

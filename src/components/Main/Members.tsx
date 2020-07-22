@@ -36,7 +36,7 @@ import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { FormDialog } from '../shared/FormDialog';
 
 // actions
-import { onLoadMembers, onLoadUser } from '../../store/actions';
+import { onLoadMembers, onLoadUser, onDeleteMembers } from '../../store/actions';
 
 // types
 import {MemberStateData} from '../../store/types';
@@ -64,7 +64,6 @@ export const Members = () => {
 
   useEffect(() => {
     dispatch(onLoadMembers());
-    console.log(members);
   }, [])
 
   const handleDeleteOpen = () => {
@@ -84,16 +83,14 @@ export const Members = () => {
     setSelectedRows([]);
   }
 
-  // const handleDeleteClose = (value: boolean) => {
-  //   setIsConfirmDialogOpen(false);
-  //   if (value) {
-  //     selectedRows.map(selectedRow => {
-  //       // rows = rows.filter(function(row) { return row.id !== selectedRow})
-  //     })
-  //     setSelectedRows([]);
-  //     // setDatabase(rows);
-  //   }
-  // };
+  const handleDeleteClose = (value: boolean) => {
+    setIsConfirmDialogOpen(false);
+    if (value) {
+      dispatch(onDeleteMembers(selectedRows))
+      setSelectedRows([]);
+      dispatch(onLoadMembers());
+    }
+  };
 
   // const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
   //   setIsAddDialogOpen(false);
@@ -142,22 +139,11 @@ export const Members = () => {
       //     );
       // }
     } else {
-      // switch (selectedIndex) {
-      //   case -1:
-      //     newSelectedRows = [row.id]
-      //   case 0:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
-      //   case selectedRows.length -1:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
-      //   default:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
-      // }
       if (selectedIndex === -1)
         newSelectedRows = [row.id]
       else
         newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
     }
-    // setSelectUser(row);
     dispatch(onLoadUser(row));
     setSelectedRows(newSelectedRows);
   }
@@ -321,8 +307,8 @@ export const Members = () => {
             </Table>
         </TableContainer>
       </Grid>
-      {/* <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
-      <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/> */}
+      <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
+      {/* <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/> */}
     </Grid>
   );
 };
