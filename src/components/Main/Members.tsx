@@ -113,21 +113,49 @@ export const Members = () => {
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
     const selectedIndex = selectedRows.indexOf(row.id);
-    console.log(row)
+    console.log(selectedRows, selectedIndex, selectedRows.slice(1));
     let newSelectedRows: number[] = [];
-    if (event.shiftKey) {
-      switch (selectedIndex) {
-        case -1:
-          newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
-        case 0:
-          newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
-        case selectedRows.length -1:
-          newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
-        default:
-          newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
+    if (event.ctrlKey) {
+      if (selectedIndex === -1) {
+        newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
+      } else if (selectedIndex === 0) {
+        newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
+      } else if (selectedIndex === selectedRows.length -1) {
+        newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
+      } else if (selectedIndex > 0) {
+        newSelectedRows = newSelectedRows.concat(
+          selectedRows.slice(0, selectedIndex), 
+          selectedRows.slice(selectedIndex + 1),
+        );
       }
+      // switch (true) {
+      //   case selectedIndex === -1:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
+      //   case selectedIndex === 0:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
+      //   case selectedIndex === selectedRows.length -1:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
+      //   case selectedIndex > 0:
+      //     newSelectedRows = newSelectedRows.concat(
+      //       selectedRows.slice(0, selectedIndex), 
+      //       selectedRows.slice(selectedIndex + 1),
+      //     );
+      // }
     } else {
-      newSelectedRows = [row.id]
+      // switch (selectedIndex) {
+      //   case -1:
+      //     newSelectedRows = [row.id]
+      //   case 0:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
+      //   case selectedRows.length -1:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
+      //   default:
+      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
+      // }
+      if (selectedIndex === -1)
+        newSelectedRows = [row.id]
+      else
+        newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
     }
     // setSelectUser(row);
     dispatch(onLoadUser(row));
@@ -252,6 +280,7 @@ export const Members = () => {
                 <TableRow >
                   <TableCell padding="checkbox">
                     <Checkbox
+                      checked={selectedRows.length > 0}
                       onChange={handleSelectAllClick}
                     />
                   </TableCell>
