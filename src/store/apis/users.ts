@@ -9,3 +9,21 @@ export function getAllUsers(): Promise<AxiosResponse> {
     },
   });
 }
+
+export function getAllLocalChurchUsers(churchId: string): Promise<AxiosResponse> {
+  const accessToken = localStorage.getItem('access_token');
+  return axios.get(`${secretIp}/api/users?churchId=${churchId}`, {
+    headers: {
+      authorization: accessToken,
+    },
+  });
+}
+
+export function getOneUser(userId: string): Promise<AxiosResponse> {
+  const accessToken = localStorage.getItem('access_token');
+  return axios.get(`${secretIp}/api/users/${userId}`, {
+    headers: {
+      authorization: accessToken,
+    },
+  });
+}

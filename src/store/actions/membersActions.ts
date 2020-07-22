@@ -1,10 +1,11 @@
 import { AnyAction, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import jwtDecode from 'jwt-decode';
 import { errorDataExtractor } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
 import { secretIp } from '../../../secrets/secretStuff';
-import { getAllUsers, getUserTasks } from '../apis';
-
+import { getOneUser, getAllUsers, getUserTasks, getAllLocalChurchUsers } from '../apis';
+import { extractId } from './helper_functions';
 import {
   MemberActionTypes,
   LOAD_MEMBERS,
@@ -38,7 +39,12 @@ export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
 export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      const response = await getAllUsers();
+      const accessToken = localStorage.getItem('access_token');
+      const userId = extractId(accessToken);
+      const loggedInUserResponse = await getOneUser(userId.toString());
+      const response = await getAllLocalChurchUsers(
+        loggedInUserResponse.data.ChurchId.toString(),
+      );
       console.log(response.data);
       dispatch(loadMembers(response.data));
     } catch (error) {

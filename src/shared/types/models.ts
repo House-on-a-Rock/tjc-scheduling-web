@@ -1,22 +1,22 @@
 export interface HttpError {
-    status: number;
-    message: string;
+  status: number;
+  message: string;
 }
 
 export interface HttpErrorProps {
-    status: number;
-    message: string;
+  status: number;
+  message: string;
 }
 
 export interface PasswordState {
-    value: string;
-    visible: boolean;
-    valid: boolean;
-    message: string;
+  value: string;
+  visible: boolean;
+  valid: boolean;
+  message: string;
 }
 
 export interface EmailState {
-    value: string;
-    valid: boolean;
-    message: string;
+  value: string;
+  valid: boolean;
+  message: string;
 }

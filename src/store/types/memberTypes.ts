@@ -46,3 +46,10 @@ export interface MembersState {
   members: MemberStateData[];
   selectedUser: MemberStateData;
 }
+
+export interface JWTDataType {
+  iss: string;
+  sub: string;
+  exp: string;
+  type: string;
+}
