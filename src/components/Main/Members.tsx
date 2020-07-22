@@ -59,11 +59,11 @@ export const Members = () => {
     dispatch(onLoadMembers());
   }, [])
 
-  const handleDeleteOpen = () => {
+  const onOpenDeleteMemberDialog = () => {
     if (selectedRows.length > 0) setIsConfirmDialogOpen(true);
   };
   
-  const handleAddOpen = () => {
+  const onOpenAddMemberDialog = () => {
     setIsAddDialogOpen(true);
   }
 
@@ -76,7 +76,7 @@ export const Members = () => {
     setSelectedRows([]);
   }
 
-  const handleDeleteClose = async (value: boolean) => {
+  const onCloseDeleteMemberDialog = async (value: boolean) => {
     setIsConfirmDialogOpen(false);
     if (value) {
       await dispatch(onDeleteMembers(selectedRows))
@@ -85,7 +85,7 @@ export const Members = () => {
     }
   };
 
-  const handleAddClose = async (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
+  const onCloseAddMemberDialog = async (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
     setIsAddDialogOpen(false);
     if (value && firstName && lastName && email && password && validateEmail(email)) {
       await dispatch(onAddMember(firstName, lastName, email, password));
@@ -142,12 +142,11 @@ export const Members = () => {
   const filteredUsers = members.filter(function(row: any) {
     for (var key in row) {
       console.log(key)
-      if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'disabled') continue;
-      if (key !== 'church') {
-        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
-      } else {
-        if (row[key].name.toLowerCase().includes(searchfield.toLowerCase())) return true;
+      if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church') continue;
+      if (key === 'disabled') {
+        if (row[key].toString().toLowerCase().includes(searchfield.toLowerCase())) return true;
       }
+      if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
     }
     return false;
   })
@@ -159,8 +158,8 @@ export const Members = () => {
         <MembersHeader 
           localChurch={localChurch}
           onSearchChange={onSearchChange}
-          handleAddOpen={handleAddOpen}
-          handleDeleteOpen={handleDeleteOpen}
+          handleAddOpen={onOpenAddMemberDialog}
+          handleDeleteOpen={onOpenDeleteMemberDialog}
         />
         <MembersUsersTable 
           selectedRows={selectedRows}
@@ -170,8 +169,8 @@ export const Members = () => {
           handleRowClick={handleRowClick}
         />
       </Grid>
-      <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
-      <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/>
+      <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={onCloseDeleteMemberDialog} title='Confirm Delete Action'/>
+      <FormDialog isOpen={isAddDialogOpen} handleClose={onCloseAddMemberDialog} title='Add User'/>
     </Grid>
   );
 };
