@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { secretIp } from '../../../secrets/secretStuff';
-import { extractId } from '../actions/helper_functions';
+import { extractUserId } from '../actions/helper_functions';
 
 export function getAllUsers(): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
@@ -31,11 +31,36 @@ export function getOneUser(userId: string): Promise<AxiosResponse> {
 
 export function deleteUser(userId: string): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
-  const loggedInUser = extractId(accessToken);
+  const loggedInUser = extractUserId(accessToken);
   if (loggedInUser.toString() !== userId)
     return axios.delete(`${secretIp}/api/users/${userId}`, {
       headers: {
         authorization: accessToken,
       },
     });
+}
+
+export function addUser(
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string,
+  churchId: string,
+): Promise<AxiosResponse> {
+  const accessToken = localStorage.getItem('access_token');
+  return axios.post(
+    `${secretIp}/api/users`,
+    {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+      churchId: churchId,
+    },
+    {
+      headers: {
+        authorization: accessToken,
+      },
+    },
+  );
 }

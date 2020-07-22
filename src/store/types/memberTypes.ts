@@ -25,7 +25,6 @@ interface LoadMembersAction {
 
 interface AddMemberAction {
   type: typeof ADD_MEMBER;
-  payload: MemberStateData[];
 }
 
 interface DeleteMemberAction {

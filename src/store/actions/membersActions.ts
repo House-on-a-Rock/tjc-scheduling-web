@@ -9,8 +9,9 @@ import {
   getUserTasks,
   getAllLocalChurchUsers,
   deleteUser,
+  addUser,
 } from '../apis';
-import { extractId } from './helper_functions';
+import { extractUserId } from './helper_functions';
 import {
   MemberActionTypes,
   LOAD_MEMBERS,
@@ -29,9 +30,8 @@ export const loadMembers = (
   church: church,
 });
 
-export const addMember = (payload: MemberStateData[]): MemberActionTypes => ({
+export const addMember = (): MemberActionTypes => ({
   type: ADD_MEMBER,
-  payload: payload,
 });
 
 export const deleteMembers = (): MemberActionTypes => ({
@@ -47,8 +47,9 @@ export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
 export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
+      console.log('loading members');
       const accessToken = localStorage.getItem('access_token');
-      const userId = extractId(accessToken);
+      const userId = extractUserId(accessToken);
       const loggedInUserResponse = await getOneUser(userId.toString());
       const response = await getAllLocalChurchUsers(
         loggedInUserResponse.data.ChurchId.toString(),
@@ -97,6 +98,27 @@ export const onDeleteMembers = (
         await deleteUser(member.toString());
       });
       dispatch(deleteMembers());
+    } catch (error) {
+      const errorData = errorDataExtractor(error);
+      dispatch(AuthStateActions.Error(errorData));
+    }
+  };
+};
+
+export const onAddMember = (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+): ThunkAction<any, any, any, Action> => {
+  return async (dispatch) => {
+    try {
+      const accessToken = localStorage.getItem('access_token');
+      const userId = extractUserId(accessToken);
+      const loggedInUserResponse = await getOneUser(userId.toString());
+      const churchId = loggedInUserResponse.data.ChurchId;
+      await addUser(email, firstName, lastName, password, churchId.toString());
+      dispatch(addMember());
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));

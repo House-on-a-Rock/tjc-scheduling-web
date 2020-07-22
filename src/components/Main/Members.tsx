@@ -36,7 +36,7 @@ import { ConfirmationDialog } from '../shared/ConfirmationDialog';
 import { FormDialog } from '../shared/FormDialog';
 
 // actions
-import { onLoadMembers, onLoadUser, onDeleteMembers } from '../../store/actions';
+import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../store/actions';
 
 // types
 import {MemberStateData} from '../../store/types';
@@ -83,29 +83,22 @@ export const Members = () => {
     setSelectedRows([]);
   }
 
-  const handleDeleteClose = (value: boolean) => {
+  const handleDeleteClose = async (value: boolean) => {
     setIsConfirmDialogOpen(false);
     if (value) {
-      dispatch(onDeleteMembers(selectedRows))
+      await dispatch(onDeleteMembers(selectedRows))
       setSelectedRows([]);
       dispatch(onLoadMembers());
     }
   };
 
-  // const handleAddClose = (value: boolean, firstName: string, lastName: string, email: string, church: string) => {
-  //   setIsAddDialogOpen(false);
-  //   if (value && firstName && lastName && email && church) {
-  //     // rows.push({
-  //     //   id: uuid(),
-  //     //   firstName: firstName,
-  //     //   lastName: lastName,
-  //     //   email: email,
-  //     //   church: {name: church},
-  //     //   roles: []
-  //     // })
-  //     // setDatabase(rows);
-  //   }
-  // }
+  const handleAddClose = async (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
+    setIsAddDialogOpen(false);
+    if (value && firstName && lastName && email && password) {
+      await dispatch(onAddMember(firstName, lastName, email, password));
+      dispatch(onLoadMembers());
+    }
+  }
 
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
@@ -308,7 +301,7 @@ export const Members = () => {
         </TableContainer>
       </Grid>
       <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={handleDeleteClose} title='Confirm Delete Action'/>
-      {/* <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/> */}
+      <FormDialog isOpen={isAddDialogOpen} handleClose={handleAddClose} title='Add User'/>
     </Grid>
   );
 };

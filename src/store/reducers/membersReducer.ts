@@ -35,7 +35,6 @@ export const membersReducer = (
     case ADD_MEMBER:
       return {
         ...state,
-        members: action.payload,
       };
     case DELETE_MEMBERS:
       return {
