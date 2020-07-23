@@ -40,7 +40,6 @@ const styleHead: CSS.Properties = {
 
 export const Members = () => {
   // hooks
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   // reducer state
@@ -79,17 +78,15 @@ export const Members = () => {
   const onCloseDeleteMemberDialog = async (value: boolean) => {
     setIsConfirmDialogOpen(false);
     if (value) {
-      await dispatch(onDeleteMembers(selectedRows))
+      dispatch(onDeleteMembers(selectedRows))
       setSelectedRows([]);
-      dispatch(onLoadMembers());
     }
   };
 
-  const onCloseAddMemberDialog = async (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
+  const onCloseAddMemberDialog = (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
     setIsAddDialogOpen(false);
     if (value && firstName && lastName && email && password && validateEmail(email)) {
-      await dispatch(onAddMember(firstName, lastName, email, password));
-      dispatch(onLoadMembers());
+      dispatch(onAddMember(firstName, lastName, email, password));
     }
   }
 
@@ -111,19 +108,6 @@ export const Members = () => {
           selectedRows.slice(selectedIndex + 1),
         );
       }
-      // switch (true) {
-      //   case selectedIndex === -1:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
-      //   case selectedIndex === 0:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
-      //   case selectedIndex === selectedRows.length -1:
-      //     newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
-      //   case selectedIndex > 0:
-      //     newSelectedRows = newSelectedRows.concat(
-      //       selectedRows.slice(0, selectedIndex), 
-      //       selectedRows.slice(selectedIndex + 1),
-      //     );
-      // }
     } else {
       if (selectedIndex === -1)
         newSelectedRows = [row.id]
@@ -174,66 +158,3 @@ export const Members = () => {
     </Grid>
   );
 };
-
-const useStyles = makeStyles((theme: Theme) => 
-  createStyles({
-    header: {
-      backgroundColor: theme.palette.primary.light
-    },
-    sidebar: {
-      backgroundColor: theme.palette.primary.light,
-      color: theme.palette.primary.contrastText
-    },
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
-      marginRight: theme.spacing(2),
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '200px',
-      },
-    },
-    searchIcon: {
-      padding: theme.spacing(0, 2),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '20ch',
-      },
-      color: '#FFFAF0'
-    },
-    table: {
-      minWidth: 650,
-    },
-    modal: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    paper: {
-      backgroundColor: theme.palette.background.paper,
-      border: '2px solid #000',
-      boxShadow: theme.shadows[5],
-      padding: theme.spacing(2, 4, 3),
-    },
-  })
-)

@@ -30,12 +30,14 @@ export const loadMembers = (
   church: church,
 });
 
-export const addMember = (): MemberActionTypes => ({
+export const addMember = (payload: MemberStateData): MemberActionTypes => ({
   type: ADD_MEMBER,
+  payload: payload,
 });
 
-export const deleteMembers = (): MemberActionTypes => ({
+export const deleteMembers = (payload: number): MemberActionTypes => ({
   type: DELETE_MEMBERS,
+  payload: payload,
 });
 
 export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
@@ -95,9 +97,9 @@ export const onDeleteMembers = (
   return async (dispatch) => {
     try {
       selectedMembers.map(async (member) => {
-        await deleteUser(member.toString());
+        const response = await deleteUser(member.toString());
+        dispatch(deleteMembers(response.data.id));
       });
-      dispatch(deleteMembers());
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));
@@ -117,8 +119,16 @@ export const onAddMember = (
       const userId = extractUserId(accessToken);
       const loggedInUserResponse = await getOneUser(userId.toString());
       const churchId = loggedInUserResponse.data.ChurchId;
-      await addUser(email, firstName, lastName, password, churchId.toString());
-      dispatch(addMember());
+      const response = await addUser(
+        email,
+        firstName,
+        lastName,
+        password,
+        churchId.toString(),
+      );
+      const newUserData = response.data;
+      newUserData.roles = [];
+      dispatch(addMember(newUserData));
     } catch (error) {
       const errorData = errorDataExtractor(error);
       dispatch(AuthStateActions.Error(errorData));

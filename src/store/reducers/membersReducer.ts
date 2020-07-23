@@ -1,5 +1,6 @@
 import {
   MemberActionTypes,
+  MemberStateData,
   LOAD_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBERS,
@@ -35,10 +36,15 @@ export const membersReducer = (
     case ADD_MEMBER:
       return {
         ...state,
+        members: [...state.members, action.payload],
       };
     case DELETE_MEMBERS:
+      let newMemberList = [...state.members];
+      newMemberList = newMemberList.filter((member) => member.id !== action.payload);
+      console.log(action.payload);
       return {
         ...state,
+        members: newMemberList,
       };
     case LOAD_USER:
       return {

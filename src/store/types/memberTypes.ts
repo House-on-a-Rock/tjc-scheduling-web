@@ -25,10 +25,12 @@ interface LoadMembersAction {
 
 interface AddMemberAction {
   type: typeof ADD_MEMBER;
+  payload: MemberStateData;
 }
 
 interface DeleteMemberAction {
   type: typeof DELETE_MEMBERS;
+  payload: number;
 }
 
 interface LoadUserDataAction {
