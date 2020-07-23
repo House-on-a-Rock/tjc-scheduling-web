@@ -33,6 +33,16 @@ export const Members = () => {
   // hooks
   const dispatch = useDispatch();
 
+  // initial selected state
+  const initialSelectedState: MemberStateData = {
+    id: -1,
+    firstName: '',
+    lastName: '',
+    email: '',
+    church: { name: ''},
+    disabled: false,
+    roles: [],
+  }
   // reducer state
   const members = useSelector(({members}) => members.members);
   const selectedUser = useSelector(({members}) => members.selectedUser);
@@ -47,6 +57,7 @@ export const Members = () => {
 
   useEffect(() => {
     dispatch(onLoadMembers());
+    dispatch(onLoadUser(initialSelectedState));
   }, [])
 
   const onOpenDeleteMemberDialog = () => {
