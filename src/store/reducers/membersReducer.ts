@@ -41,7 +41,6 @@ export const membersReducer = (
     case DELETE_MEMBERS:
       let newMemberList = [...state.members];
       newMemberList = newMemberList.filter((member) => member.id !== action.payload);
-      console.log(action.payload);
       return {
         ...state,
         members: newMemberList,
