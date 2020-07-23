@@ -24,10 +24,9 @@ interface TeamCardProps {
   role: string;
   members: MembersData[];
   draggedItem: DraggedItem;
-  mode: string;
 }
 
-export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) => {
+export const TeamCard = ({ role, members, draggedItem }: TeamCardProps) => {
   const classes = useStyles();
   const canDrop: () => boolean = () =>
     draggedItem.source === 'USERBANK'
@@ -48,22 +47,12 @@ export const TeamCard = ({ role, members, draggedItem, mode }: TeamCardProps) =>
       </CardContent>
       <Divider orientation="vertical" flexItem />
       <CardContent className={classes.list} style={{ overflow: 'auto' }}>
-        {mode === 'edit' ? (
-          <DroppableMembers
-            role={role}
-            canDrop={canDrop}
-            members={members}
-            draggedItem={draggedItem}
-          />
-        ) : (
-          <List dense className={classes.list} key={role}>
-            {members.map((member: MembersData, index: number) => (
-              <ListItem key={`${role}-${index}`} style={{ margin: '1px' }}>
-                <ListItemText id={member.id} primary={member.name} />
-              </ListItem>
-            ))}
-          </List>
-        )}
+        <DroppableMembers
+          role={role}
+          canDrop={canDrop}
+          members={members}
+          draggedItem={draggedItem}
+        />
       </CardContent>
     </Card>
   );

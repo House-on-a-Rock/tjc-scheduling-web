@@ -14,7 +14,6 @@ export const Teams = () => {
   TEAMS.map((team) => (initialState[team.role] = team.members));
 
   const [teams, setTeams] = useState<TeamState>(initialState);
-  const [mode, setMode] = useState<string>('view');
   const [draggedItem, setDraggedItem] = useState<DraggedItem>({
     member: { id: '', name: '' },
     source: '',
@@ -27,24 +26,13 @@ export const Teams = () => {
           teams={teams}
           handleTeams={setTeams}
           handleDraggedItem={setDraggedItem}
-          mode={mode}
         >
           <>
             <Grid item xs={2} style={{ paddingLeft: '30px' }}>
-              <UserBank
-                members={MEMBERS}
-                droppableId="USERBANK"
-                className="userbank"
-                mode={mode}
-              />
+              <UserBank members={MEMBERS} droppableId="USERBANK" className="userbank" />
             </Grid>
             <Grid item xs={10}>
-              <TeamList
-                teams={teams}
-                draggedMember={draggedItem}
-                mode={mode}
-                handleMode={setMode}
-              />
+              <TeamList teams={teams} draggedMember={draggedItem} />
             </Grid>
           </>
         </DragDropContextWrapper>
@@ -57,7 +45,6 @@ interface DragDropContextWrapperProps {
   teams: TeamState;
   handleTeams: (state: TeamState) => void;
   handleDraggedItem: (draggedMember: DraggedItem) => void;
-  mode: String;
   children: JSX.Element;
 }
 
@@ -65,7 +52,6 @@ const DragDropContextWrapper = ({
   teams,
   handleTeams,
   handleDraggedItem,
-  mode,
   children,
 }: DragDropContextWrapperProps) => {
   const onDragStart: (result: DropResult) => void = useCallback(
@@ -99,12 +85,10 @@ const DragDropContextWrapper = ({
     },
     [handleTeams],
   );
-  return mode === 'edit' ? (
+  return (
     <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
       {children}
     </DragDropContext>
-  ) : (
-    children
   );
 };
 
