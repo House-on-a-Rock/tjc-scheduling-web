@@ -10,7 +10,7 @@ import {
   DroppableId,
 } from 'react-beautiful-dnd';
 import './UserBank.css';
-import { customSideBarTheme } from '../../../shared/styles/theme.js';
+import { customPaletteTheme, customSideBarTheme } from '../../../shared/styles/theme.js';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -48,7 +48,7 @@ export const UserBank = ({ members, className, droppableId, mode }: UserBankProp
           {members.map((member: MembersData, index: number) => {
             return (
               <React.Fragment key={member.id}>
-                <ListItem>
+                <ListItem className={classes.member}>
                   <ListItemText id={member.id} primary={member.name} />
                 </ListItem>
               </React.Fragment>
@@ -90,7 +90,7 @@ const DroppableBank = ({
             return (
               <React.Fragment key={member.id}>
                 {shouldRenderClone ? (
-                  <ListItem className="react-beautiful-dnd-copy">
+                  <ListItem className={`react-beautiful-dnd-copy ${classes.member}`}>
                     <ListItemText id={member.id} primary={member.name} />
                   </ListItem>
                 ) : (
@@ -100,7 +100,9 @@ const DroppableBank = ({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className={snapshot.isDragging ? 'dragging' : ''}
+                        className={`${snapshot.isDragging ? 'dragging' : ''} ${
+                          classes.member
+                        }`}
                       >
                         <ListItemText id={member.id} primary={member.name} />
                       </ListItem>
@@ -128,6 +130,12 @@ const useStyles = makeStyles((theme: Theme) =>
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,
       color: theme.typography.h3.color,
+    },
+    member: {
+      '&:hover': {
+        backgroundColor: customPaletteTheme.common.lightBlue,
+        color: 'white',
+      },
     },
     placeHolder: {
       display: 'none',
