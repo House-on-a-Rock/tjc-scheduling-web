@@ -49,7 +49,7 @@ export default createMuiTheme({
 
 // TODO: find a way to integrate custom names into createMuiTheme instead of this separate object:
 // custom theme object for custom names:
-export const customTheme = {
+export const themeExtension = {
   card: {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
@@ -77,6 +77,6 @@ export const customTheme = {
 };
 
 // to avoid loading the whole object:
-export const customCardTheme = customTheme.card;
-export const customButtonTheme = customTheme.button;
-export const customSideBarTheme = customTheme.sideBar;
+export const customCardTheme = themeExtension.card;
+export const customButtonTheme = themeExtension.button;
+export const customSideBarTheme = themeExtension.sideBar;

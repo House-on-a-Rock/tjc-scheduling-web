@@ -3,10 +3,9 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { Home, Teams, Members } from '../../components/Main';
 import { Header } from '../../components/shared/Header';
 import { ThemeProvider } from '@material-ui/core';
-import theme from '../../shared/styles/theme';
 import { Error404 } from '../../components/shared';
 import '../../assets/fonts.css';
-import '../../assets/global.css';
+import theme from '../../shared/styles/theme';
 
 const Main = () => {
   return (
