@@ -1,0 +1,5 @@
+# quick explanation: https://tech.people-doc.com/using-github-codeowners-file.html
+# more info: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+# auto-add @showduhtung as reviewer for all PRs: (will show up after PR is created)
+* @showduhtung
