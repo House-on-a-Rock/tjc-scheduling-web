@@ -27,18 +27,6 @@ export default createMuiTheme({
       main: `${tjcOrange}`,
     },
   },
-  button: {
-    filled: {
-      backgroundColor: primaryButtonColor,
-      hoverBoxShadow: '#000B44 0 3px 10px',
-    },
-    outlined: {
-      borderColor: primaryButtonColor,
-      hoverBoxShadow: '#D5E3F0 0 6px 15px',
-    },
-  },
-  card: {},
-  sideBar: {},
   typography: {
     fontFamily: 'Source Sans Pro',
     h1: {
@@ -58,3 +46,37 @@ export default createMuiTheme({
     },
   },
 });
+
+// TODO: find a way to integrate custom names into createMuiTheme instead of this separate object:
+// custom theme object for custom names:
+export const customTheme = {
+  card: {
+    backgroundColor: mainBackgroundColor,
+    boxShadow: '#CCCCCC 0 2px 23px',
+    selected: {
+      // usage: customTheme.card.selected.border, customTheme.card.selected.boxShadow
+      border: `${interactiveColorBlue} 2px solid`,
+      boxShadow: '#CCDBE0 0 2px 23px',
+    },
+  },
+  button: {
+    outlined: {
+      backgroundColor: mainBackgroundColor,
+      border: `${primaryButtonColor} 1px solid`,
+      boxShadow: '#D5E3F0 0 6px 15px',
+    },
+    filled: {
+      backgroundColor: primaryButtonColor,
+      boxShadow: '#000B44 0 3px 10px',
+    },
+  },
+  sideBar: {
+    backgroundColor: secondaryBackgroundColor,
+    boxShadow: '#CFCFCF 0 2px 23px',
+  },
+};
+
+// to avoid loading the whole object:
+export const customCardTheme = customTheme.card;
+export const customButtonTheme = customTheme.button;
+export const customSideBarTheme = customTheme.sideBar;

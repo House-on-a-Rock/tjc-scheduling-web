@@ -10,7 +10,7 @@ import {
   DroppableId,
 } from 'react-beautiful-dnd';
 import './UserBank.css';
-import globalTheme from '../../../shared/styles/theme.js';
+import { customSideBarTheme } from '../../../shared/styles/theme.js';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -43,7 +43,6 @@ export const UserBank = ({ members, className, droppableId, mode }: UserBankProp
       ) : (
         <List dense>
           <ListSubheader
-            component="h3"
             className={classes.listSubheader}
           >{`List of ${churchName} church members`}</ListSubheader>
           {members.map((member: MembersData, index: number) => {
@@ -84,7 +83,6 @@ const DroppableBank = ({
       {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
         <List dense ref={provided.innerRef}>
           <ListSubheader
-            component="h3"
             className={classes.listSubheader}
           >{`List of ${church} church members`}</ListSubheader>
           {members.map((member: MembersData, index: number) => {
@@ -124,13 +122,13 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       maxWidth: 360,
-      backgroundColor: '#edeef3',
-      boxShadow: '#cfcfcf 0 2px 23px',
+      backgroundColor: customSideBarTheme.backgroundColor,
+      boxShadow: customSideBarTheme.boxShadow,
       borderRadius: 0,
     },
     listSubheader: {
-      fontSize: globalTheme.typography.h3.fontSize,
-      color: globalTheme.typography.h3.color,
+      fontSize: theme.typography.h3.fontSize,
+      color: theme.typography.h3.color,
     },
     placeHolder: {
       display: 'none',
