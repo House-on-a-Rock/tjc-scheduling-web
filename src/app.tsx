@@ -7,16 +7,16 @@ import Main from './containers/Main';
 export interface IAppProps {}
 
 export default function IApp(props: IAppProps) {
-  return (
-    <Router>
-      <Switch>
-        <Route path="/auth">
-          <Auth />
-        </Route>
-        <PrivateRoute path="/">
-          <Main />
-        </PrivateRoute>
-      </Switch>
-    </Router>
-  );
+    return (
+        <Router>
+            <Switch>
+                <Route path="/auth">
+                    <Auth />
+                </Route>
+                <PrivateRoute path="/">
+                    <Main />
+                </PrivateRoute>
+            </Switch>
+        </Router>
+    );
 }
