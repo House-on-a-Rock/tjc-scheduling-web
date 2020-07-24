@@ -10,7 +10,12 @@ import {
   DroppableId,
 } from 'react-beautiful-dnd';
 import './UserBank.css';
-import { customPaletteTheme, customSideBarTheme } from '../../../shared/styles/theme.js';
+import {
+  paletteTheme,
+  transitionTheme,
+  sideBarTheme,
+  buttonTheme,
+} from '../../../shared/styles/theme.js';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -122,8 +127,8 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      backgroundColor: customSideBarTheme.backgroundColor,
-      boxShadow: customSideBarTheme.boxShadow,
+      backgroundColor: sideBarTheme.backgroundColor,
+      boxShadow: sideBarTheme.boxShadow,
       borderRadius: 0,
       padding: '0 1rem',
     },
@@ -132,8 +137,11 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.typography.h3.color,
     },
     member: {
-      '&:hover': {
-        backgroundColor: customPaletteTheme.common.lightBlue,
+      transition: transitionTheme.fast,
+      '&:hover, &:focus': {
+        backgroundColor: buttonTheme.filled.hover.backgroundColor,
+        boxShadow: buttonTheme.filled.boxShadow,
+        borderRadius: '0.5rem',
         color: 'white',
       },
     },

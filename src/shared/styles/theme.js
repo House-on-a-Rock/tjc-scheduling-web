@@ -62,6 +62,10 @@ export const themeExtension = {
       main: tjcOrange,
     },
   },
+  transition: {
+    fast: '0.2s',
+    slow: '1s',
+  },
   card: {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
@@ -80,6 +84,9 @@ export const themeExtension = {
     filled: {
       backgroundColor: primaryButtonColor,
       boxShadow: '#000B44 0 3px 10px',
+      hover: {
+        backgroundColor: interactiveColorBlue,
+      },
     },
   },
   sideBar: {
@@ -89,7 +96,8 @@ export const themeExtension = {
 };
 
 // to avoid loading the whole object:
-export const customPaletteTheme = themeExtension.palette;
-export const customCardTheme = themeExtension.card;
-export const customButtonTheme = themeExtension.button;
-export const customSideBarTheme = themeExtension.sideBar;
+export const paletteTheme = themeExtension.palette;
+export const transitionTheme = themeExtension.transition;
+export const cardTheme = themeExtension.card;
+export const buttonTheme = themeExtension.button;
+export const sideBarTheme = themeExtension.sideBar;
