@@ -10,6 +10,7 @@ import {
   DroppableId,
 } from 'react-beautiful-dnd';
 import './UserBank.css';
+import globalTheme from '../../../shared/styles/theme.js';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -31,7 +32,7 @@ export const UserBank = ({ members, className, droppableId, mode }: UserBankProp
   const classes = useStyles();
   const churchName = 'Philadelphia';
   return (
-    <Paper>
+    <Paper className={classes.root}>
       {mode === 'edit' ? (
         <DroppableBank
           members={members}
@@ -40,8 +41,11 @@ export const UserBank = ({ members, className, droppableId, mode }: UserBankProp
           church={churchName}
         />
       ) : (
-        <List dense className={classes.root}>
-          <ListSubheader>{`List of ${churchName} church members`}</ListSubheader>
+        <List dense>
+          <ListSubheader
+            component="h3"
+            className={classes.listSubheader}
+          >{`List of ${churchName} church members`}</ListSubheader>
           {members.map((member: MembersData, index: number) => {
             return (
               <React.Fragment key={member.id}>
@@ -78,8 +82,11 @@ const DroppableBank = ({
       isDropDisabled={true}
     >
       {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
-        <List dense className={classes.root} ref={provided.innerRef}>
-          <ListSubheader>{`List of ${church} church members`}</ListSubheader>
+        <List dense ref={provided.innerRef}>
+          <ListSubheader
+            component="h3"
+            className={classes.listSubheader}
+          >{`List of ${church} church members`}</ListSubheader>
           {members.map((member: MembersData, index: number) => {
             const shouldRenderClone = member.id === snapshot.draggingFromThisWith;
             return (
@@ -117,7 +124,13 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: '#edeef3',
+      boxShadow: '#cfcfcf 0 2px 23px',
+      borderRadius: 0,
+    },
+    listSubheader: {
+      fontSize: globalTheme.typography.h3.fontSize,
+      color: globalTheme.typography.h3.color,
     },
     placeHolder: {
       display: 'none',
