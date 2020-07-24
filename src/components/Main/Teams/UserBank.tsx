@@ -120,11 +120,10 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
-      maxWidth: 360,
       backgroundColor: customSideBarTheme.backgroundColor,
       boxShadow: customSideBarTheme.boxShadow,
       borderRadius: 0,
+      padding: '0 1rem',
     },
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,

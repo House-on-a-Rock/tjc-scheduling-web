@@ -5,6 +5,7 @@ import { Header } from '../../components/shared/Header';
 import { ThemeProvider } from '@material-ui/core';
 import { Error404 } from '../../components/shared';
 import '../../assets/fonts.css';
+import '../../assets/global.css';
 import theme from '../../shared/styles/theme';
 
 const Main = () => {

@@ -30,7 +30,7 @@ export const Teams = () => {
           mode={mode}
         >
           <>
-            <Grid item xs={2} style={{ paddingLeft: '30px' }}>
+            <Grid item xs={2}>
               <UserBank
                 members={MEMBERS}
                 droppableId="USERBANK"
