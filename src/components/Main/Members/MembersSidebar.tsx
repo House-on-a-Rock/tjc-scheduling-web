@@ -12,10 +12,14 @@ import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/
 import { MemberStateData } from '../../../store/types';
 
 export interface MembersSidebarProps {
-    selectedUser: MemberStateData;
+    firstName: string;
+    lastName: string;
+    email: string;
+    church: string;
+    roles: string[];
 }
 
-export const MembersSidebar = ({selectedUser}: MembersSidebarProps) => {
+export const MembersSidebar = ({firstName, lastName, email, church, roles}: MembersSidebarProps) => {
     const classes = useStyles();
 
     return (
@@ -26,16 +30,16 @@ export const MembersSidebar = ({selectedUser}: MembersSidebarProps) => {
           </ListSubheader>}
         >
           <ListItem key="firstname" button>
-            <ListItemText primary={selectedUser.firstName} secondary="firstname"/>
+            <ListItemText primary={firstName} secondary="firstname"/>
           </ListItem>
           <ListItem key="lastname" button>
-            <ListItemText primary={selectedUser.lastName} secondary="lastname"/>
+            <ListItemText primary={lastName} secondary="lastname"/>
           </ListItem>
           <ListItem key="email" button>
-            <ListItemText primary={selectedUser.email} secondary="email"/>
+            <ListItemText primary={email} secondary="email"/>
           </ListItem>
           <ListItem key="church" button>
-            <ListItemText primary={selectedUser.church.name} secondary="church"/>
+            <ListItemText primary={church} secondary="church"/>
           </ListItem>
         </List>
         <Divider/>
@@ -45,7 +49,7 @@ export const MembersSidebar = ({selectedUser}: MembersSidebarProps) => {
             Roles
           </ListSubheader>
           }>
-          {selectedUser.roles.map((role: string) => {
+          {roles.map((role: string) => {
             return (
               <ListItem key={role} button>
                 <ListItemText primary={role}/>

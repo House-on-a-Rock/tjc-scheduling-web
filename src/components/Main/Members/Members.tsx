@@ -20,7 +20,7 @@ import { MembersUsersTable } from './MembersUsersTable';
 import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../../store/actions';
 
 // other stuffs
-import { validateEmail } from '../../../store/actions/helper_functions';
+import {isValidEmail} from '../../../shared/helper_functions';
 
 // types
 import {MemberStateData} from '../../../store/types';
@@ -52,7 +52,7 @@ export const Members = () => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [searchfield, setSearchField] = useState<string>('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState<boolean>(false);
+  const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState<boolean>(false);
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
 
   useEffect(() => {
@@ -60,34 +60,26 @@ export const Members = () => {
     dispatch(onLoadUser(initialSelectedState));
   }, [])
 
-  const onOpenDeleteMemberDialog = () => {
-    if (selectedRows.length > 0) setIsConfirmDialogOpen(true);
-  };
-  
-  const onOpenAddMemberDialog = () => {
-    setIsAddDialogOpen(true);
-  }
-
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelectedRows = members.map((member) => member.id);
       setSelectedRows(newSelectedRows);
-      return;
+    } else {
+      setSelectedRows([]);
     }
-    setSelectedRows([]);
   }
 
-  const onCloseDeleteMemberDialog = async (value: boolean) => {
+  const handleDeleteMembers = async (shouldDelete: boolean) => {
     setIsConfirmDialogOpen(false);
-    if (value) {
+    if (shouldDelete) {
       dispatch(onDeleteMembers(selectedRows))
       setSelectedRows([]);
     }
   };
 
-  const onCloseAddMemberDialog = (value: boolean, firstName: string, lastName: string, email: string, password: string) => {
-    setIsAddDialogOpen(false);
-    if (value && firstName && lastName && email && password && validateEmail(email)) {
+  const onCloseAddMemberDialog = (shouldAdd: boolean, firstName: string, lastName: string, email: string, password: string) => {
+    setIsAddUserDialogOpen(false);
+    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
       dispatch(onAddMember(firstName, lastName, email, password));
     }
   }
@@ -120,11 +112,6 @@ export const Members = () => {
     setSelectedRows(newSelectedRows);
   }
 
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(members)
-    setSearchField(event.target.value);
-  }
-
   const filteredUsers = members.filter(function(row: any) {
     for (var key in row) {
       if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church') continue;
@@ -139,13 +126,25 @@ export const Members = () => {
 
   return (
     <Grid container spacing={3}>
-      <MembersSidebar selectedUser={selectedUser} />
+      <MembersSidebar 
+        firstName={selectedUser.firstName} 
+        lastName={selectedUser.lastName}
+        email={selectedUser.email}
+        church={selectedUser.church.name} 
+        roles={selectedUser.roles}
+      />
       <Grid item xs={9}>
         <MembersHeader 
           localChurch={localChurch}
-          onSearchChange={onSearchChange}
-          handleAddOpen={onOpenAddMemberDialog}
-          handleDeleteOpen={onOpenDeleteMemberDialog}
+          onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearchField(event.target.value);
+          }}
+          handleAddOpen={() => {
+            setIsAddUserDialogOpen(true);
+          }}
+          handleDeleteOpen={() => {
+            if (selectedRows.length > 0) setIsConfirmDialogOpen(true);
+          }}
         />
         <MembersUsersTable 
           selectedRows={selectedRows}
@@ -155,8 +154,15 @@ export const Members = () => {
           handleRowClick={handleRowClick}
         />
       </Grid>
-      <ConfirmationDialog isOpen={isConfirmDialogOpen} handleClose={onCloseDeleteMemberDialog} title='Confirm Delete Action'/>
-      <FormDialog isOpen={isAddDialogOpen} handleClose={onCloseAddMemberDialog} title='Add User'/>
+      <ConfirmationDialog 
+        isOpen={isConfirmDialogOpen} 
+        handleClick={(shouldDelete: boolean) => {
+          setIsConfirmDialogOpen(!isConfirmDialogOpen); 
+          handleDeleteMembers(shouldDelete);
+        }} 
+        title='Confirm Delete Action'
+      />
+      <FormDialog isOpen={isAddUserDialogOpen} handleClose={onCloseAddMemberDialog} title='Add User'/>
     </Grid>
   );
 };

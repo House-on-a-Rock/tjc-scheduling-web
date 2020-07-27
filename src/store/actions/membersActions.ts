@@ -1,8 +1,7 @@
-import { AnyAction, Action } from 'redux';
+import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { errorDataExtractor } from '../../shared/helper_functions';
+import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
-import { secretIp } from '../../../secrets/secretStuff';
 import {
   getOneUser,
   getAllUsers,
@@ -11,7 +10,6 @@ import {
   deleteUser,
   addUser,
 } from '../apis';
-import { extractUserId } from './helper_functions';
 import {
   MemberActionTypes,
   LOAD_MEMBERS,

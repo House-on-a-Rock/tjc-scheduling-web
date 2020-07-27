@@ -14,22 +14,22 @@ import ListItemText from '@material-ui/core/ListItemText';
 export interface SimpleDialogProps {
     title: string;
     isOpen: boolean;
-    handleClose: (value: boolean) => void;
+    handleClick: (shouldDelete: boolean) => void;
 }
 
-export function ConfirmationDialog({ handleClose, isOpen, title }: SimpleDialogProps) {
+export function ConfirmationDialog({ handleClick, isOpen, title }: SimpleDialogProps) {
   
     return (
-      <Dialog onClose={() => handleClose(!open)} open={isOpen}>
+      <Dialog onClose={() => handleClick(!open)} open={isOpen}>
         <DialogTitle id='confirm-dialog'>{title}</DialogTitle>
         <List>
-          <ListItem button onClick={() => handleClose(true)} key="yes-button">
+          <ListItem button onClick={() => handleClick(true)} key="yes-button">
             <ListItemIcon style={{color: green[500] }}>
               <CheckIcon/>
             </ListItemIcon>
             <ListItemText primary="YES"/>
           </ListItem>
-          <ListItem button onClick={() => handleClose(false)} key="no-button">
+          <ListItem button onClick={() => handleClick(false)} key="no-button">
             <ListItemIcon style={{color: '#ba000d' }}>
               <ClearIcon/>
             </ListItemIcon>

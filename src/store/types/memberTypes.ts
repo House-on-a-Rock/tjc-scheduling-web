@@ -49,10 +49,3 @@ export interface MembersState {
   selectedUser: MemberStateData;
   localChurch: string;
 }
-
-export interface JWTDataType {
-  iss: string;
-  sub: string;
-  exp: string;
-  type: string;
-}
