@@ -6,7 +6,7 @@ import { secretIp } from '../../../secrets/secretStuff';
 import {
   getOneUser,
   getAllUsers,
-  getUserTasks,
+  getUserRoles,
   getAllLocalChurchUsers,
   deleteUser,
   addUser,
@@ -62,10 +62,10 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       updatedMemberList.map(async (user: MemberStateData) => {
         const userId = user.id;
         let roleList: string[] = [];
-        const taskResponse = await getUserTasks(userId.toString());
-        console.log(taskResponse);
-        taskResponse.data.map((task: any) => {
-          roleList.push(task.role.name);
+        const userRolesResponse = await getUserRoles(userId.toString());
+        console.log(userRolesResponse);
+        userRolesResponse.data.map((userRole: any) => {
+          roleList.push(userRole.role.name);
         });
         roleList = Array.from(new Set(roleList));
         user.roles = roleList;
