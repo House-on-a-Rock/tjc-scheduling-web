@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TeamCard } from './TeamCard';
 import { TeamState, DraggedItem } from './models';
 
@@ -15,22 +15,24 @@ interface TeamListProps {
   draggedMember: DraggedItem;
 }
 
-export const TeamList = ({ teams, draggedMember }: TeamListProps) => (
-  <>
-    <Typography variant="h4">Teams</Typography>
-    {Object.keys(teams).map((role, index) => (
-      <TeamCard
-        key={`team-${index}`}
-        role={role}
-        members={Object.values(teams)[index]}
-        draggedItem={draggedMember}
-      />
-    ))}
-    <NewTeamCard />
-  </>
-);
+export const TeamList = ({ teams, draggedMember }: TeamListProps) => {
+  return (
+    <>
+      <Typography variant="h4">Teams</Typography>
+      {Object.keys(teams).map((role, index) => (
+        <TeamCard
+          key={`team-${index}`}
+          type={role}
+          members={Object.values(teams)[index]}
+          draggedItem={draggedMember}
+        />
+      ))}
+      <NewTeamCard />
+    </>
+  );
+};
 
-const NewTeamCard = () => {
+const NewTeamCard = ({ handleClick }: any) => {
   const classes = useStyles();
   return (
     <Card className={classes.root}>

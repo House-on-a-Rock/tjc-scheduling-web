@@ -8,6 +8,12 @@ import { TEAMS, MEMBERS } from './database';
 import { TeamState, DraggedItem } from './models';
 import { add, reorder } from './services';
 
+// TODOS
+// 1. need apis that handles title, description changes
+// 2. need to figure out how to handle new teams- modal or instantaneous
+// 3. new team apis
+// 4. validation apis/reducers need to be fleshed out
+
 export const Teams = () => {
   const classes = useStyles();
   let initialState: TeamState = {};

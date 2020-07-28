@@ -56,7 +56,6 @@ export const DroppableTeamMembersList = ({
       {(provided: DroppableProvided) => (
         <List dense ref={provided.innerRef} className={classes.list}>
           {members.map((member: MembersData, index: number) => {
-            console.log('List', members);
             return draggedItem.source === '' || !(draggedItem.source === 'USERBANK') ? (
               <Draggable draggableId={member.id} index={index} key={member.id}>
                 {(provided: DraggableProvided) => (
