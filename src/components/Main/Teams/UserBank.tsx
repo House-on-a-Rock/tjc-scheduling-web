@@ -36,7 +36,7 @@ export const UserBank = ({ members, className, droppableId }: UserBankProps) => 
   const classes = useStyles();
   const churchName = 'Philadelphia';
   return (
-    <Paper>
+    <Paper className={classes.root}>
       <DroppableBank
         members={members}
         className={className}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TeamCard } from './TeamCard';
 import { TeamState, DraggedItem } from './models';
 
