@@ -30,37 +30,19 @@ interface UserBankProps {
   members: MembersData[];
   className: string;
   droppableId: DroppableId;
-  mode: string;
 }
 
-export const UserBank = ({ members, className, droppableId, mode }: UserBankProps) => {
+export const UserBank = ({ members, className, droppableId }: UserBankProps) => {
   const classes = useStyles();
   const churchName = 'Philadelphia';
   return (
     <Paper className={classes.root}>
-      {mode === 'edit' ? (
-        <DroppableBank
-          members={members}
-          className={className}
-          droppableId={droppableId}
-          church={churchName}
-        />
-      ) : (
-        <List dense>
-          <ListSubheader
-            className={classes.listSubheader}
-          >{`List of ${churchName} church members`}</ListSubheader>
-          {members.map((member: MembersData, index: number) => {
-            return (
-              <React.Fragment key={member.id}>
-                <ListItem className={classes.member}>
-                  <ListItemText id={member.id} primary={member.name} />
-                </ListItem>
-              </React.Fragment>
-            );
-          })}
-        </List>
-      )}
+      <DroppableBank
+        members={members}
+        className={className}
+        droppableId={droppableId}
+        church={churchName}
+      />
     </Paper>
   );
 };
