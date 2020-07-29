@@ -20,7 +20,7 @@ export interface SimpleDialogProps {
 export function ConfirmationDialog({ handleClick, isOpen, title }: SimpleDialogProps) {
   
     return (
-      <Dialog onClose={() => handleClick(!open)} open={isOpen}>
+      <Dialog onBackdropClick={() => handleClick(!isOpen)} open={isOpen}>
         <DialogTitle id='confirm-dialog'>{title}</DialogTitle>
         <List>
           <ListItem button onClick={() => handleClick(true)} key="yes-button">

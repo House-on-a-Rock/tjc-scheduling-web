@@ -21,25 +21,25 @@ const styleHead: CSS.Properties = {
 }
 
 export interface MembersUsersTableProps {
-    selectedRows: number[];
-    handleSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    filteredUsers: MemberStateData[];
+    selected: boolean;
+    handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    members: MemberStateData[];
     isSelected: (id: number) => boolean;
-    handleRowClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
+    handleClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
 }
 
-export const MembersUsersTable = ({selectedRows, handleSelectAllClick, filteredUsers, isSelected, handleRowClick}: MembersUsersTableProps) => {
+export const MembersUsersTable = ({selected, handleCheck, members, isSelected, handleClick}: MembersUsersTableProps) => {
     const classes = useStyles();
 
     return (
         <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
+            <Table className={classes.table} aria-label="members table">
               <TableHead>
                 <TableRow >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedRows.length > 0}
-                      onChange={handleSelectAllClick}
+                      checked={selected}
+                      onChange={handleCheck}
                     />
                   </TableCell>
                   <TableCell style={styleHead}>First&nbsp;Name</TableCell>
@@ -49,14 +49,14 @@ export const MembersUsersTable = ({selectedRows, handleSelectAllClick, filteredU
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredUsers.map((row) => {
+                {members.map((row) => {
                   const isItemSelected = isSelected(row.id);
 
                   return (
                     <TableRow
                       hover
                       onClick={event => {
-                        handleRowClick(event, row)
+                        handleClick(event, row)
                       }}
                       selected={isItemSelected} 
                       key={row.id}

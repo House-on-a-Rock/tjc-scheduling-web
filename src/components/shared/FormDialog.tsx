@@ -56,7 +56,7 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
 
   return (
     <Dialog 
-      onClose={() => {
+      onBackdropClick={() => {
         handleClose(!isOpen, firstName, lastName, email.value, password.value);
         clearPresets();
       }} 

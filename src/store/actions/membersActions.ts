@@ -61,7 +61,6 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
         const userId = user.id;
         let roleList: string[] = [];
         const userRolesResponse = await getUserRoles(userId.toString());
-        console.log(userRolesResponse);
         userRolesResponse.data.map((userRole: any) => {
           roleList.push(userRole.role.name);
         });

@@ -50,7 +50,7 @@ export const Members = () => {
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [searchfield, setSearchField] = useState<string>('');
+  const [searchField, setSearchField] = useState<string>('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState<boolean>(false);
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
@@ -69,12 +69,9 @@ export const Members = () => {
     }
   }
 
-  const handleDeleteMembers = async (shouldDelete: boolean) => {
-    setIsConfirmDialogOpen(false);
-    if (shouldDelete) {
+  const handleDeleteMembers = async () => {
       dispatch(onDeleteMembers(selectedRows))
       setSelectedRows([]);
-    }
   };
 
   const onCloseAddMemberDialog = (shouldAdd: boolean, firstName: string, lastName: string, email: string, password: string) => {
@@ -87,26 +84,25 @@ export const Members = () => {
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
     const selectedIndex = selectedRows.indexOf(row.id);
-    console.log(selectedRows, selectedIndex, selectedRows.slice(1));
     let newSelectedRows: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
-        newSelectedRows = newSelectedRows.concat(selectedRows, row.id);
+        newSelectedRows = [...selectedRows, row.id]; // all but first row
       } else if (selectedIndex === 0) {
-        newSelectedRows = newSelectedRows.concat(selectedRows.slice(1));
+        newSelectedRows = selectedRows.slice(1);
       } else if (selectedIndex === selectedRows.length -1) {
-        newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, -1));
+        newSelectedRows = selectedRows.slice(0, -1); // all but last row
       } else if (selectedIndex > 0) {
-        newSelectedRows = newSelectedRows.concat(
-          selectedRows.slice(0, selectedIndex), 
-          selectedRows.slice(selectedIndex + 1),
-        );
+        newSelectedRows = [
+          ...selectedRows.slice(0, selectedIndex), 
+          ...selectedRows.slice(selectedIndex + 1),
+        ];
       }
     } else {
       if (selectedIndex === -1)
         newSelectedRows = [row.id]
       else
-        newSelectedRows = newSelectedRows.concat(selectedRows.slice(0, selectedIndex), selectedRows.slice(selectedIndex + 1));
+        newSelectedRows = [...selectedRows.slice(0, selectedIndex), ...selectedRows.slice(selectedIndex + 1)];
     }
     dispatch(onLoadUser(row));
     setSelectedRows(newSelectedRows);
@@ -116,9 +112,9 @@ export const Members = () => {
     for (var key in row) {
       if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church') continue;
       if (key === 'disabled') {
-        if (row[key].toString().toLowerCase().includes(searchfield.toLowerCase())) return true;
+        if (row[key].toString().toLowerCase().includes(searchField.toLowerCase())) return true;
       } else {
-        if (row[key].toLowerCase().includes(searchfield.toLowerCase())) return true;
+        if (row[key].toLowerCase().includes(searchField.toLowerCase())) return true;
       }
     }
     return false;
@@ -140,25 +136,25 @@ export const Members = () => {
             setSearchField(event.target.value);
           }}
           handleAddOpen={() => {
-            setIsAddUserDialogOpen(true);
+            setIsAddUserDialogOpen(!isAddUserDialogOpen);
           }}
           handleDeleteOpen={() => {
-            if (selectedRows.length > 0) setIsConfirmDialogOpen(true);
+            if (selectedRows.length > 0) setIsConfirmDialogOpen(!isConfirmDialogOpen);
           }}
         />
         <MembersUsersTable 
-          selectedRows={selectedRows}
-          handleSelectAllClick={handleSelectAllClick}
-          filteredUsers={filteredUsers}
+          selected={selectedRows.length > 0}
+          handleCheck={handleSelectAllClick}
+          members={filteredUsers}
           isSelected={isSelected}
-          handleRowClick={handleRowClick}
+          handleClick={handleRowClick}
         />
       </Grid>
       <ConfirmationDialog 
         isOpen={isConfirmDialogOpen} 
         handleClick={(shouldDelete: boolean) => {
           setIsConfirmDialogOpen(!isConfirmDialogOpen); 
-          handleDeleteMembers(shouldDelete);
+          shouldDelete && handleDeleteMembers();
         }} 
         title='Confirm Delete Action'
       />

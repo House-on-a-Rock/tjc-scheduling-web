@@ -28,7 +28,7 @@ export const MembersHeader = ({localChurch, onSearchChange, handleAddOpen, handl
 
     return (
         <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
+          <Table className={classes.table} aria-label="members table controls">
             <TableHead className={classes.header}>
               <TableRow >
                 <TableCell>
