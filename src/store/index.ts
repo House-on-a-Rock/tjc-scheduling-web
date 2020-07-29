@@ -1,26 +1,27 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import { authReducer, loadReducer } from './reducers';
+import { authReducer, loadReducer, membersReducer } from './reducers';
 import ReduxThunk from 'redux-thunk';
 
 declare global {
-    interface Window {
-        __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
-    }
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
+  }
 }
 
 const rootReducer = combineReducers({
-    auth: authReducer,
-    load: loadReducer,
+  auth: authReducer,
+  load: loadReducer,
+  members: membersReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
 
 const composeEnhancers =
-    process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        : compose;
+  process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : compose;
 
 export const store = createStore(
-    rootReducer,
-    composeEnhancers(applyMiddleware(ReduxThunk)),
+  rootReducer,
+  composeEnhancers(applyMiddleware(ReduxThunk)),
 );
