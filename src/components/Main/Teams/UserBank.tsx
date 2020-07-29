@@ -10,6 +10,12 @@ import {
   DroppableId,
 } from 'react-beautiful-dnd';
 import './UserBank.css';
+import {
+  paletteTheme,
+  transitionTheme,
+  sideBarTheme,
+  buttonTheme,
+} from '../../../shared/styles/theme.js';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -24,35 +30,19 @@ interface UserBankProps {
   members: MembersData[];
   className: string;
   droppableId: DroppableId;
-  mode: string;
 }
 
-export const UserBank = ({ members, className, droppableId, mode }: UserBankProps) => {
+export const UserBank = ({ members, className, droppableId }: UserBankProps) => {
   const classes = useStyles();
   const churchName = 'Philadelphia';
   return (
-    <Paper>
-      {mode === 'edit' ? (
-        <DroppableBank
-          members={members}
-          className={className}
-          droppableId={droppableId}
-          church={churchName}
-        />
-      ) : (
-        <List dense className={classes.root}>
-          <ListSubheader>{`List of ${churchName} church members`}</ListSubheader>
-          {members.map((member: MembersData, index: number) => {
-            return (
-              <React.Fragment key={member.id}>
-                <ListItem>
-                  <ListItemText id={member.id} primary={member.name} />
-                </ListItem>
-              </React.Fragment>
-            );
-          })}
-        </List>
-      )}
+    <Paper className={classes.root}>
+      <DroppableBank
+        members={members}
+        className={className}
+        droppableId={droppableId}
+        church={churchName}
+      />
     </Paper>
   );
 };
@@ -78,14 +68,16 @@ const DroppableBank = ({
       isDropDisabled={true}
     >
       {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
-        <List dense className={classes.root} ref={provided.innerRef}>
-          <ListSubheader>{`List of ${church} church members`}</ListSubheader>
+        <List dense ref={provided.innerRef}>
+          <ListSubheader
+            className={classes.listSubheader}
+          >{`List of ${church} church members`}</ListSubheader>
           {members.map((member: MembersData, index: number) => {
             const shouldRenderClone = member.id === snapshot.draggingFromThisWith;
             return (
               <React.Fragment key={member.id}>
                 {shouldRenderClone ? (
-                  <ListItem className="react-beautiful-dnd-copy">
+                  <ListItem className={`react-beautiful-dnd-copy ${classes.member}`}>
                     <ListItemText id={member.id} primary={member.name} />
                   </ListItem>
                 ) : (
@@ -95,7 +87,9 @@ const DroppableBank = ({
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        className={snapshot.isDragging ? 'dragging' : ''}
+                        className={`${snapshot.isDragging ? 'dragging' : ''} ${
+                          classes.member
+                        }`}
                       >
                         <ListItemText id={member.id} primary={member.name} />
                       </ListItem>
@@ -115,9 +109,23 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
+      backgroundColor: sideBarTheme.backgroundColor,
+      boxShadow: sideBarTheme.boxShadow,
+      borderRadius: 0,
+      padding: '0 1rem',
+    },
+    listSubheader: {
+      fontSize: theme.typography.h3.fontSize,
+      color: theme.typography.h3.color,
+    },
+    member: {
+      transition: transitionTheme.fast,
+      '&:hover, &:focus': {
+        backgroundColor: buttonTheme.filled.hover.backgroundColor,
+        boxShadow: buttonTheme.filled.boxShadow,
+        borderRadius: '0.5rem',
+        color: 'white',
+      },
     },
     placeHolder: {
       display: 'none',
