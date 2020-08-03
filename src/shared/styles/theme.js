@@ -69,8 +69,11 @@ export const themeExtension = {
   card: {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
-    selected: {
-      // usage: customTheme.card.selected.border, customTheme.card.selected.boxShadow
+    hover: {
+      border: `${interactiveColorBlue} 2px solid`,
+      boxShadow: '#CCDBE0 0 2px 23px',
+    },
+    '&:hover, &:focus': {
       border: `${interactiveColorBlue} 2px solid`,
       boxShadow: '#CCDBE0 0 2px 23px',
     },
@@ -85,6 +88,9 @@ export const themeExtension = {
       backgroundColor: primaryButtonColor,
       boxShadow: '#000B44 0 3px 10px',
       hover: {
+        backgroundColor: interactiveColorBlue,
+      },
+      '&:hover, &:focus': {
         backgroundColor: interactiveColorBlue,
       },
     },

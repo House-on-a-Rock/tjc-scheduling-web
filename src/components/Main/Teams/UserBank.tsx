@@ -109,13 +109,13 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      ...verticalScrollBoxShadow('#edeef3'),
       backgroundColor: sideBarTheme.backgroundColor,
       boxShadow: sideBarTheme.boxShadow,
       borderRadius: 0,
       padding: '0 1rem',
       maxHeight: '90vh',
       overflow: 'auto',
-      ...verticalScrollBoxShadow('#edeef3'),
     },
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,
