@@ -70,7 +70,6 @@ export const DroppableTeamMembersList = ({
                     dragHandleProps={provided.dragHandleProps}
                     onDelete={handleDelete}
                     snapshot={snapshot}
-                    className={`${snapshot.isDragging ? 'dragging' : ''} ${classes.root}`}
                   />
                 )}
               </Draggable>
