@@ -117,6 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,
       color: theme.typography.h3.color,
+      position: 'static',
     },
     member: {
       transition: transitionTheme.fast,
