@@ -18,7 +18,9 @@ interface TeamListProps {
 export const TeamList = ({ teams, draggedMember }: TeamListProps) => {
   return (
     <>
-      <Typography variant="h4">Teams</Typography>
+      <Typography variant="h4" align="center">
+        Teams
+      </Typography>
       {Object.keys(teams).map((role, index) => (
         <TeamCard
           key={`team-${index}`}
