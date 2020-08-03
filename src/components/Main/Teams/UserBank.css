@@ -1,5 +1,6 @@
 .react-beautiful-dnd-copy {
   background: lightblue;
+  border-radius: 0.5rem;
 }
 
 .react-beautiful-dnd-copy ~ * {
