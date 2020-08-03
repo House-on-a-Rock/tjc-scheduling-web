@@ -13,6 +13,8 @@ const secondaryBackgroundColor = '#EDEEF3';
 const greyedOutButtonColor = '#C8C8C8';
 const greyedOutBorderColor = greyedOutButtonColor;
 const greyedOutBackgroundColor = '#2F2F2F';
+const fastTransitionTime = '0.2s';
+const slowTransitionTime = '1s';
 
 export default createMuiTheme({
   palette: {
@@ -63,12 +65,13 @@ export const themeExtension = {
     },
   },
   transition: {
-    fast: '0.2s',
-    slow: '1s',
+    fast: fastTransitionTime,
+    slow: slowTransitionTime,
   },
   card: {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
+    transition: fastTransitionTime,
     hover: {
       border: `${interactiveColorBlue} 2px solid`,
       boxShadow: '#CCDBE0 0 2px 23px',
@@ -87,6 +90,7 @@ export const themeExtension = {
     filled: {
       backgroundColor: primaryButtonColor,
       boxShadow: '#000B44 0 3px 10px',
+      transition: fastTransitionTime,
       hover: {
         backgroundColor: interactiveColorBlue,
       },
