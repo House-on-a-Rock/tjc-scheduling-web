@@ -16,6 +16,7 @@ import {
   sideBarTheme,
   buttonTheme,
 } from '../../../shared/styles/theme.js';
+import { verticalScrollBoxShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -113,6 +114,9 @@ const useStyles = makeStyles((theme: Theme) =>
       boxShadow: sideBarTheme.boxShadow,
       borderRadius: 0,
       padding: '0 1rem',
+      maxHeight: '90vh',
+      overflow: 'auto',
+      ...verticalScrollBoxShadow('#edeef3'),
     },
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,
