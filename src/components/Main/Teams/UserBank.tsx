@@ -11,7 +11,6 @@ import {
 } from 'react-beautiful-dnd';
 import './UserBank.css';
 import {
-  paletteTheme,
   transitionTheme,
   sideBarTheme,
   buttonTheme,
