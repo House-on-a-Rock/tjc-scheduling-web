@@ -6,14 +6,14 @@ export const Home = () => {
   const dispatch = useDispatch();
   return (
     <>
-      <button
+      {/* <button
         onClick={() => {
           // remove from local storage
           dispatch(logout());
         }}
       >
         Log Out
-      </button>
+      </button> */}
     </>
   );
 };
