@@ -21,7 +21,7 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
   const classes = useStyles();
   const canDrop: () => boolean = () =>
     draggedItem.source === 'USERBANK'
-      ? members
+      ? !members
           .map((member: MembersData) => member.name)
           .includes(draggedItem.member.name)
       : !(draggedItem.source === type);

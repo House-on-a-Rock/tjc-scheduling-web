@@ -5,6 +5,7 @@ import {
   DraggableProvided,
   DroppableProvided,
   DraggableStateSnapshot,
+  DroppableStateSnapshot,
 } from 'react-beautiful-dnd';
 import { MembersData, DraggedItem } from './models';
 import { v4 as uuid } from 'uuid';
@@ -53,9 +54,15 @@ export const DroppableTeamMembersList = ({
   }
 
   return (
-    <Droppable droppableId={role} key={role} isDropDisabled={canDrop()}>
-      {(provided: DroppableProvided) => (
-        <List dense ref={provided.innerRef} className={classes.list}>
+    <Droppable droppableId={role} key={role} isDropDisabled={!canDrop()}>
+      {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
+        <List
+          dense
+          ref={provided.innerRef}
+          className={`${classes.list} ${!canDrop() && classes.notDroppableArea} ${
+            snapshot?.isDraggingOver && canDrop() && classes.droppableArea
+          }`}
+        >
           {members.map((member: MembersData, index: number) => {
             console.log('draggedItem.source', member.name, draggedItem.source);
             return !(draggedItem.source === 'USERBANK') ? (
@@ -121,5 +128,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     width: '79%',
+  },
+  droppableArea: {
+    background: 'lightblue',
+  },
+  notDroppableArea: {
+    '&:hover': {
+      opacity: 0.25,
+    },
   },
 }));
