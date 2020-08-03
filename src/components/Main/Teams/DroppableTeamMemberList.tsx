@@ -4,6 +4,7 @@ import {
   Draggable,
   DraggableProvided,
   DroppableProvided,
+  DraggableStateSnapshot,
 } from 'react-beautiful-dnd';
 import { MembersData, DraggedItem } from './models';
 import { v4 as uuid } from 'uuid';
@@ -59,7 +60,7 @@ export const DroppableTeamMembersList = ({
             console.log('draggedItem.source', member.name, draggedItem.source);
             return !(draggedItem.source === 'USERBANK') ? (
               <Draggable draggableId={member.id} index={index} key={member.id}>
-                {(provided: DraggableProvided) => (
+                {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
                   <TeamMemberRow
                     member={member}
                     role={role}
@@ -68,6 +69,8 @@ export const DroppableTeamMembersList = ({
                     draggableProps={provided.draggableProps}
                     dragHandleProps={provided.dragHandleProps}
                     onDelete={handleDelete}
+                    snapshot={snapshot}
+                    className={`${snapshot.isDragging ? 'dragging' : ''} ${classes.root}`}
                   />
                 )}
               </Draggable>
