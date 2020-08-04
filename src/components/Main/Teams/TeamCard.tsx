@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: '.5em',
     height: '20vh',
     borderRadius: '1rem',
+    transition: '0',
   },
   details: {
     width: '15vw',
