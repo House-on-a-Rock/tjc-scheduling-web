@@ -68,6 +68,12 @@ export const themeExtension = {
     fast: fastTransitionTime,
     slow: slowTransitionTime,
   },
+  typography: {
+    fontFamily: 'Source Sans Pro',
+    common: {
+      color: mainTextColor,
+    },
+  },
   card: {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
@@ -98,15 +104,32 @@ export const themeExtension = {
         backgroundColor: interactiveColorBlue,
       },
     },
+    icon: {
+      color: primaryButtonColor,
+      transition: fastTransitionTime,
+      hover: {
+        color: interactiveColorBlue,
+      },
+      '&:hover, &:focus': {
+        color: interactiveColorBlue,
+      },
+    },
   },
   sideBar: {
     backgroundColor: secondaryBackgroundColor,
     boxShadow: '#CFCFCF 0 2px 23px',
+    hover: {
+      backgroundColor: interactiveColorBlue,
+    },
+    '&:hover, &:focus': {
+      backgroundColor: interactiveColorBlue,
+    },
   },
 };
 
 // to avoid loading the whole object:
 export const paletteTheme = themeExtension.palette;
+export const typographyTheme = themeExtension.typography;
 export const transitionTheme = themeExtension.transition;
 export const cardTheme = themeExtension.card;
 export const buttonTheme = themeExtension.button;

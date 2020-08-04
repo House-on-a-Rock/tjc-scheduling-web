@@ -1,4 +1,5 @@
 import React from 'react';
+import { cardTheme } from '../../../shared/styles/theme.js';
 
 import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -32,7 +33,7 @@ export const MembersUsersTable = ({selected, handleCheck, members, isSelected, h
     const classes = useStyles();
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} className={classes.root}>
             <Table className={classes.table} aria-label="members table">
               <TableHead>
                 <TableRow >
@@ -83,6 +84,10 @@ export const MembersUsersTable = ({selected, handleCheck, members, isSelected, h
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
+    root: {
+      backgroundColor: cardTheme.backgroundColor,
+      boxShadow: cardTheme.boxShadow,
+    },
     table: {
       minWidth: 650,
     },

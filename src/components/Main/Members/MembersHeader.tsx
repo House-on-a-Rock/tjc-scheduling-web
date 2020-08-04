@@ -1,6 +1,13 @@
 import React from 'react';
+import { themeExtension } from '../../../shared/styles/theme.js';
 
-import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  fade,
+  makeStyles,
+  withStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -17,91 +24,78 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 export interface MembersHeaderProps {
-    localChurch: string;
-    onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    handleAddOpen: () => void;
-    handleDeleteOpen: () => void;
+  localChurch: string;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleAddOpen: () => void;
+  handleDeleteOpen: () => void;
 }
 
-export const MembersHeader = ({localChurch, onSearchChange, handleAddOpen, handleDeleteOpen}: MembersHeaderProps) => {
-    const classes = useStyles();
+export const MembersHeader = ({
+  localChurch,
+  onSearchChange,
+  handleAddOpen,
+  handleDeleteOpen,
+}: MembersHeaderProps) => {
+  const classes = useStyles();
 
-    return (
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="members table controls">
-            <TableHead className={classes.header}>
-              <TableRow >
-                <TableCell>
-                  <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                      <SearchIcon style={{color: '#FFFAF0'}}/>
-                    </div>
-                    <InputBase
-                      placeholder="Search…"
-                      classes={{
-                        root: classes.inputRoot,
-                        input: classes.inputInput,
-                      }}
-                      inputProps={{ 'aria-label': 'search' }}
-                      onChange={onSearchChange}
-                    />
-                  </div>
-                </TableCell>
-                <TableCell 
-                  align="left"
-                  style={{ 
-                    fontSize: 25, 
-                    color: '#FFFAF0'
+  return (
+    <TableContainer component={Paper} className={classes.root}>
+      <Table className={classes.table} aria-label="members table controls">
+        <TableHead className={classes.header}>
+          <TableRow>
+            <TableCell>
+              <div className={classes.search}>
+                <SearchIcon className={classes.searchIcon} />
+                <InputBase
+                  placeholder="Search…"
+                  classes={{
+                    root: classes.inputRoot,
+                    input: classes.inputInput,
                   }}
-                >
-                  {localChurch}
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton 
-                    component="span"
-                    onClick={handleAddOpen}
-                  >
-                    <AddCircleIcon 
-                      style={{ 
-                        fontSize: 35, 
-                        color: '#FFFAF0'
-                      }}
-                    />
-                  </IconButton>
-                  <IconButton 
-                    component="span"
-                    onClick={handleDeleteOpen}
-                  >
-                    <DeleteIcon 
-                      style={{ 
-                        fontSize: 35, 
-                        color: '#FFFAF0'
-                      }}
-                    />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-          </Table>
-        </TableContainer>
-    )
-}
+                  inputProps={{ 'aria-label': 'search' }}
+                  onChange={onSearchChange}
+                />
+              </div>
+            </TableCell>
+            <TableCell className={classes.localChurchName}>
+              {localChurch || 'Local Church Name'}
+            </TableCell>
+            <TableCell align="right">
+              <IconButton component="span" onClick={handleAddOpen}>
+                <AddCircleIcon className={classes.addIcon} />
+              </IconButton>
+              <IconButton component="span" onClick={handleDeleteOpen}>
+                <DeleteIcon className={classes.deleteIcon} />
+              </IconButton>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+      </Table>
+    </TableContainer>
+  );
+};
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      boxShadow: 'none',
+    },
     header: {
-      backgroundColor: theme.palette.primary.light
+      backgroundColor: themeExtension.card.backgroundColor,
     },
     search: {
       position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
-      },
       marginRight: theme.spacing(2),
       marginLeft: 0,
       width: '100%',
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: themeExtension.sideBar.backgroundColor,
+      color: themeExtension.typography.common.color,
+      transition: themeExtension.transition.fast,
+      '&:hover': {
+        backgroundColor: themeExtension.palette.common.lightBlue,
+        color: 'white',
+      },
       [theme.breakpoints.up('sm')]: {
         width: '200px',
       },
@@ -115,6 +109,18 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
+    addIcon: {
+      fontSize: 35,
+      ...themeExtension.button.icon,
+    },
+    deleteIcon: {
+      fontSize: 35,
+      ...themeExtension.button.icon,
+    },
+    localChurchName: {
+      fontSize: 25,
+      color: themeExtension.typography.common.color,
+    },
     inputRoot: {
       color: 'inherit',
     },
@@ -127,10 +133,9 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         width: '20ch',
       },
-      color: '#FFFAF0'
     },
     table: {
       minWidth: 650,
     },
-  })
-)
+  }),
+);
