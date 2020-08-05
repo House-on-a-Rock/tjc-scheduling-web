@@ -1,4 +1,5 @@
 import React from 'react';
+import { sideBarTheme } from '../../../shared/styles/theme.js';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -24,8 +25,8 @@ export const MembersSidebar = ({firstName, lastName, email, church, roles}: Memb
 
     return (
         <Grid item xs={3}>
-        <List component={Paper} subheader={
-          <ListSubheader className={classes.sidebar} component={Paper}>
+        <List component={Paper} className={classes.sidebar} subheader={
+          <ListSubheader className={classes.listSubheader} component={Paper}>
             Info
           </ListSubheader>}
         >
@@ -43,9 +44,9 @@ export const MembersSidebar = ({firstName, lastName, email, church, roles}: Memb
           </ListItem>
         </List>
         <Divider/>
-        <List component={Paper}
+        <List component={Paper} className={classes.sidebar}
           subheader={
-          <ListSubheader className={classes.sidebar} component={Paper}>
+          <ListSubheader className={classes.listSubheader} component={Paper}>
             Roles
           </ListSubheader>
           }>
@@ -63,9 +64,13 @@ export const MembersSidebar = ({firstName, lastName, email, church, roles}: Memb
 
 const useStyles = makeStyles((theme: Theme) => 
   createStyles({
-    sidebar: {
+    sidebar:{
+      backgroundColor: sideBarTheme.backgroundColor,
+      boxShadow: sideBarTheme.boxShadow,
+    },
+    listSubheader: {
       backgroundColor: theme.palette.primary.light,
-      color: theme.palette.primary.contrastText
+      color: theme.palette.primary.contrastText,
     },
     paper: {
       backgroundColor: theme.palette.background.paper,

@@ -69,21 +69,17 @@ const DragDropContextWrapper = ({
 
   const onDragEnd: (result: DropResult) => void = useCallback(
     ({ source, destination }: DropResult) => {
+      handleDraggedItem({
+        member: { id: '', name: '' },
+        source: '', // always reset (cleans up classes)
+      });
       if (!destination) return;
       switch (source.droppableId) {
         case destination.droppableId:
           handleTeams(reorder(teams, source, destination));
-          handleDraggedItem({
-            member: { id: '', name: '' },
-            source: '',
-          });
           break;
         case 'USERBANK':
           handleTeams(add(MEMBERS, teams, source, destination));
-          handleDraggedItem({
-            member: { id: '', name: '' },
-            source: '',
-          });
           break;
         default:
           break;
