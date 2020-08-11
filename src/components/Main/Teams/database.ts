@@ -23,7 +23,7 @@ export const TEAMS: BackendTeamsData[] = [
     ],
   },
   {
-    role: 'Announcers',
+    role: 'Church Council',
     members: [
       { id: uuid(), name: 'Yvonne Wong' },
       { id: uuid(), name: 'Sun-Yu Yang' },
@@ -40,6 +40,17 @@ export const TEAMS: BackendTeamsData[] = [
       { id: uuid(), name: 'Rebecca Lin' },
     ],
   },
+  {
+    role: 'Hymn Leader',
+    members: [
+      { id: uuid(), name: 'Shenney Lin' },
+      { id: uuid(), name: 'Chloe Lin' },
+      { id: uuid(), name: 'Vinnie Lin' },
+      { id: uuid(), name: 'Qianwei Liu' },
+      { id: uuid(), name: 'Xingru Wang' },
+      { id: uuid(), name: 'Shaun Tung' },
+    ],
+  },
 ];
 
 export const MEMBERS: MembersData[] = [
@@ -53,6 +64,7 @@ export const MEMBERS: MembersData[] = [
   { id: uuid(), name: 'Joseph Wu' },
   { id: uuid(), name: 'Brenda Ong' },
   { id: uuid(), name: 'Thomas Hsu' },
+  { id: uuid(), name: 'Xingru Wang' },
   { id: uuid(), name: 'Qianwei Liu' },
   { id: uuid(), name: 'Chloe Lin' },
   { id: uuid(), name: 'Vinnie Lin' },
