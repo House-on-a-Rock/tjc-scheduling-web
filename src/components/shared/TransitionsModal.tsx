@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from '../../shared/types/useSelector';
+import { useSelector } from '../../shared/utilities';
 
 // Material UI components
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -11,67 +11,67 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        modal: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        paper: {
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-        },
-    }),
+  createStyles({
+    modal: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    paper: {
+      backgroundColor: theme.palette.background.paper,
+      border: '2px solid #000',
+      boxShadow: theme.shadows[5],
+      padding: theme.spacing(2, 4, 3),
+    },
+  }),
 );
 
 interface TransitionsModalProps {
-    open: boolean;
-    setOpen: (arg0: boolean) => void;
-    description?: string;
+  open: boolean;
+  setOpen: (arg0: boolean) => void;
+  description?: string;
 }
 
 export const TransitionsModal = ({
-    open,
-    setOpen,
-    description,
+  open,
+  setOpen,
+  description,
 }: TransitionsModalProps) => {
-    const classes = useStyles();
-    const status = useSelector(({ load }) => load.loadStatus.AUTH);
+  const classes = useStyles();
+  const status = useSelector(({ load }) => load.loadStatus.AUTH);
 
-    return (
-        <>
-            <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                className={classes.modal}
-                open={open}
-                onClose={() => setOpen(false)}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={open}>
-                    <div className={classes.paper}>
-                        <h2 id="transition-modal-title">Transition modal</h2>
-                        {status === 'LOADING' ? (
-                            <CircularProgress />
-                        ) : (
-                            status === 'LOADED' && (
-                                <>
-                                    <p>{description}</p>
-                                    <Button component={Link} to="/auth/login">
-                                        Click to go back to login page
-                                    </Button>
-                                </>
-                            )
-                        )}
-                    </div>
-                </Fade>
-            </Modal>
-        </>
-    );
+  return (
+    <>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={() => setOpen(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <h2 id="transition-modal-title">Transition modal</h2>
+            {status === 'LOADING' ? (
+              <CircularProgress />
+            ) : (
+              status === 'LOADED' && (
+                <>
+                  <p>{description}</p>
+                  <Button component={Link} to="/auth/login">
+                    Click to go back to login page
+                  </Button>
+                </>
+              )
+            )}
+          </div>
+        </Fade>
+      </Modal>
+    </>
+  );
 };

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { secretIp } from '../../../secrets/secretStuff';
-import { extractUserId } from '../../shared/helper_functions';
+import { extractUserId } from '../../shared/utilities/helperFunctions';
 
 export function getAllUsers(): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');

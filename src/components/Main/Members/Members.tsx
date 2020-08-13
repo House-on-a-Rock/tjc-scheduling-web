@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../../shared/types/useSelector';
+import { useSelector } from '../../../shared/utilities';
 
 // material UI
 import Grid from '@material-ui/core/Grid';
@@ -17,17 +17,22 @@ import { MembersHeader } from './MembersHeader';
 import { MembersUsersTable } from './MembersUsersTable';
 
 // actions
-import { onLoadMembers, onLoadUser, onDeleteMembers, onAddMember } from '../../../store/actions';
+import {
+  onLoadMembers,
+  onLoadUser,
+  onDeleteMembers,
+  onAddMember,
+} from '../../../store/actions';
 
 // other stuffs
-import {isValidEmail} from '../../../shared/helper_functions';
+import { isValidEmail } from '../../../shared/utilities/helperFunctions';
 
 // types
-import {MemberStateData} from '../../../store/types';
+import { MemberStateData } from '../../../store/types';
 
 const styleHead: CSS.Properties = {
-  fontWeight: 'bold'
-}
+  fontWeight: 'bold',
+};
 
 export const Members = () => {
   // hooks
@@ -39,14 +44,14 @@ export const Members = () => {
     firstName: '',
     lastName: '',
     email: '',
-    church: { name: ''},
+    church: { name: '' },
     disabled: false,
     roles: [],
-  }
+  };
   // reducer state
-  const members = useSelector(({members}) => members.members);
-  const selectedUser = useSelector(({members}) => members.selectedUser);
-  const localChurch = useSelector(({members}) => members.localChurch);
+  const members = useSelector(({ members }) => members.members);
+  const selectedUser = useSelector(({ members }) => members.selectedUser);
+  const localChurch = useSelector(({ members }) => members.localChurch);
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -58,7 +63,7 @@ export const Members = () => {
   useEffect(() => {
     dispatch(onLoadMembers());
     dispatch(onLoadUser(initialSelectedState));
-  }, [])
+  }, []);
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -67,19 +72,25 @@ export const Members = () => {
     } else {
       setSelectedRows([]);
     }
-  }
-
-  const handleDeleteMembers = async () => {
-      dispatch(onDeleteMembers(selectedRows))
-      setSelectedRows([]);
   };
 
-  const onCloseAddMemberDialog = (shouldAdd: boolean, firstName: string, lastName: string, email: string, password: string) => {
+  const handleDeleteMembers = async () => {
+    dispatch(onDeleteMembers(selectedRows));
+    setSelectedRows([]);
+  };
+
+  const onCloseAddMemberDialog = (
+    shouldAdd: boolean,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ) => {
     setIsAddUserDialogOpen(false);
     if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
       dispatch(onAddMember(firstName, lastName, email, password));
     }
-  }
+  };
 
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
@@ -90,47 +101,51 @@ export const Members = () => {
         newSelectedRows = [...selectedRows, row.id]; // all but first row
       } else if (selectedIndex === 0) {
         newSelectedRows = selectedRows.slice(1);
-      } else if (selectedIndex === selectedRows.length -1) {
+      } else if (selectedIndex === selectedRows.length - 1) {
         newSelectedRows = selectedRows.slice(0, -1); // all but last row
       } else if (selectedIndex > 0) {
         newSelectedRows = [
-          ...selectedRows.slice(0, selectedIndex), 
+          ...selectedRows.slice(0, selectedIndex),
           ...selectedRows.slice(selectedIndex + 1),
         ];
       }
     } else {
-      if (selectedIndex === -1)
-        newSelectedRows = [row.id]
+      if (selectedIndex === -1) newSelectedRows = [row.id];
       else
-        newSelectedRows = [...selectedRows.slice(0, selectedIndex), ...selectedRows.slice(selectedIndex + 1)];
+        newSelectedRows = [
+          ...selectedRows.slice(0, selectedIndex),
+          ...selectedRows.slice(selectedIndex + 1),
+        ];
     }
     dispatch(onLoadUser(row));
     setSelectedRows(newSelectedRows);
-  }
+  };
 
-  const filteredUsers = members.filter(function(row: any) {
+  const filteredUsers = members.filter(function (row: any) {
     for (var key in row) {
-      if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church') continue;
+      if (key === 'roles' || key === 'id' || key === 'ChurchId' || key === 'church')
+        continue;
       if (key === 'disabled') {
-        if (row[key].toString().toLowerCase().includes(searchField.toLowerCase())) return true;
+        if (row[key].toString().toLowerCase().includes(searchField.toLowerCase()))
+          return true;
       } else {
         if (row[key].toLowerCase().includes(searchField.toLowerCase())) return true;
       }
     }
     return false;
-  })
+  });
 
   return (
     <Grid container spacing={3}>
-      <MembersSidebar 
-        firstName={selectedUser.firstName} 
+      <MembersSidebar
+        firstName={selectedUser.firstName}
         lastName={selectedUser.lastName}
         email={selectedUser.email}
-        church={selectedUser.church.name} 
+        church={selectedUser.church.name}
         roles={selectedUser.roles}
       />
       <Grid item xs={9}>
-        <MembersHeader 
+        <MembersHeader
           localChurch={localChurch}
           onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchField(event.target.value);
@@ -142,7 +157,7 @@ export const Members = () => {
             if (selectedRows.length > 0) setIsConfirmDialogOpen(!isConfirmDialogOpen);
           }}
         />
-        <MembersUsersTable 
+        <MembersUsersTable
           selected={selectedRows.length > 0}
           handleCheck={handleSelectAllClick}
           members={filteredUsers}
@@ -150,15 +165,19 @@ export const Members = () => {
           handleClick={handleRowClick}
         />
       </Grid>
-      <ConfirmationDialog 
-        isOpen={isConfirmDialogOpen} 
+      <ConfirmationDialog
+        isOpen={isConfirmDialogOpen}
         handleClick={(shouldDelete: boolean) => {
-          setIsConfirmDialogOpen(!isConfirmDialogOpen); 
+          setIsConfirmDialogOpen(!isConfirmDialogOpen);
           shouldDelete && handleDeleteMembers();
-        }} 
-        title='Confirm Delete Action'
+        }}
+        title="Confirm Delete Action"
       />
-      <FormDialog isOpen={isAddUserDialogOpen} handleClose={onCloseAddMemberDialog} title='Add User'/>
+      <FormDialog
+        isOpen={isAddUserDialogOpen}
+        handleClose={onCloseAddMemberDialog}
+        title="Add User"
+      />
     </Grid>
   );
 };

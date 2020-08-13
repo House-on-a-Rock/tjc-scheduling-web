@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../shared/types/useSelector';
+import { useSelector } from '../../shared/utilities';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 // Custom Components
@@ -25,14 +25,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { checkCredentials } from '../../store/actions';
 
 // Types
-import { HttpError, PasswordState, EmailState } from '../../shared/types/models';
+import { HttpError, PasswordState, EmailState } from '../../shared/types';
 import { PasswordForm } from '../shared';
 import {
   setLocalStorageState,
   removeLocalStorageState,
   getLocalStorageState,
   isValidEmail,
-} from '../../shared/helper_functions';
+} from '../../shared/utilities/helperFunctions';
 import { EmailForm } from '../shared/EmailForm';
 
 export const Login = () => {

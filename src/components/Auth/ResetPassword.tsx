@@ -6,8 +6,8 @@ import zxcvbn, { ZXCVBNResult } from 'zxcvbn';
 import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
-import { PasswordState } from '../../shared/types/models';
-import { useQuery } from '../../shared/helper_functions';
+import { PasswordState } from '../../shared/types';
+import { useQuery } from '../../shared/utilities/helperFunctions';
 
 // Material UI
 import Button from '@material-ui/core/Button';

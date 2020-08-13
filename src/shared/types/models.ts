@@ -27,3 +27,12 @@ export interface JWTDataType {
   exp: string;
   type: string;
 }
+
+export interface ColumnFields {
+  title: string;
+  field: string;
+}
+
+export type DayIndexOptions = {
+  [key: string]: number;
+};

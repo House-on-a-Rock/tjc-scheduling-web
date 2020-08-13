@@ -1,6 +1,9 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
+import {
+  errorDataExtractor,
+  extractUserId,
+} from '../../shared/utilities/helperFunctions';
 import { AuthStateActions } from '.';
 import {
   getOneUser,

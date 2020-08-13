@@ -2,7 +2,7 @@ import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { sendAuthEmail } from '../../store/actions';
-import { HttpError, EmailState } from '../../shared/types/models';
+import { HttpError, EmailState } from '../../shared/types';
 import { TransitionsModal } from './TransitionsModal';
 
 // Material UI
@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import { useQuery, isValidEmail } from '../../shared/helper_functions';
+import { useQuery, isValidEmail } from '../../shared/utilities/helperFunctions';
 import { EmailForm } from './EmailForm';
 
 const useStyles = makeStyles((theme) => ({
