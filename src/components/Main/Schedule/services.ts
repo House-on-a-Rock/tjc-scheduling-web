@@ -1,6 +1,5 @@
 // export function
 import { DayIndexOptions } from '../../../shared/types';
-import { v1String } from 'uuid/interfaces';
 
 const idxToMonth = [
   'Jan',
@@ -16,8 +15,6 @@ const idxToMonth = [
   'Nov',
   'Dec',
 ];
-
-// type DayIndexOptions
 
 const dayIndex: DayIndexOptions = {
   Sunday: 0,
@@ -49,7 +46,7 @@ export function everyBeepDayBetweenTwoDates(
 ) {
   let everyBeepDay = [];
   let start = new Date(startDate);
-  console.log(start);
+
   if (start.getDay() !== dayIndex[day])
     start = determineStartDate(startDate, dayIndex[day]);
 
@@ -68,6 +65,31 @@ export function columnizedDates(everyBeepDay: string[]) {
     const jsDate = new Date(date);
     const month = jsDate.getMonth();
     const day = jsDate.getDate();
-    return { title: `${month + 1}/${day}`, field: `${idxToMonth[month]}${day}` };
+    return { title: `${month + 1}/${day}`, field: `${month + 1}/${day}` };
   });
+}
+
+export function isInTime(target: string, start: string, end: string): boolean {
+  const targetTime = timeToMilliSeconds(target);
+  const startTime = timeToMilliSeconds(start);
+  const endTime = timeToMilliSeconds(end);
+  return startTime <= targetTime && targetTime <= endTime;
+}
+
+export function timeToMilliSeconds(time: string) {
+  const timeSplit = time.split(' ');
+  let [hour, min, period] = [...timeSplit[0].split(':'), timeSplit[1]];
+  let convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
+  let convertedMin = 60000 * parseInt(min);
+  let convertedPeriod = period === 'AM' ? 0 : 43200000;
+
+  return convertedHour + convertedMin + convertedPeriod;
+}
+
+export function createColumns(daterange: any, day: any) {
+  return [
+    { title: 'Time', field: 'time' },
+    { title: 'Duty', field: 'duty' },
+    ...columnizedDates(everyBeepDayBetweenTwoDates(daterange[0], daterange[1], day)),
+  ];
 }
