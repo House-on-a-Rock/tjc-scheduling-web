@@ -29,11 +29,11 @@ export const Home = () => {
   };
   const { daterange, weeklyEvents } = SCHEDULE[value];
 
-  let mappedSchedule: MappedScheduleInterface[] = [];
+  let allSchedulesForTheWeek: MappedScheduleInterface[] = [];
   SCHEDULE[value].weeklyEvents.map((schedule: WeeklyEventData, index: number) => {
     const { day, events, dividers } = weeklyEvents[index];
     const columns = createColumns(daterange, day);
-    let allDaySchedule: MappedScheduleInterface[] = [];
+    let fullDaySchedule: MappedScheduleInterface[] = [];
 
     dividers.map((divider: Divider) => {
       let data: WeeklyAssignmentInterface[] = [];
@@ -46,22 +46,23 @@ export const Home = () => {
           duties.map((duty: DutyData, index: number) => {
             const { title, tasks } = duty;
             let assignments: WeeklyAssignmentInterface = { duty: title };
+            if (index === 0) assignments.time = time;
+
             tasks.map((task: TaskData) => {
               const { date, assignee } = task;
               const assignedDate = contrivedDate(date);
               assignments[assignedDate] = assignee;
             });
 
-            if (index === 0) assignments.time = time;
             everyWeeksAssignment.push(assignments);
           });
         data = [...data, ...everyWeeksAssignment];
       });
 
-      allDaySchedule.push({ day, columns, data, name });
+      fullDaySchedule.push({ day, columns, data, name });
     });
 
-    mappedSchedule = [...mappedSchedule, ...allDaySchedule];
+    allSchedulesForTheWeek = [...allSchedulesForTheWeek, ...fullDaySchedule];
   });
 
   return (
@@ -79,25 +80,27 @@ export const Home = () => {
         <Tab label="+" />
       </Tabs>
       <Container component="main" style={{ maxWidth: '100%' }}>
-        {mappedSchedule.map(({ columns, data, day, name }: MappedScheduleInterface) => {
-          return (
-            <MaterialTable
-              columns={columns}
-              data={data}
-              title={`${day} ${name}`}
-              options={{
-                paging: false,
-                fixedColumns: {
-                  left: 2,
-                  right: 0,
-                },
-                search: false,
-                sorting: false,
-                draggable: false,
-              }}
-            />
-          );
-        })}
+        {allSchedulesForTheWeek.map(
+          ({ columns, data, day, name }: MappedScheduleInterface) => {
+            return (
+              <MaterialTable
+                columns={columns}
+                data={data}
+                title={`${day} ${name}`}
+                options={{
+                  paging: false,
+                  search: false,
+                  sorting: false,
+                  draggable: false,
+                  fixedColumns: {
+                    left: 2,
+                    right: 0,
+                  },
+                }}
+              />
+            );
+          },
+        )}
       </Container>
     </>
   );
