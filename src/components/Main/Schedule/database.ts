@@ -1,52 +1,6 @@
 import { v4 as uuid } from 'uuid';
-import { ColumnFields } from '../../../shared/types';
-// import { BackendTeamsData, MembersData } from './models';
+import { ScheduleData } from '../../../shared/types';
 
-export const MEMBERS: any = [];
-
-// consistent schedule
-export interface TasksData {
-  date: string;
-  assignee: string;
-}
-export interface DutyData {
-  title: string;
-  tasks: TasksData[];
-  team?: string;
-}
-export interface EventData {
-  time: string;
-  duties: DutyData[];
-  tag?: string;
-}
-export interface WeeklyEventData {
-  day: string;
-  events: EventData[];
-  dividers: Divider[];
-  order: number;
-}
-export interface TimeRange {
-  start: string;
-  end: string;
-}
-export interface Divider {
-  name: string;
-  timerange: TimeRange;
-}
-export interface ScheduleData {
-  title: string;
-  id: string;
-  view: string;
-  daterange: string[];
-  weeklyEvents: WeeklyEventData[];
-  specificEvents?: any[];
-}
-
-export interface ScheduleInterface {
-  columns: ColumnFields[];
-  day: string;
-  // data:
-}
 export const SCHEDULE: ScheduleData[] = [
   {
     title: 'Main',
@@ -430,36 +384,47 @@ export const SCHEDULE: ScheduleData[] = [
     ],
     specificEvents: [],
   },
-  // {
-  //   title: 'Religious Education',
-  //   id: uuid(),
-  //   view: 'monthly',
-  //   daterange: ['2020/09/19', '2020/09/19'],
-  //   weeklyEvents: [
-  //     {
-  //       day: 'Saturday',
-  //       events: [
-  //         {
-  //           time: '11:00 AM',
-  //           duties: [
-  //             {
-  //               title: 'E1 Teacher',
-  //               tasks: [{ date: '2020/09/19', assignee: 'Joseph Wu' }],
-  //             },
-  //             {
-  //               title: 'Kindegarten Teacher',
-  //               tasks: [{ date: '2020/09/19', assignee: 'Yvonne Wong' }],
-  //             },
-  //           ],
-  //         },
-  //         // {
-  //         //   time: '1:30 PM',
-  //         //   duties: [{ title: 'E2 Teacher' }, { title: 'J2 Teacher' }],
-  //         // },
-  //       ],
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Religious Education',
+    id: uuid(),
+    view: 'monthly',
+    daterange: ['2020/09/19', '2020/09/19'],
+    weeklyEvents: [
+      {
+        day: 'Saturday',
+        dividers: [{ name: null, timerange: { start: '11:00 AM', end: '1:30 PM' } }],
+        order: 1,
+        events: [
+          {
+            time: '11:00 AM',
+            duties: [
+              {
+                title: 'E1 Teacher',
+                tasks: [{ date: '2020/09/19', assignee: 'Joseph Wu' }],
+              },
+              {
+                title: 'Kindegarten Teacher',
+                tasks: [{ date: '2020/09/19', assignee: 'Yvonne Wong' }],
+              },
+            ],
+          },
+          {
+            time: '1:30 PM',
+            duties: [
+              {
+                title: 'E2 Teacher',
+                tasks: [{ date: '2020/09/19', assignee: 'Joannie Yeh' }],
+              },
+              {
+                title: 'J2 Teacher',
+                tasks: [{ date: '2020/09/19', assignee: 'Sun-yu Yang' }],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const TASKS = [{}];

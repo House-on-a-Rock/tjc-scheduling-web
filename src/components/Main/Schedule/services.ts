@@ -65,7 +65,11 @@ export function columnizedDates(everyBeepDay: string[]) {
     const jsDate = new Date(date);
     const month = jsDate.getMonth();
     const day = jsDate.getDate();
-    return { title: `${month + 1}/${day}`, field: `${month + 1}/${day}` };
+    return {
+      title: `${month + 1}/${day}`,
+      field: `${month + 1}/${day}`,
+      cellStyle: { borderStyle: 'solid solid none none', borderWidth: '1px' },
+    };
   });
 }
 
@@ -88,8 +92,23 @@ export function timeToMilliSeconds(time: string) {
 
 export function createColumns(daterange: any, day: any) {
   return [
-    { title: 'Time', field: 'time' },
-    { title: 'Duty', field: 'duty' },
+    {
+      title: 'Time',
+      field: 'time',
+      cellStyle: { borderStyle: 'solid none solid solid', borderWidth: '1px' },
+    },
+    {
+      title: 'Duty',
+      field: 'duty',
+      cellStyle: { borderStyle: 'solid none solid none', borderWidth: '1px' },
+    },
     ...columnizedDates(everyBeepDayBetweenTwoDates(daterange[0], daterange[1], day)),
   ];
 }
+
+export const contrivedDate = (date: string) => {
+  const jsDate = new Date(date);
+  const month = jsDate.getMonth();
+  const day = jsDate.getDate();
+  return `${month + 1}/${day}`;
+};

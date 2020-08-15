@@ -36,3 +36,62 @@ export interface ColumnFields {
 export type DayIndexOptions = {
   [key: string]: number;
 };
+
+export interface WeeklyAssignmentInterface {
+  time?: string;
+  duty: string;
+  [key: string]: string;
+}
+export interface MappedScheduleInterface {
+  day: string;
+  name: string;
+  columns: ColumnFields[];
+  data: WeeklyAssignmentInterface[];
+}
+
+export interface WeeklyAssignment {
+  [key: string]: string;
+}
+
+export interface TaskData {
+  date: string;
+  assignee: string;
+}
+export interface DutyData {
+  title: string;
+  tasks: TaskData[];
+  team?: string;
+}
+export interface EventData {
+  time: string;
+  duties: DutyData[];
+  tag?: string;
+}
+export interface WeeklyEventData {
+  day: string;
+  events: EventData[];
+  dividers: Divider[];
+  order: number;
+}
+export interface TimeRange {
+  start: string;
+  end: string;
+}
+export interface Divider {
+  name: string;
+  timerange: TimeRange;
+}
+export interface ScheduleData {
+  title: string;
+  id: string;
+  view: string;
+  daterange: string[];
+  weeklyEvents: WeeklyEventData[];
+  specificEvents?: any[];
+}
+
+export interface ScheduleInterface {
+  columns: ColumnFields[];
+  day: string;
+  // data:
+}
