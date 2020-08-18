@@ -92,11 +92,16 @@ export const Home = () => {
                   search: false,
                   sorting: false,
                   draggable: false,
+                  exportButton: true,
                   fixedColumns: {
                     left: 2,
                     right: 0,
                   },
+                  selection: true,
                 }}
+                // editable={{
+                //   is,
+                // }}
               />
             );
           },
