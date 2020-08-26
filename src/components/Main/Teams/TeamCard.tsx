@@ -1,5 +1,7 @@
 import React from 'react';
 import { MembersData, DraggedItem } from './models';
+import { cardTheme } from '../../../shared/styles/theme';
+import { verticalScrollBoxShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 // Material UI Components
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -19,7 +21,7 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
   const classes = useStyles();
   const canDrop: () => boolean = () =>
     draggedItem.source === 'USERBANK'
-      ? members
+      ? !members
           .map((member: MembersData) => member.name)
           .includes(draggedItem.member.name)
       : !(draggedItem.source === type);
@@ -34,7 +36,7 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
           Write a long form description here
         </Typography>
       </CardContent>
-      <Divider orientation="vertical" flexItem />
+      <Divider orientation="vertical" className={classes.divider} />
       <CardContent className={classes.list} style={{ overflow: 'auto' }}>
         <DroppableTeamMembersList
           role={type}
@@ -49,21 +51,29 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
+    ...cardTheme,
     display: 'flex',
     margin: '.5em',
     height: '20vh',
-    // backgroundColor: 'yellow',
+    borderRadius: '1rem',
+    transition: '0',
   },
   details: {
+    width: '15vw',
     display: 'flex',
     flexDirection: 'column',
-    width: '15vw',
-    // backgroundColor: 'red',
+    justifyContent: 'center',
+  },
+  divider: {
+    height: '90%',
+    margin: '1em 0',
+    position: 'relative',
+    top: '-0.5em',
   },
   list: {
+    ...verticalScrollBoxShadow('white'),
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: 'blue',
     width: '79%',
   },
 }));

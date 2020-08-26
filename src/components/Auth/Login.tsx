@@ -103,7 +103,7 @@ export const Login = () => {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" className={classes.root}>
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -167,8 +167,14 @@ export const Login = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    [theme.breakpoints.down('xs')]: {
+      position: 'absolute',
+      bottom: 0,
+    },
+  },
   paper: {
-    marginTop: theme.spacing(25),
+    marginTop: '20%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

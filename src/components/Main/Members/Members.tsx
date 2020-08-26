@@ -98,9 +98,9 @@ export const Members = () => {
     let newSelectedRows: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
-        newSelectedRows = [...selectedRows, row.id]; // all but first row
+        newSelectedRows = [...selectedRows, row.id];
       } else if (selectedIndex === 0) {
-        newSelectedRows = selectedRows.slice(1);
+        newSelectedRows = selectedRows.slice(1); // all but first row
       } else if (selectedIndex === selectedRows.length - 1) {
         newSelectedRows = selectedRows.slice(0, -1); // all but last row
       } else if (selectedIndex > 0) {

@@ -11,11 +11,11 @@ import {
 } from 'react-beautiful-dnd';
 import './UserBank.css';
 import {
-  paletteTheme,
   transitionTheme,
   sideBarTheme,
   buttonTheme,
 } from '../../../shared/styles/theme.js';
+import { verticalScrollBoxShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -109,14 +109,18 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      ...verticalScrollBoxShadow('#edeef3'),
       backgroundColor: sideBarTheme.backgroundColor,
       boxShadow: sideBarTheme.boxShadow,
       borderRadius: 0,
       padding: '0 1rem',
+      maxHeight: '90vh',
+      overflow: 'auto',
     },
     listSubheader: {
       fontSize: theme.typography.h3.fontSize,
       color: theme.typography.h3.color,
+      position: 'static',
     },
     member: {
       transition: transitionTheme.fast,
