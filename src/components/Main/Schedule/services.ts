@@ -81,8 +81,8 @@ export function isInTime(target: string, start: string, end: string): boolean {
 }
 
 export function timeToMilliSeconds(time: string) {
-  const timeSplit = time.split(' ');
-  let [hour, min, period] = [...timeSplit[0].split(':'), timeSplit[1]];
+  const [hourMin, period] = time.split(' ');
+  const [hour, min] = hourMin.split(':');
   let convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
   let convertedMin = 60000 * parseInt(min);
   let convertedPeriod = period === 'AM' ? 0 : 43200000;

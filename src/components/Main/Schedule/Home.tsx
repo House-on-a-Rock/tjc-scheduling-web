@@ -77,7 +77,7 @@ export const Home = () => {
         {SCHEDULE.map((schedule: any) => {
           return <Tab label={schedule.title} />;
         })}
-        <Tab label="+" />
+        <Tab label="+" disabled />
       </Tabs>
       <Container component="main" style={{ maxWidth: '100%' }}>
         {allSchedulesForTheWeek.map(
