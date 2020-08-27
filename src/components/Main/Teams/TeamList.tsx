@@ -15,24 +15,22 @@ interface TeamListProps {
   draggedMember: DraggedItem;
 }
 
-export const TeamList = ({ teams, draggedMember }: TeamListProps) => {
-  return (
-    <>
-      <Typography variant="h4" align="center">
-        Teams
-      </Typography>
-      {Object.keys(teams).map((role, index) => (
-        <TeamCard
-          key={`team-${index}`}
-          type={role}
-          members={Object.values(teams)[index]}
-          draggedItem={draggedMember}
-        />
-      ))}
-      <NewTeamCard />
-    </>
-  );
-};
+export const TeamList = ({ teams, draggedMember }: TeamListProps) => (
+  <>
+    <Typography variant="h4" align="center">
+      Teams
+    </Typography>
+    {Object.entries(teams).map(([role, team], index) => (
+      <TeamCard
+        key={`team-${index}`}
+        type={role}
+        members={team}
+        draggedItem={draggedMember}
+      />
+    ))}
+    <NewTeamCard />
+  </>
+);
 
 const NewTeamCard = ({ handleClick }: any) => {
   const classes = useStyles();

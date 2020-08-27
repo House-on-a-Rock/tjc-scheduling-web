@@ -19,12 +19,13 @@ interface TeamCardProps {
 
 export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
   const classes = useStyles();
-  const canDrop: () => boolean = () =>
-    draggedItem.source === 'USERBANK'
+  const canDrop: () => boolean = () => {
+    return draggedItem.source === 'USERBANK'
       ? !members
           .map((member: MembersData) => member.name)
           .includes(draggedItem.member.name)
-      : !(draggedItem.source === type);
+      : draggedItem.source === type;
+  };
 
   return (
     <Card className={classes.root}>

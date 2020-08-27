@@ -62,7 +62,13 @@ const DragDropContextWrapper = ({
 }: DragDropContextWrapperProps) => {
   const onDragStart: (result: DropResult) => void = useCallback(
     ({ source }: DropResult) => {
-      handleDraggedItem({ member: MEMBERS[source.index], source: source.droppableId });
+      const member =
+        source.droppableId === 'USERBANK'
+          ? MEMBERS[source.index]
+          : TEAMS[TEAMS.findIndex((team) => team.role === source.droppableId)].members[
+              source.index
+            ];
+      handleDraggedItem({ member: member, source: source.droppableId });
     },
     [handleDraggedItem],
   );
