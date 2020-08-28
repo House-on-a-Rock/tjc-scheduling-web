@@ -24,7 +24,7 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
       ? !members
           .map((member: MembersData) => member.name)
           .includes(draggedItem.member.name)
-      : !(draggedItem.source === type);
+      : draggedItem.source === type || draggedItem.source === '';
 
   return (
     <Card className={classes.root}>
