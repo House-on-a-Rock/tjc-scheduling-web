@@ -1,6 +1,6 @@
 // indicate there's more to scroll with a subtle shadow https://codepen.io/hchiam/pen/bGEJweq
 
-export const verticalScrollBoxShadow = (backgroundColor: string) => {
+export const verticalScrollIndicatorShadow = (backgroundColor: string = 'white') => {
   return {
     background: `linear-gradient(
       ${backgroundColor},
@@ -17,7 +17,7 @@ export const verticalScrollBoxShadow = (backgroundColor: string) => {
   };
 };
 
-export const horizontalScrollBoxShadow = (backgroundColor: string) => {
+export const horizontalScrollIndicatorShadow = (backgroundColor: string = 'white') => {
   return {
     background: `linear-gradient(
       ${backgroundColor},

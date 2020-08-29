@@ -15,7 +15,7 @@ import {
   sideBarTheme,
   buttonTheme,
 } from '../../../shared/styles/theme.js';
-import { verticalScrollBoxShadow } from '../../../shared/styles/scroll-indicator-shadow';
+import { verticalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 // Material UI Components
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -109,7 +109,7 @@ const DroppableBank = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      ...verticalScrollBoxShadow('#edeef3'),
+      ...verticalScrollIndicatorShadow('#edeef3'),
       backgroundColor: sideBarTheme.backgroundColor,
       boxShadow: sideBarTheme.boxShadow,
       borderRadius: 0,
