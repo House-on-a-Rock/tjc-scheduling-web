@@ -7,7 +7,7 @@ import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
 import { PasswordState } from '../../shared/types/models';
-import { useQuery } from '../../shared/helper_functions';
+import { useQuery } from '../../shared/utilities';
 
 // Material UI
 import Button from '@material-ui/core/Button';

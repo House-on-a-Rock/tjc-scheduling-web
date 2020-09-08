@@ -25,7 +25,7 @@ import {
 } from '../../../store/actions';
 
 // other stuffs
-import { isValidEmail } from '../../../shared/helper_functions';
+import { isValidEmail } from '../../../shared/utilities';
 
 // types
 import { MemberStateData } from '../../../store/types';

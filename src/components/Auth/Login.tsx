@@ -32,7 +32,7 @@ import {
   removeLocalStorageState,
   getLocalStorageState,
   isValidEmail,
-} from '../../shared/helper_functions';
+} from '../../shared/utilities';
 import { EmailForm } from '../shared/EmailForm';
 
 export const Login = () => {
