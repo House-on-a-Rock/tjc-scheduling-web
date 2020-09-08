@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../shared/types/useSelector';
+import { useSelector } from '../../shared/utilities';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 // Custom Components
