@@ -24,7 +24,7 @@ import {
   onAddMember,
 } from '../../../store/actions';
 
-// other stuffs
+// utils
 import { isValidEmail } from '../../../shared/utilities';
 
 // types

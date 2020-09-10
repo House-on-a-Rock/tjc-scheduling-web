@@ -45,14 +45,6 @@ import {
 } from 'react-table';
 
 declare module 'react-table' {
-  //   export interface UseFlexLayoutInstanceProps<D extends object> {
-  //     totalColumnsMinWidth: number;
-  //   }
-
-  //   export interface UseFlexLayoutColumnProps<D extends object> {
-  //     totalMinWidth: number;
-  //   }
-
   export interface TableOptions<D extends object>
     extends UseExpandedOptions<D>,
       UseFiltersOptions<D>,
@@ -72,16 +64,14 @@ declare module 'react-table' {
       UseRowSelectHooks<D>,
       UseSortByHooks<D> {}
 
-  export interface TableInstance<
-    D extends object = {}
-  > extends UseColumnOrderInstanceProps<D>,
+  export interface TableInstance<D extends object = {}>
+    extends UseColumnOrderInstanceProps<D>,
       UseExpandedInstanceProps<D>,
       UseFiltersInstanceProps<D>,
       UseGlobalFiltersInstanceProps<D>,
       UseGroupByInstanceProps<D>,
       UsePaginationInstanceProps<D>,
       UseRowSelectInstanceProps<D>,
-      //   UseFlexLayoutInstanceProps<D>,
       UsePaginationInstanceProps<D>,
       UseSortByInstanceProps<D> {}
 
@@ -110,7 +100,6 @@ declare module 'react-table' {
     extends UseFiltersColumnProps<D>,
       UseGroupByColumnProps<D>,
       UseResizeColumnsColumnProps<D>,
-      //   UseFlexLayoutColumnProps<D>,
       UseSortByColumnProps<D> {}
 
   export interface Cell<D extends object = {}> extends UseGroupByCellProps<D> {}
@@ -120,5 +109,3 @@ declare module 'react-table' {
       UseGroupByRowProps<D>,
       UseRowSelectRowProps<D> {}
 }
-
-// export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler;

@@ -1,4 +1,3 @@
-// export function
 import {
   DayIndexOptions,
   MappedScheduleInterface,
@@ -49,12 +48,12 @@ function determineStartDate(startDate: string, day: number) {
   return current;
 }
 
-export function everyBeepDayBetweenTwoDates(
+export function everyRepeatingDayBetweenTwoDates(
   startDate: string,
   endDate: string,
   day: string,
 ) {
-  let everyBeepDay = [];
+  let everyRepeatingDay = [];
   let start = new Date(startDate);
 
   if (start.getDay() !== dayIndex[day])
@@ -64,10 +63,10 @@ export function everyBeepDayBetweenTwoDates(
   let end = new Date(endDate);
 
   while (current <= end) {
-    everyBeepDay.push(readableDate(current));
+    everyRepeatingDay.push(readableDate(current));
     current = new Date(current.setDate(current.getDate() + 7));
   }
-  return everyBeepDay;
+  return everyRepeatingDay;
 }
 
 const zeroingDates = (num1: number, num2: number): string => {
@@ -77,8 +76,8 @@ const zeroingDates = (num1: number, num2: number): string => {
   return `${month}/${day}`;
 };
 
-export function columnizedDates(everyBeepDay: string[]) {
-  return everyBeepDay.map((date: string) => {
+export function columnizedDates(everyRepeatingDay: string[]) {
+  return everyRepeatingDay.map((date: string) => {
     const jsDate = new Date(date);
     const month = jsDate.getMonth();
     const day = jsDate.getDate();
@@ -86,11 +85,6 @@ export function columnizedDates(everyBeepDay: string[]) {
       Header: zeroingDates(month, day),
       accessor: zeroingDates(month, day),
     };
-    // return {
-    //   title: `${month + 1}/${day}`,
-    //   field: `${month + 1}/${day}`,
-    //   cellStyle: { borderStyle: 'solid solid none none', borderWidth: '1px' },
-    // };
   });
 }
 
@@ -121,7 +115,7 @@ export function createColumns(daterange: any, day: any) {
       Header: 'Duty',
       accessor: 'duty',
     },
-    ...columnizedDates(everyBeepDayBetweenTwoDates(daterange[0], daterange[1], day)),
+    ...columnizedDates(everyRepeatingDayBetweenTwoDates(daterange[0], daterange[1], day)),
   ];
 }
 
