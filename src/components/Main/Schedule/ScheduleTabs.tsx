@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { SCHEDULE } from './database';
-import { memoizeData, makeData } from './services';
 
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
-export const ScheduleTabs = ({ tabIdx, handleChange }: any) => {
+import { ScheduleTabsProps } from '../../../shared/types';
+
+export const ScheduleTabs = ({ tabIdx, handleChange }: ScheduleTabsProps) => {
   return (
     <Tabs
       value={tabIdx}

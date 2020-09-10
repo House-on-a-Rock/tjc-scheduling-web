@@ -1,32 +1,25 @@
 import React from 'react';
+import { useTable } from 'react-table';
+
+// Components
 import { EditableCell } from './EditableCell';
 
+// Material-UI Components
 import MaUTable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import { useTable } from 'react-table';
-import { ColumnFields, WeeklyAssignmentInterface } from '../../../shared/types';
+// Types
+import { TableProps } from '../../../shared/types';
 
-const defaultColumn = {
-  Cell: EditableCell,
-};
-
-interface TableProps {
-  columns: ColumnFields[];
-  data: WeeklyAssignmentInterface[];
-  updateMyData: (rowIndex: number, columnId: string, value: string) => void;
-  title: string;
-}
-
-export function Table(props: TableProps) {
+export const Table = (props: TableProps) => {
   const { columns, data, updateMyData, title } = props;
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
-    defaultColumn,
+    defaultColumn: { Cell: EditableCell },
     updateMyData,
   });
 
@@ -60,4 +53,4 @@ export function Table(props: TableProps) {
       </MaUTable>
     </>
   );
-}
+};

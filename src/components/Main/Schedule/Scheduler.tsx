@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Table } from './Table';
-import { MappedScheduleInterface } from '../../../shared/types';
+import { MappedScheduleInterface, SchedulerProps } from '../../../shared/types';
 
-export const Schedule = ({ schedule }: any) => {
-  const { day, columns, data, name }: MappedScheduleInterface = schedule;
+export const Scheduler = ({ schedule }: SchedulerProps) => {
+  const { day, name, data, columns } = schedule;
   const [scheduleData, setScheduleData] = useState(data);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>

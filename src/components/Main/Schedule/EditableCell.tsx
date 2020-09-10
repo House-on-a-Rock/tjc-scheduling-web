@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-interface EditableCellProps {
-  value: any;
-  row: any;
-  column: any;
-  updateMyData: any;
-}
+import { EditableCellProps } from '../../../shared/types';
 
 export const EditableCell = ({
   value: initialValue,
@@ -13,9 +7,9 @@ export const EditableCell = ({
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
 }: EditableCellProps) => {
+  console.log(initialValue, index, id, updateMyData);
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
-  console.log(initialValue);
 
   const onChange = (e: any) => {
     setValue(e.target.value);

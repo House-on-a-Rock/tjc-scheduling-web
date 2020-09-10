@@ -93,5 +93,33 @@ export interface ScheduleData {
 export interface ScheduleInterface {
   columns: ColumnFields[];
   day: string;
-  // data:
+}
+interface CellIndexType {
+  index: number;
+}
+
+interface CellColumnType {
+  id: string;
+}
+export interface EditableCellProps {
+  value: string;
+  row: CellIndexType;
+  column: CellColumnType;
+  updateMyData: (rowIndex: number, columnId: string, value: string) => void;
+}
+
+export interface TableProps {
+  columns: ColumnFields[];
+  data: WeeklyAssignmentInterface[];
+  updateMyData: (rowIndex: number, columnId: string, value: string) => void;
+  title: string;
+}
+
+export interface SchedulerProps {
+  schedule: MappedScheduleInterface;
+}
+
+export interface ScheduleTabsProps {
+  tabIdx: number;
+  handleChange: (e: React.ChangeEvent, value: number) => void;
 }
