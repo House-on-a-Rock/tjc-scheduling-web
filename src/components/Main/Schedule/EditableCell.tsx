@@ -7,7 +7,6 @@ export const EditableCell = ({
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
 }: EditableCellProps) => {
-  console.log(initialValue, index, id, updateMyData);
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
 
