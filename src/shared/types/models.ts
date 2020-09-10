@@ -29,8 +29,8 @@ export interface JWTDataType {
 }
 
 export interface ColumnFields {
-  title: string;
-  field: string;
+  Header: string;
+  accessor: string;
 }
 
 export type DayIndexOptions = {

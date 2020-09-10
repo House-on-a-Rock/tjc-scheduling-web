@@ -15,6 +15,7 @@ export const EditableCell = ({
 }: EditableCellProps) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
+  console.log(initialValue);
 
   const onChange = (e: any) => {
     setValue(e.target.value);
@@ -30,5 +31,5 @@ export const EditableCell = ({
     setValue(initialValue);
   }, [initialValue]);
 
-  return <input value={value} onChange={onChange} onBlur={onBlur} />;
+  return initialValue ? <input value={value} onChange={onChange} onBlur={onBlur} /> : '';
 };

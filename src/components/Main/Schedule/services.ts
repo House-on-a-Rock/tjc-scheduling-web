@@ -1,5 +1,15 @@
 // export function
-import { DayIndexOptions } from '../../../shared/types';
+import {
+  DayIndexOptions,
+  MappedScheduleInterface,
+  WeeklyEventData,
+  Divider,
+  WeeklyAssignmentInterface,
+  EventData,
+  DutyData,
+  TaskData,
+} from '../../../shared/types';
+import { SCHEDULE } from './database';
 
 const idxToMonth = [
   'Jan',
@@ -60,16 +70,27 @@ export function everyBeepDayBetweenTwoDates(
   return everyBeepDay;
 }
 
+const zeroingDates = (num1: number, num2: number): string => {
+  num1++;
+  const month = num1.toString().length > 1 ? num1.toString() : `0${num1.toString()}`;
+  const day = num2.toString().length > 1 ? num2.toString() : `0${num2.toString()}`;
+  return `${month}/${day}`;
+};
+
 export function columnizedDates(everyBeepDay: string[]) {
   return everyBeepDay.map((date: string) => {
     const jsDate = new Date(date);
     const month = jsDate.getMonth();
     const day = jsDate.getDate();
     return {
-      title: `${month + 1}/${day}`,
-      field: `${month + 1}/${day}`,
-      cellStyle: { borderStyle: 'solid solid none none', borderWidth: '1px' },
+      Header: zeroingDates(month, day),
+      accessor: zeroingDates(month, day),
     };
+    // return {
+    //   title: `${month + 1}/${day}`,
+    //   field: `${month + 1}/${day}`,
+    //   cellStyle: { borderStyle: 'solid solid none none', borderWidth: '1px' },
+    // };
   });
 }
 
@@ -93,14 +114,12 @@ export function timeToMilliSeconds(time: string) {
 export function createColumns(daterange: any, day: any) {
   return [
     {
-      title: 'Time',
-      field: 'time',
-      cellStyle: { borderStyle: 'solid none solid solid', borderWidth: '1px' },
+      Header: 'Time',
+      accessor: 'time',
     },
     {
-      title: 'Duty',
-      field: 'duty',
-      cellStyle: { borderStyle: 'solid none solid none', borderWidth: '1px' },
+      Header: 'Duty',
+      accessor: 'duty',
     },
     ...columnizedDates(everyBeepDayBetweenTwoDates(daterange[0], daterange[1], day)),
   ];
@@ -110,5 +129,50 @@ export const contrivedDate = (date: string) => {
   const jsDate = new Date(date);
   const month = jsDate.getMonth();
   const day = jsDate.getDate();
-  return `${month + 1}/${day}`;
+  return zeroingDates(month, day);
+};
+
+export const makeData = (value: number): MappedScheduleInterface[] => {
+  const { daterange, weeklyEvents } = SCHEDULE[value];
+  let allSchedulesForTheWeek: MappedScheduleInterface[] = [];
+  weeklyEvents.map((schedule: WeeklyEventData, index: number) => {
+    const { day, events, dividers } = weeklyEvents[index];
+    const columns = createColumns(daterange, day);
+    let fullDaySchedule: MappedScheduleInterface[] = [];
+
+    dividers.map((divider: Divider) => {
+      let data: WeeklyAssignmentInterface[] = [];
+      let { name, timerange } = divider;
+
+      events.map((event: EventData) => {
+        let { duties, time } = event;
+        let everyWeeksAssignment: WeeklyAssignmentInterface[] = [];
+        if (isInTime(time, timerange.start, timerange.end))
+          duties.map((duty: DutyData, index: number) => {
+            const { title, tasks } = duty;
+            let assignments: WeeklyAssignmentInterface = { duty: title };
+            if (index === 0) assignments.time = time;
+
+            tasks.map((task: TaskData) => {
+              const { date, assignee } = task;
+              const assignedDate = contrivedDate(date);
+              assignments[assignedDate] = assignee;
+            });
+
+            everyWeeksAssignment.push(assignments);
+          });
+        data = [...data, ...everyWeeksAssignment];
+      });
+
+      fullDaySchedule.push({ day, columns, data, name });
+    });
+
+    allSchedulesForTheWeek = [...allSchedulesForTheWeek, ...fullDaySchedule];
+  });
+  return allSchedulesForTheWeek;
+};
+
+export const memoizeData = (data: any) => {
+  const makeDataLevel = () => data;
+  return makeDataLevel();
 };
