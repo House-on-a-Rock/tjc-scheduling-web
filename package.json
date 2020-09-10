@@ -24,6 +24,7 @@
         "@material-ui/icons": "^4.9.1",
         "@types/jwt-decode": "^2.2.1",
         "@types/react-beautiful-dnd": "^13.0.0",
+        "@types/react-table": "^7.0.23",
         "@types/uuid": "^8.0.0",
         "@types/webpack-dev-server": "^3.11.0",
         "@types/zxcvbn": "^4.4.0",
