@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Input from '@material-ui/core/Input';
 import { EditableCellProps } from '../../../shared/types';
 
 export const EditableCell = ({
@@ -14,9 +15,14 @@ export const EditableCell = ({
     setValue(e.target.value);
   };
 
-  // We'll only update the external data when the input is blurred
+  // We'll update the external data when the input is blurred or entered
   const onBlur = () => {
     updateMyData(index, id, value);
+  };
+
+  const handleEnter = (e: any) => {
+    e = e || window.event;
+    e.key === 'Enter' && updateMyData(index, id, value);
   };
 
   // If the initialValue is changed external, sync it up with our state
@@ -24,5 +30,14 @@ export const EditableCell = ({
     setValue(initialValue);
   }, [initialValue]);
 
-  return initialValue ? <input value={value} onChange={onChange} onBlur={onBlur} /> : '';
+  return initialValue ? (
+    <Input
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyUp={(e) => handleEnter(e)}
+    />
+  ) : (
+    ''
+  );
 };
