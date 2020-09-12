@@ -70,7 +70,7 @@ export function everyRepeatingDayBetweenTwoDates(
 }
 
 const zeroPaddingDates = (monthIdx: number, dayIdx: number): string => {
-  let month = (monthIdx++).toString();
+  let month = (monthIdx + 1).toString();
   let day = dayIdx.toString();
 
   month = month.length > 1 ? month : `0${month}`;
