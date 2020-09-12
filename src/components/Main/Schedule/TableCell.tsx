@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import Input from '@material-ui/core/Input';
-import { EditableCellProps } from '../../../shared/types';
+import { DataCellProps } from '../../../shared/types';
 
-export const EditableCell = ({
+export const DataCell = ({
   value: initialValue,
   row: { index },
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
-}: EditableCellProps) => {
+}: DataCellProps) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = useState(initialValue);
 
   const onChange = (e: any) => {
     setValue(e.target.value);
   };
-
-  // We'll update the external data when the input is blurred or entered
   const onBlur = () => {
     updateMyData(index, id, value);
   };
 
+  // Doesn't blur on enter
   const handleEnter = (e: any) => {
     e = e || window.event;
     e.key === 'Enter' && updateMyData(index, id, value);

@@ -101,7 +101,7 @@ interface CellIndexType {
 interface CellColumnType {
   id: string;
 }
-export interface EditableCellProps {
+export interface DataCellProps {
   value: string;
   row: CellIndexType;
   column: CellColumnType;

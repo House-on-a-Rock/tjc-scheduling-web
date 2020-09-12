@@ -2,7 +2,7 @@ import React from 'react';
 import { useTable } from 'react-table';
 
 // Components
-import { EditableCell } from './EditableCell';
+import { DataCell } from './TableCell';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -19,7 +19,7 @@ export const Table = (props: TableProps) => {
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,
-    defaultColumn: { Cell: EditableCell },
+    defaultColumn: { Cell: DataCell },
     updateMyData,
   });
 

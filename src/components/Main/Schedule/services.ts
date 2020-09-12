@@ -69,21 +69,24 @@ export function everyRepeatingDayBetweenTwoDates(
   return everyRepeatingDay;
 }
 
-const zeroingDates = (num1: number, num2: number): string => {
-  num1++;
-  const month = num1.toString().length > 1 ? num1.toString() : `0${num1.toString()}`;
-  const day = num2.toString().length > 1 ? num2.toString() : `0${num2.toString()}`;
+const zeroPaddingDates = (monthIdx: number, dayIdx: number): string => {
+  let month = (monthIdx++).toString();
+  let day = dayIdx.toString();
+
+  month = month.length > 1 ? month : `0${month}`;
+  day = day.length > 1 ? day : `0${day}`;
+
   return `${month}/${day}`;
 };
 
 export function columnizedDates(everyRepeatingDay: string[]) {
   return everyRepeatingDay.map((date: string) => {
     const jsDate = new Date(date);
-    const month = jsDate.getMonth();
-    const day = jsDate.getDate();
+    const monthIdx = jsDate.getMonth();
+    const dayIdx = jsDate.getDate();
     return {
-      Header: zeroingDates(month, day),
-      accessor: zeroingDates(month, day),
+      Header: zeroPaddingDates(monthIdx, dayIdx),
+      accessor: zeroPaddingDates(monthIdx, dayIdx),
     };
   });
 }
@@ -121,9 +124,9 @@ export function createColumns(daterange: any, day: any) {
 
 export const contrivedDate = (date: string) => {
   const jsDate = new Date(date);
-  const month = jsDate.getMonth();
-  const day = jsDate.getDate();
-  return zeroingDates(month, day);
+  const monthIdx = jsDate.getMonth();
+  const dayIdx = jsDate.getDate();
+  return zeroPaddingDates(monthIdx, dayIdx);
 };
 
 export const makeData = (value: number): MappedScheduleInterface[] => {
