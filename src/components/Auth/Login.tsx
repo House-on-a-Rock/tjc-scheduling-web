@@ -99,7 +99,7 @@ export const Login = () => {
     remembered
       ? setLocalStorageState('auth', { email: email.value })
       : removeLocalStorageState('auth');
-    return <Redirect to="/" />;
+    // return <Redirect to="/" />;
   }
 
   return (

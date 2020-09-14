@@ -1,7 +1,13 @@
 import React from 'react';
 import { cardTheme } from '../../../shared/styles/theme.js';
 
-import { fade, makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {
+  fade,
+  makeStyles,
+  withStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -16,73 +22,85 @@ import { MemberStateData } from '../../../store/types';
 
 import CSS from 'csstype';
 
-
 const styleHead: CSS.Properties = {
-    fontWeight: 'bold'
-}
+  fontWeight: 'bold',
+};
 
 export interface MembersUsersTableProps {
-    selected: boolean;
-    handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    members: MemberStateData[];
-    isSelected: (id: number) => boolean;
-    handleClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
+  selected: boolean;
+  handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  members: MemberStateData[];
+  isSelected: (id: number) => boolean;
+  handleClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
 }
 
-export const MembersUsersTable = ({selected, handleCheck, members, isSelected, handleClick}: MembersUsersTableProps) => {
-    const classes = useStyles();
+export const MembersUsersTable = ({
+  selected,
+  handleCheck,
+  members,
+  isSelected,
+  handleClick,
+}: MembersUsersTableProps) => {
+  const classes = useStyles();
 
-    return (
-        <TableContainer component={Paper} className={classes.root}>
-            <Table className={classes.table} aria-label="members table">
-              <TableHead>
-                <TableRow >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selected}
-                      onChange={handleCheck}
-                    />
-                  </TableCell>
-                  <TableCell style={styleHead}>First&nbsp;Name</TableCell>
-                  <TableCell style={styleHead} align="left">Last&nbsp;Name</TableCell>
-                  <TableCell style={styleHead} align="left">Email</TableCell>
-                  <TableCell style={styleHead} align="left">Disabled</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {members.map((row) => {
-                  const isItemSelected = isSelected(row.id);
+  return (
+    <TableContainer component={Paper} className={classes.root}>
+      <Table className={classes.table} aria-label="members table">
+        <TableHead>
+          <TableRow>
+            <TableCell padding="checkbox">
+              <Checkbox checked={selected} onChange={handleCheck} />
+            </TableCell>
+            <TableCell style={styleHead}>First&nbsp;Name</TableCell>
+            <TableCell style={styleHead} align="left">
+              Last&nbsp;Name
+            </TableCell>
+            <TableCell style={styleHead} align="left">
+              Email
+            </TableCell>
+            <TableCell style={styleHead} align="left">
+              Disabled
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {members.map((row) => {
+            const isItemSelected = isSelected(row.userId);
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => {
-                        handleClick(event, row)
-                      }}
-                      selected={isItemSelected} 
-                      key={row.id}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={isItemSelected}
-                        />
-                      </TableCell>
-                      <TableCell component="th" variant="body" scope="row">
-                          {row.firstName}
-                      </TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.lastName}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.email}</TableCell>
-                      <TableCell component="th" variant="body" scope="row" align="left">{row.disabled.toString()}</TableCell>
-                    </TableRow>
-                )})  
-                }
-              </TableBody>
-            </Table>
-        </TableContainer>
-    )
-}
+            return (
+              <TableRow
+                hover
+                onClick={(event) => {
+                  handleClick(event, row);
+                }}
+                selected={isItemSelected}
+                key={row.userId}
+              >
+                <TableCell padding="checkbox">
+                  <Checkbox checked={isItemSelected} />
+                </TableCell>
+                <TableCell component="th" variant="body" scope="row">
+                  {row.firstName}
+                </TableCell>
+                <TableCell component="th" variant="body" scope="row" align="left">
+                  {row.lastName}
+                </TableCell>
+                <TableCell component="th" variant="body" scope="row" align="left">
+                  {row.email}
+                </TableCell>
+                <TableCell component="th" variant="body" scope="row" align="left">
+                  {row.disabled.toString()}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+};
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: cardTheme.backgroundColor,
@@ -91,5 +109,5 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       minWidth: 650,
     },
-  })
-)
+  }),
+);

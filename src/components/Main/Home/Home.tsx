@@ -18,7 +18,21 @@ import { makeStyles, createStyles, Theme, createMuiTheme } from '@material-ui/co
 
 // other components
 import {DutyCountColumn} from './DutyCountColumn';
+import {UserBank} from '../Teams/UserBank';
+import {MembersData} from '../Teams/models';
 
+import { MEMBERS } from '../Teams/database';
+
+const members: MembersData[] = [
+  {
+    id: '1',
+    name: 'Shaun Tung'
+  },
+  {
+    id: '2',
+    name: 'Alan Lin'
+  },
+]
 const duties = [
   {
     role: 'AV',
@@ -43,6 +57,7 @@ export const Home = () => {
       >
         Log Out
       </button>
+      {/* <DroppableTeamMembersList role='AV' members={members} canDrop={function() { return false }} draggedItem={{ member: members[0], source: 'USERBANK'}}/> */}
       <GridList className={classes.gridList} spacing={10} cols={6}> 
         <DutyCountColumn name='Shaun Tung' dutyCounts={duties}></DutyCountColumn>
       </GridList>

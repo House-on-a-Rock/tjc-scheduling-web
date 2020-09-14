@@ -1,5 +1,6 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import history from '../../history';
 import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
 import {
@@ -58,7 +59,7 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       // update users with their roles
       let updatedMemberList = response.data;
       updatedMemberList.map(async (user: MemberStateData) => {
-        const userId = user.id;
+        const userId = user.userId;
         let roleList: string[] = [];
         const userRolesResponse = await getUserRoles(userId.toString());
         userRolesResponse.data.map((userRole: any) => {
@@ -70,6 +71,7 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       dispatch(loadMembers(updatedMemberList, loggedInUserResponse.data.church.name));
     } catch (error) {
       const errorData = errorDataExtractor(error);
+      history.push('/auth/login');
       dispatch(AuthStateActions.Error(errorData));
     }
   };

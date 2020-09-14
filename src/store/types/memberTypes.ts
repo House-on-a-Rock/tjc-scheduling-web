@@ -6,7 +6,7 @@ export const LOAD_USER = 'LOAD_USER';
 
 // action payloads
 export interface MemberStateData {
-  id: number;
+  userId: number;
   firstName: string;
   lastName: string;
   email: string;

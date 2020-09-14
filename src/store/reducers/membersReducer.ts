@@ -11,7 +11,7 @@ import {
 const initialState: MembersState = {
   members: [],
   selectedUser: {
-    id: -1,
+    userId: -1,
     firstName: '',
     lastName: '',
     email: '',
@@ -40,7 +40,7 @@ export const membersReducer = (
       };
     case DELETE_MEMBERS:
       let newMemberList = [...state.members];
-      newMemberList = newMemberList.filter((member) => member.id !== action.payload);
+      newMemberList = newMemberList.filter((member) => member.userId !== action.payload);
       return {
         ...state,
         members: newMemberList,
