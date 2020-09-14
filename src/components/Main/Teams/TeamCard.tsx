@@ -1,7 +1,7 @@
 import React from 'react';
 import { MembersData, DraggedItem } from './models';
 import { cardTheme } from '../../../shared/styles/theme';
-import { verticalScrollBoxShadow } from '../../../shared/styles/scroll-indicator-shadow';
+import { verticalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 // Material UI Components
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -24,7 +24,7 @@ export const TeamCard = ({ type, members, draggedItem }: TeamCardProps) => {
       ? !members
           .map((member: MembersData) => member.name)
           .includes(draggedItem.member.name)
-      : !(draggedItem.source === type);
+      : draggedItem.source === type || draggedItem.source === '';
 
   return (
     <Card className={classes.root}>
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     top: '-0.5em',
   },
   list: {
-    ...verticalScrollBoxShadow('white'),
+    ...verticalScrollIndicatorShadow('white'),
     alignItems: 'center',
     justifyContent: 'center',
     width: '79%',
