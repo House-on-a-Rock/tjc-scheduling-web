@@ -64,7 +64,6 @@ export const DroppableTeamMembersList = ({
           }`}
         >
           {members.map((member: MembersData, index: number) => {
-            console.log('draggedItem.source', member.name, draggedItem.source);
             return !(draggedItem.source === 'USERBANK') ? (
               <Draggable draggableId={member.id} index={index} key={member.id}>
                 {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (

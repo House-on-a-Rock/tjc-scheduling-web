@@ -1,6 +1,6 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
-import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
+import { errorDataExtractor, extractUserId } from '../../shared/utilities';
 import { AuthStateActions } from '.';
 import {
   getOneUser,
@@ -47,7 +47,6 @@ export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
 export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      console.log('loading members');
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
       const loggedInUserResponse = await getOneUser(userId.toString());
