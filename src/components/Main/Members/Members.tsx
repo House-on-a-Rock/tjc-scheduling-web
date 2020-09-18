@@ -46,7 +46,7 @@ export const Members = () => {
   // react query
   const accessToken = localStorage.getItem('access_token');
   const userId = extractUserId(accessToken);
-  const loadData = useQuery('queryData', async () => {
+  const { isLoading, error, data } = useQuery('queryData', async () => {
     const loggedInUser = await getOneUser(userId.toString());
     console.log(loggedInUser);
     const localChurchMembers = await getAllLocalChurchUsers(loggedInUser.data.churchId);
@@ -86,13 +86,13 @@ export const Members = () => {
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
   const [selectedUser, setSelectedUser] = useState<MemberStateData>(initialSelectedState);
 
-  if (loadData.isLoading) return <h1>Loading</h1>;
-  else if (loadData.error) history.push('/auth/login');
-  console.log(loadData.data);
+  if (isLoading) return <h1>Loading</h1>;
+  else if (error) history.push('/auth/login');
+  console.log(data);
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelectedRows = loadData.data.map((member) => member.userId);
+      const newSelectedRows = data.map((member) => member.userId);
       setSelectedRows(newSelectedRows);
     } else {
       setSelectedRows([]);
@@ -147,7 +147,7 @@ export const Members = () => {
     setSelectedRows(newSelectedRows);
   };
 
-  const filteredUsers = loadData.data.filter(function (row: any) {
+  const filteredUsers = data.filter(function (row: any) {
     for (var key in row) {
       if (key === 'roles' || key === 'userId' || key === 'churchId' || key === 'church')
         continue;
@@ -172,7 +172,7 @@ export const Members = () => {
       />
       <Grid item xs={9}>
         <MembersHeader
-          localChurch={loadData.data[0].church.name}
+          localChurch={data[0].church.name}
           onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchField(event.target.value);
           }}
