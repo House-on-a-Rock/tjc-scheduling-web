@@ -7,8 +7,10 @@ import { Error404 } from '../../components/shared';
 import '../../assets/fonts.css';
 import '../../assets/global.css';
 import theme from '../../shared/styles/theme';
+import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query';
 
 const Main = () => {
+  const queryCache = new QueryCache();
   return (
     <Router>
       <ThemeProvider theme={theme}>
@@ -24,7 +26,9 @@ const Main = () => {
             <Teams />
           </Route>
           <Route path={'/members'}>
-            <Members />
+            <ReactQueryCacheProvider queryCache={queryCache}>
+              <Members />
+            </ReactQueryCacheProvider>
           </Route>
           {/* <Route>
                         <Error404 />

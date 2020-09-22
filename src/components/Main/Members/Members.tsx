@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from 'react-query';
 import history from '../../../history';
@@ -19,12 +19,7 @@ import { MembersHeader } from './MembersHeader';
 import { MembersUsersTable } from './MembersUsersTable';
 
 // actions
-import {
-  onLoadMembers,
-  onLoadUser,
-  onDeleteMembers,
-  onAddMember,
-} from '../../../store/actions';
+import { onDeleteMembers, onAddMember } from '../../../store/actions';
 
 // other stuffs
 import { isValidEmail, extractUserId } from '../../../shared/helper_functions';
@@ -46,16 +41,17 @@ export const Members = () => {
   // react query
   const accessToken = localStorage.getItem('access_token');
   const userId = extractUserId(accessToken);
+
   const { isLoading, error, data } = useQuery('queryData', async () => {
     const loggedInUser = await getOneUser(userId.toString());
-    console.log(loggedInUser);
+    // console.log(loggedInUser);
     const localChurchMembers = await getAllLocalChurchUsers(loggedInUser.data.churchId);
-    console.log(localChurchMembers.data);
+    console.log('localChurchMembers.data:', localChurchMembers.data);
     await localChurchMembers.data.map(async (user: MemberStateData) => {
       const userId = user.userId;
       let roleList: string[] = [];
       const loadUserRoles = await getUserRoles(userId.toString()).then((result) => {
-        console.log(result);
+        // console.log(result);
         result.data.map((userRole: any) => {
           roleList.push(userRole.role.name);
         });
@@ -67,8 +63,13 @@ export const Members = () => {
     return memberList;
   });
 
-  // initial selected state
-  const initialSelectedState: MemberStateData = {
+  // component state
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [searchField, setSearchField] = useState<string>('');
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+  const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState<boolean>(false);
+  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
+  const [selectedUser, setSelectedUser] = useState<MemberStateData>({
     userId: -1,
     firstName: '',
     lastName: '',
@@ -76,19 +77,10 @@ export const Members = () => {
     church: { name: '' },
     disabled: false,
     roles: [],
-  };
-
-  // component state
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [searchField, setSearchField] = useState<string>('');
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
-  const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState<boolean>(false);
-  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
-  const [selectedUser, setSelectedUser] = useState<MemberStateData>(initialSelectedState);
+  });
 
   if (isLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
-  console.log(data);
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -146,8 +138,10 @@ export const Members = () => {
     setSelectedUser(row);
     setSelectedRows(newSelectedRows);
   };
+  console.log('data: ', data);
 
   const filteredUsers = data.filter(function (row: any) {
+    // console.log('row: ', row);
     for (var key in row) {
       if (key === 'roles' || key === 'userId' || key === 'churchId' || key === 'church')
         continue;
@@ -160,6 +154,7 @@ export const Members = () => {
     }
     return false;
   });
+  console.log('filteredUsers: ', filteredUsers);
 
   return (
     <Grid container spacing={3}>
