@@ -4,7 +4,7 @@ import history from '../../history';
 import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
 import {
-  getOneUser,
+  getUser,
   getAllUsers,
   getUserRoles,
   getAllLocalChurchUsers,
@@ -51,17 +51,15 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       console.log('loading members');
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
-      const loggedInUserResponse = await getOneUser(userId.toString());
-      const response = await getAllLocalChurchUsers(
-        loggedInUserResponse.data.ChurchId.toString(),
-      );
+      const loggedInUserResponse = await getUser(userId);
+      const response = await getAllLocalChurchUsers(loggedInUserResponse.data.ChurchId);
 
       // update users with their roles
       let updatedMemberList = response.data;
       updatedMemberList.map(async (user: MemberStateData) => {
         const userId = user.userId;
         let roleList: string[] = [];
-        const userRolesResponse = await getUserRoles(userId.toString());
+        const userRolesResponse = await getUserRoles(userId);
         userRolesResponse.data.map((userRole: any) => {
           roleList.push(userRole.role.name);
         });
@@ -96,7 +94,7 @@ export const onDeleteMembers = (
   return async (dispatch) => {
     try {
       selectedMembers.map(async (member) => {
-        const response = await deleteUser(member.toString());
+        const response = await deleteUser(member);
         dispatch(deleteMembers(response.data.id));
       });
     } catch (error) {
@@ -116,15 +114,9 @@ export const onAddMember = (
     try {
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
-      const loggedInUserResponse = await getOneUser(userId.toString());
+      const loggedInUserResponse = await getUser(userId);
       const churchId = loggedInUserResponse.data.ChurchId;
-      const response = await addUser(
-        email,
-        firstName,
-        lastName,
-        password,
-        churchId.toString(),
-      );
+      const response = await addUser(email, firstName, lastName, password, churchId);
       const newUserData = response.data;
       newUserData.roles = [];
       dispatch(addMember(newUserData));

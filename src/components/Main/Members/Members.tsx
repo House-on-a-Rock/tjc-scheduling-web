@@ -28,7 +28,7 @@ import { isValidEmail, extractUserId } from '../../../shared/helper_functions';
 import { MemberStateData } from '../../../store/types';
 
 // apis
-import { getOneUser, getAllLocalChurchUsers, getUserRoles } from '../../../store/apis';
+import { getUser, getAllLocalChurchUsers, getUserRoles } from '../../../store/apis';
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold',
@@ -41,27 +41,6 @@ export const Members = () => {
   // react query
   const accessToken = localStorage.getItem('access_token');
   const userId = extractUserId(accessToken);
-
-  const { isLoading, error, data } = useQuery('queryData', async () => {
-    const loggedInUser = await getOneUser(userId.toString());
-    // console.log(loggedInUser);
-    const localChurchMembers = await getAllLocalChurchUsers(loggedInUser.data.churchId);
-    console.log('localChurchMembers.data:', localChurchMembers.data);
-    await localChurchMembers.data.map(async (user: MemberStateData) => {
-      const userId = user.userId;
-      let roleList: string[] = [];
-      const loadUserRoles = await getUserRoles(userId.toString()).then((result) => {
-        // console.log(result);
-        result.data.map((userRole: any) => {
-          roleList.push(userRole.role.name);
-        });
-        roleList = Array.from(new Set(roleList));
-        user.roles = roleList;
-      });
-    });
-    let memberList: MemberStateData[] = localChurchMembers.data;
-    return memberList;
-  });
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -79,6 +58,25 @@ export const Members = () => {
     roles: [],
   });
 
+  const { isLoading, error, data } = useQuery('queryData', async () => {
+    const localChurchMembers = await getAllLocalChurchUsers(1); // this information should already be available and come from profile
+    console.log('localChurchMembers.data:', localChurchMembers.data);
+    localChurchMembers.data.map(async (user: MemberStateData) => {
+      const userId = user.userId;
+      let roleList: string[] = [];
+      await getUserRoles(userId).then((result) => {
+        // console.log(result);
+        result.data.map((userRole: any) => {
+          roleList.push(userRole.role.name);
+        });
+        roleList = Array.from(new Set(roleList));
+        user.roles = roleList;
+      });
+    });
+    let memberList: MemberStateData[] = localChurchMembers.data;
+    return memberList;
+  });
+
   if (isLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
 
@@ -91,7 +89,7 @@ export const Members = () => {
     }
   };
 
-  const handleDeleteMembers = async () => {
+  const handleDeleteMembers = () => {
     dispatch(onDeleteMembers(selectedRows));
     setSelectedRows([]);
   };
