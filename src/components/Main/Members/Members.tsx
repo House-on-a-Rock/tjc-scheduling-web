@@ -16,78 +16,62 @@ import { FormDialog } from '../../shared/FormDialog';
 // member page components
 import { MembersSidebar } from './MembersSidebar';
 import { MembersHeader } from './MembersHeader';
-import { MembersUsersTable } from './MembersUsersTable';
+import { MembersTable } from './MembersTable';
 
 // actions
 import { onDeleteMembers, onAddMember } from '../../../store/actions';
 
 // other stuffs
-import { isValidEmail, extractUserId } from '../../../shared/helper_functions';
+import { isValidEmail } from '../../../shared/helper_functions';
 
 // types
 import { MemberStateData } from '../../../store/types';
 
 // apis
-import { getUser, getAllLocalChurchUsers, getUserRoles } from '../../../store/apis';
+import { getChurchMembersData } from '../../../query';
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold',
+};
+
+const initialChurchProfile = {
+  name: 'Hillsborough',
+  churchId: 1,
 };
 
 export const Members = () => {
   // hooks
   const dispatch = useDispatch();
 
-  // react query
-  const accessToken = localStorage.getItem('access_token');
-  const userId = extractUserId(accessToken);
-
   // component state
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [searchField, setSearchField] = useState<string>('');
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
-  const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState<boolean>(false);
-  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
-  const [selectedUser, setSelectedUser] = useState<MemberStateData>({
+  const [selectedMember, setSelectedMember] = useState<MemberStateData>({
     userId: -1,
     firstName: '',
     lastName: '',
     email: '',
-    church: { name: '' },
+    church: '',
     disabled: false,
     roles: [],
   });
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  const [searchField, setSearchField] = useState<string>('');
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
+  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
+  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
 
-  const { isLoading, error, data } = useQuery('queryData', async () => {
-    const localChurchMembers = await getAllLocalChurchUsers(1); // this information should already be available and come from profile
-    console.log('localChurchMembers.data:', localChurchMembers.data);
-    localChurchMembers.data.map(async (user: MemberStateData) => {
-      const userId = user.userId;
-      let roleList: string[] = [];
-      await getUserRoles(userId).then((result) => {
-        // console.log(result);
-        result.data.map((userRole: any) => {
-          roleList.push(userRole.role.name);
-        });
-        roleList = Array.from(new Set(roleList));
-        user.roles = roleList;
-      });
-    });
-    let memberList: MemberStateData[] = localChurchMembers.data;
-    return memberList;
-  });
+  const { isLoading, error, data } = useQuery(
+    ['queryData', initialChurchProfile.churchId],
+    getChurchMembersData,
+  );
 
   if (isLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
+  console.log('data', data);
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelectedRows = data.map((member) => member.userId);
-      setSelectedRows(newSelectedRows);
-    } else {
-      setSelectedRows([]);
-    }
-  };
+  const handleSelectAllClick = (checked: boolean) =>
+    checked
+      ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
+      : setSelectedRows([]);
 
   const handleDeleteMembers = () => {
     dispatch(onDeleteMembers(selectedRows));
@@ -101,15 +85,17 @@ export const Members = () => {
     email: string,
     password: string,
   ) => {
-    setIsAddUserDialogOpen(false);
     if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
       dispatch(onAddMember(firstName, lastName, email, password));
     }
+    setIsAddMemberDialogOpen(false);
   };
 
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
+    console.log('event, row', event.ctrlKey, row);
     const selectedIndex = selectedRows.indexOf(row.userId);
+    console.log('selectedRows, selectedIndex', selectedRows, selectedIndex);
     let newSelectedRows: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
@@ -125,6 +111,7 @@ export const Members = () => {
         ];
       }
     } else {
+      console.log('else', selectedIndex);
       if (selectedIndex === -1) newSelectedRows = [row.userId];
       else
         newSelectedRows = [
@@ -133,54 +120,50 @@ export const Members = () => {
         ];
     }
     // dispatch(onLoadUser(row));
-    setSelectedUser(row);
+    setSelectedMember(row);
+    console.log('selectedMember', row, selectedMember);
     setSelectedRows(newSelectedRows);
   };
-  console.log('data: ', data);
 
-  const filteredUsers = data.filter(function (row: any) {
-    // console.log('row: ', row);
-    for (var key in row) {
-      if (key === 'roles' || key === 'userId' || key === 'churchId' || key === 'church')
-        continue;
-      if (key === 'disabled') {
-        if (row[key].toString().toLowerCase().includes(searchField.toLowerCase()))
-          return true;
-      } else {
-        if (row[key].toLowerCase().includes(searchField.toLowerCase())) return true;
-      }
-    }
-    return false;
-  });
-  console.log('filteredUsers: ', filteredUsers);
+  const filteredMembers = data.filter(
+    ({ email, firstName, lastName }: MemberStateData) => {
+      const filterChar = searchField.toLowerCase();
+      return (
+        firstName.toLowerCase().includes(filterChar) ||
+        lastName.toLowerCase().includes(filterChar) ||
+        email.toLowerCase().includes(filterChar)
+      );
+    },
+  );
+  console.log('filteredMembers', filteredMembers);
 
   return (
     <Grid container spacing={3}>
       <MembersSidebar
-        firstName={selectedUser.firstName}
-        lastName={selectedUser.lastName}
-        email={selectedUser.email}
-        church={selectedUser.church.name}
-        roles={selectedUser.roles}
+        firstName={selectedMember.firstName}
+        lastName={selectedMember.lastName}
+        email={selectedMember.email}
+        church={selectedMember.church}
+        roles={selectedMember.roles}
       />
       <Grid item xs={9}>
         <MembersHeader
-          localChurch={data[0].church.name}
+          localChurch={initialChurchProfile.name}
           onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchField(event.target.value);
           }}
           handleAddOpen={() => {
-            setIsAddUserDialogOpen(!isAddUserDialogOpen);
+            setIsAddMemberDialogOpen(!isAddMemberDialogOpen);
           }}
           handleDeleteOpen={() => {
             if (selectedRows.length > 0) setIsConfirmDialogOpen(!isConfirmDialogOpen);
           }}
         />
-        <MembersUsersTable
+        <MembersTable
+          members={filteredMembers}
+          isSelected={isSelected}
           selected={selectedRows.length > 0}
           handleCheck={handleSelectAllClick}
-          members={filteredUsers}
-          isSelected={isSelected}
           handleClick={handleRowClick}
         />
       </Grid>
@@ -193,7 +176,7 @@ export const Members = () => {
         title="Confirm Delete Action"
       />
       <FormDialog
-        isOpen={isAddUserDialogOpen}
+        isOpen={isAddMemberDialogOpen}
         handleClose={onCloseAddMemberDialog}
         title="Add User"
       />

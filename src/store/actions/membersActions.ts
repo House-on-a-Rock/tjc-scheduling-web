@@ -3,14 +3,7 @@ import { ThunkAction } from 'redux-thunk';
 import history from '../../history';
 import { errorDataExtractor, extractUserId } from '../../shared/helper_functions';
 import { AuthStateActions } from '.';
-import {
-  getUser,
-  getAllUsers,
-  getUserRoles,
-  getAllLocalChurchUsers,
-  deleteUser,
-  addUser,
-} from '../apis';
+import { getUser, getUserRoles, getAllLocalMembers, deleteUser, addUser } from '../apis';
 import {
   MemberActionTypes,
   LOAD_MEMBERS,
@@ -52,7 +45,7 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
       const loggedInUserResponse = await getUser(userId);
-      const response = await getAllLocalChurchUsers(loggedInUserResponse.data.ChurchId);
+      const response = await getAllLocalMembers(loggedInUserResponse.data.ChurchId);
 
       // update users with their roles
       let updatedMemberList = response.data;

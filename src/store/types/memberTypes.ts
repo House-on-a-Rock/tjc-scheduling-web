@@ -11,7 +11,7 @@ export interface MemberStateData {
   lastName: string;
   email: string;
   ChurchId?: number;
-  church: { name: string };
+  church: string;
   disabled: boolean;
   roles: string[];
 }

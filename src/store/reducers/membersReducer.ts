@@ -15,7 +15,7 @@ const initialState: MembersState = {
     firstName: '',
     lastName: '',
     email: '',
-    church: { name: '' },
+    church: '',
     disabled: false,
     roles: [],
   },

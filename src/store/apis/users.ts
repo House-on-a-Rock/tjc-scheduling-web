@@ -11,7 +11,7 @@ export function getAllUsers(): Promise<AxiosResponse> {
   });
 }
 
-export function getAllLocalChurchUsers(churchId: number): Promise<AxiosResponse> {
+export function getAllLocalMembers(churchId: number): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
   return axios.get(`${secretIp}/api/users?churchId=${churchId}`, {
     headers: {

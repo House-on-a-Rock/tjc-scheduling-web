@@ -19,30 +19,35 @@ const styleHead: CSS.Properties = {
   fontWeight: 'bold',
 };
 
-export interface MembersUsersTableProps {
+export interface MembersTableProps {
   selected: boolean;
-  handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCheck: (event: boolean) => void;
   members: MemberStateData[];
   isSelected: (id: number) => boolean;
   handleClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
 }
 
-export const MembersUsersTable = ({
+export const MembersTable = ({
   selected,
   handleCheck,
   members,
   isSelected,
   handleClick,
-}: MembersUsersTableProps) => {
+}: MembersTableProps) => {
   const classes = useStyles();
-
+  console.log('MembersTable', members);
   return (
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
         <TableHead>
           <TableRow>
             <TableCell padding="checkbox">
-              <Checkbox checked={selected} onChange={handleCheck} />
+              <Checkbox
+                checked={selected}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  handleCheck(event.target.checked)
+                }
+              />
             </TableCell>
             <TableCell style={styleHead}>First&nbsp;Name</TableCell>
             <TableCell style={styleHead} align="left">
@@ -57,13 +62,13 @@ export const MembersUsersTable = ({
           </TableRow>
         </TableHead>
         <TableBody>
-          {members.map((row) => {
+          {members.map((row: MemberStateData) => {
             const isItemSelected = isSelected(row.userId);
-
             return (
               <TableRow
                 hover
                 onClick={(event) => {
+                  console.log('clicking?', row);
                   handleClick(event, row);
                 }}
                 selected={isItemSelected}
