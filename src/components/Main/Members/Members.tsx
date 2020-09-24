@@ -28,7 +28,7 @@ import { isValidEmail } from '../../../shared/helper_functions';
 import { MemberStateData } from '../../../store/types';
 
 // apis
-import { getChurchMembersData } from '../../../query';
+import { getChurchMembersData, getUserRolesData } from '../../../query';
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold',
@@ -42,6 +42,24 @@ const initialChurchProfile = {
 export const Members = () => {
   // hooks
   const dispatch = useDispatch();
+
+  const { isLoading: membersLoading, error, data: members } = useQuery(
+    ['memberData', initialChurchProfile.churchId],
+    getChurchMembersData,
+  );
+  const { isLoading: rolesLoading, data: roles } = useQuery(
+    [
+      members && 'rolesData',
+      members
+        ? members.map(({ firstName, userId }: any) => {
+            return { name: firstName, id: userId };
+          })
+        : [],
+    ],
+    getUserRolesData,
+  );
+  console.log(members);
+  console.log('roles', roles);
 
   // component state
   const [selectedMember, setSelectedMember] = useState<MemberStateData>({
@@ -59,18 +77,13 @@ export const Members = () => {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
 
-  const { isLoading, error, data } = useQuery(
-    ['queryData', initialChurchProfile.churchId],
-    getChurchMembersData,
-  );
-
-  if (isLoading) return <h1>Loading</h1>;
+  if (membersLoading || rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
-  console.log('data', data);
+  // console.log('data', members);
 
   const handleSelectAllClick = (checked: boolean) =>
     checked
-      ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
+      ? setSelectedRows(members.map(({ userId }: MemberStateData) => userId))
       : setSelectedRows([]);
 
   const handleDeleteMembers = () => {
@@ -124,8 +137,8 @@ export const Members = () => {
     console.log('selectedMember', row, selectedMember);
     setSelectedRows(newSelectedRows);
   };
-
-  const filteredMembers = data.filter(
+  // console.log('data before filter', members[0]);
+  const filteredMembers = members.filter(
     ({ email, firstName, lastName }: MemberStateData) => {
       const filterChar = searchField.toLowerCase();
       return (
@@ -135,7 +148,7 @@ export const Members = () => {
       );
     },
   );
-  console.log('filteredMembers', filteredMembers);
+  // console.log('filteredMembers', filteredMembers[0]);
 
   return (
     <Grid container spacing={3}>
@@ -165,6 +178,7 @@ export const Members = () => {
           selected={selectedRows.length > 0}
           handleCheck={handleSelectAllClick}
           handleClick={handleRowClick}
+          roles={roles}
         />
       </Grid>
       <ConfirmationDialog

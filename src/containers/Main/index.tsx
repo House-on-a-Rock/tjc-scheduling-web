@@ -28,9 +28,9 @@ const Main = () => {
               <Teams />
             </Route>
             <Route path={'/members'}>
-              <ReactQueryCacheProvider queryCache={queryCache}>
-                <Members />
-              </ReactQueryCacheProvider>
+              {/* <ReactQueryCacheProvider queryCache={queryCache}> */}
+              <Members />
+              {/* </ReactQueryCacheProvider> */}
             </Route>
             {/* <Route>
               <Error404 />

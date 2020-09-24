@@ -33,9 +33,10 @@ export const MembersTable = ({
   members,
   isSelected,
   handleClick,
-}: MembersTableProps) => {
+  roles,
+}: any) => {
   const classes = useStyles();
-  console.log('MembersTable', members);
+  console.log('MembersTable', members, roles);
   return (
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
@@ -52,6 +53,7 @@ export const MembersTable = ({
             <TableCell style={styleHead}>First&nbsp;Name</TableCell>
             <TableCell style={styleHead} align="left">
               Last&nbsp;Name
+              {JSON.stringify(roles)}
             </TableCell>
             <TableCell style={styleHead} align="left">
               Email
