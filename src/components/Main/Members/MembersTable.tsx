@@ -29,14 +29,12 @@ export interface MembersTableProps {
 
 export const MembersTable = ({
   selected,
-  handleCheck,
   members,
+  handleCheck,
   isSelected,
   handleClick,
-  roles,
-}: any) => {
+}: MembersTableProps) => {
   const classes = useStyles();
-  console.log('MembersTable', members, roles);
   return (
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
@@ -53,7 +51,6 @@ export const MembersTable = ({
             <TableCell style={styleHead}>First&nbsp;Name</TableCell>
             <TableCell style={styleHead} align="left">
               Last&nbsp;Name
-              {JSON.stringify(roles)}
             </TableCell>
             <TableCell style={styleHead} align="left">
               Email
@@ -65,31 +62,32 @@ export const MembersTable = ({
         </TableHead>
         <TableBody>
           {members.map((row: MemberStateData) => {
-            const isItemSelected = isSelected(row.userId);
+            const { userId: id, firstName, lastName, email, disabled } = row;
+            const isItemSelected = isSelected(id);
             return (
               <TableRow
                 hover
                 onClick={(event) => {
-                  console.log('clicking?', row);
                   handleClick(event, row);
                 }}
                 selected={isItemSelected}
-                key={row.userId}
+                key={id}
               >
                 <TableCell padding="checkbox">
                   <Checkbox checked={isItemSelected} />
                 </TableCell>
                 <TableCell component="th" variant="body" scope="row">
-                  {row.firstName}
+                  {firstName}
                 </TableCell>
                 <TableCell component="th" variant="body" scope="row" align="left">
-                  {row.lastName}
+                  {lastName}
                 </TableCell>
                 <TableCell component="th" variant="body" scope="row" align="left">
-                  {row.email}
+                  {email}
                 </TableCell>
                 <TableCell component="th" variant="body" scope="row" align="left">
-                  {row.disabled.toString()}
+                  {/* this should be a switch */}
+                  {disabled.toString()}
                 </TableCell>
               </TableRow>
             );

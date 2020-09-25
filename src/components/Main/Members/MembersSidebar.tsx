@@ -8,16 +8,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import {
-  fade,
-  makeStyles,
-  withStyles,
-  Theme,
-  createStyles,
-} from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import { MemberStateData } from '../../../store/types';
-
+interface Church {
+  churchId: number;
+  name: string;
+}
 export interface MembersSidebarProps {
   firstName: string;
   lastName: string;
@@ -34,7 +31,6 @@ export const MembersSidebar = ({
   roles,
 }: MembersSidebarProps) => {
   const classes = useStyles();
-  console.log('MembersSidebar', roles);
   return (
     <Grid item xs={3}>
       <List

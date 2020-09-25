@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from 'react-query';
 import history from '../../../history';
-import { useSelector } from '../../../shared/types/useSelector';
 
 // material UI
 import Grid from '@material-ui/core/Grid';
@@ -28,7 +27,7 @@ import { isValidEmail } from '../../../shared/helper_functions';
 import { MemberStateData } from '../../../store/types';
 
 // apis
-import { getChurchMembersData, getUserRolesData } from '../../../query';
+import { getChurchMembersData, bootstrapMembersData } from '../../../query';
 
 const styleHead: CSS.Properties = {
   fontWeight: 'bold',
@@ -43,23 +42,17 @@ export const Members = () => {
   // hooks
   const dispatch = useDispatch();
 
+  // need to figure out what to do if there're errors or no members
+  // need to useQuery for initialChurchProfile
   const { isLoading: membersLoading, error, data: members } = useQuery(
     ['memberData', initialChurchProfile.churchId],
     getChurchMembersData,
   );
-  const { isLoading: rolesLoading, data: roles } = useQuery(
-    [
-      members && 'rolesData',
-      members
-        ? members.map(({ firstName, userId }: any) => {
-            return { name: firstName, id: userId };
-          })
-        : [],
-    ],
-    getUserRolesData,
+  const { isLoading: rolesLoading, data } = useQuery(
+    ['roleData', members],
+    bootstrapMembersData,
+    { enabled: members },
   );
-  console.log(members);
-  console.log('roles', roles);
 
   // component state
   const [selectedMember, setSelectedMember] = useState<MemberStateData>({
@@ -79,11 +72,10 @@ export const Members = () => {
 
   if (membersLoading || rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
-  // console.log('data', members);
 
   const handleSelectAllClick = (checked: boolean) =>
     checked
-      ? setSelectedRows(members.map(({ userId }: MemberStateData) => userId))
+      ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
       : setSelectedRows([]);
 
   const handleDeleteMembers = () => {
@@ -106,13 +98,12 @@ export const Members = () => {
 
   const handleRowClick = (event: React.MouseEvent<unknown>, row: MemberStateData) => {
     event.stopPropagation();
-    console.log('event, row', event.ctrlKey, row);
-    const selectedIndex = selectedRows.indexOf(row.userId);
-    console.log('selectedRows, selectedIndex', selectedRows, selectedIndex);
+    const { userId: id, church } = row;
+    const selectedIndex = selectedRows.indexOf(id);
     let newSelectedRows: number[] = [];
     if (event.ctrlKey) {
       if (selectedIndex === -1) {
-        newSelectedRows = [...selectedRows, row.userId];
+        newSelectedRows = [...selectedRows, id];
       } else if (selectedIndex === 0) {
         newSelectedRows = selectedRows.slice(1); // all but first row
       } else if (selectedIndex === selectedRows.length - 1) {
@@ -124,21 +115,17 @@ export const Members = () => {
         ];
       }
     } else {
-      console.log('else', selectedIndex);
-      if (selectedIndex === -1) newSelectedRows = [row.userId];
+      if (selectedIndex === -1) newSelectedRows = [id];
       else
         newSelectedRows = [
           ...selectedRows.slice(0, selectedIndex),
           ...selectedRows.slice(selectedIndex + 1),
         ];
     }
-    // dispatch(onLoadUser(row));
-    setSelectedMember(row);
-    console.log('selectedMember', row, selectedMember);
+    setSelectedMember({ ...row, church });
     setSelectedRows(newSelectedRows);
   };
-  // console.log('data before filter', members[0]);
-  const filteredMembers = members.filter(
+  const filteredMembers = data.filter(
     ({ email, firstName, lastName }: MemberStateData) => {
       const filterChar = searchField.toLowerCase();
       return (
@@ -148,7 +135,6 @@ export const Members = () => {
       );
     },
   );
-  // console.log('filteredMembers', filteredMembers[0]);
 
   return (
     <Grid container spacing={3}>
@@ -178,7 +164,6 @@ export const Members = () => {
           selected={selectedRows.length > 0}
           handleCheck={handleSelectAllClick}
           handleClick={handleRowClick}
-          roles={roles}
         />
       </Grid>
       <ConfirmationDialog
