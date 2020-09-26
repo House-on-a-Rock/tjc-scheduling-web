@@ -58,18 +58,6 @@ export const Members = () => {
 
   const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
 
-  const handleRowClick = (
-    event: React.MouseEvent<unknown>,
-    { userId: id }: MemberStateData,
-  ) => {
-    event.stopPropagation();
-    setLastSelected(id);
-    const updatedRows = event.shiftKey ? makeNewRows(lastSelected, id, data) : [id];
-    selectedRows.includes(id)
-      ? setSelectedRows(selectedRows.filter((rowId) => !updatedRows.includes(rowId)))
-      : setSelectedRows([...selectedRows, ...updatedRows]);
-  };
-
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.target.checked
       ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
@@ -92,6 +80,18 @@ export const Members = () => {
       dispatch(onAddMember(firstName, lastName, email, password));
     }
     setIsAddMemberDialogOpen(false);
+  };
+
+  const handleRowClick = (
+    event: React.MouseEvent<unknown>,
+    { userId: id }: MemberStateData,
+  ) => {
+    event.stopPropagation();
+    setLastSelected(id);
+    const updatedRows = event.shiftKey ? makeNewRows(lastSelected, id, data) : [id];
+    selectedRows.includes(id)
+      ? setSelectedRows(selectedRows.filter((rowId) => !updatedRows.includes(rowId)))
+      : setSelectedRows([...selectedRows, ...updatedRows]);
   };
 
   const filteredMembers = data.filter(
