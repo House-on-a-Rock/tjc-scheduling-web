@@ -1,6 +1,5 @@
 import {
   MemberActionTypes,
-  MemberStateData,
   LOAD_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBERS,
@@ -15,7 +14,7 @@ const initialState: MembersState = {
     firstName: '',
     lastName: '',
     email: '',
-    church: '',
+    church: { name: '' },
     disabled: false,
     roles: [],
   },

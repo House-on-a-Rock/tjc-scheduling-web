@@ -48,8 +48,6 @@ export const Login = () => {
   const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
   const loadState: string = useSelector(({ load }) => load.loadStatus.AUTH);
 
-  const [open, setOpen] = useState(true);
-
   const [remembered, setRemembered] = useState<boolean>(
     getLocalStorageState('auth') ? true : false,
   );

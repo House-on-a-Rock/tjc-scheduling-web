@@ -4,7 +4,7 @@ import { INewMembersData, IRolesData } from './types';
 
 export const getChurchMembersData = async (key: string, churchId: number) => {
   const { data } = await getAllLocalMembers(churchId);
-  return data.map((member: any) => {
+  return data.map((member: MemberStateData) => {
     return { ...member, church: member.church.name };
   });
 };

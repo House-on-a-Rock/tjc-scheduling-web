@@ -5,13 +5,17 @@ export const DELETE_MEMBERS = 'DELETE_MEMBERS';
 export const LOAD_USER = 'LOAD_USER';
 
 // action payloads
+
+interface ChurchAttribute {
+  name: string;
+}
 export interface MemberStateData {
   userId: number;
   firstName: string;
   lastName: string;
   email: string;
   ChurchId?: number;
-  church: string;
+  church: ChurchAttribute;
   disabled: boolean;
   roles: string[];
 }

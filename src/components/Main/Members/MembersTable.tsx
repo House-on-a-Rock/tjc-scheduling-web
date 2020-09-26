@@ -35,7 +35,8 @@ export const MembersTable = ({
   handleClick,
 }: MembersTableProps) => {
   const classes = useStyles();
-  const setIndeterminate = selectedRowLength > 0 && selectedRowLength !== members.length;
+  const setIndeterminate: boolean =
+    selectedRowLength > 0 && selectedRowLength !== members.length;
   return (
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
@@ -65,7 +66,7 @@ export const MembersTable = ({
         <TableBody>
           {members.map((row: MemberStateData) => {
             const { userId: id, firstName, lastName, email, disabled } = row;
-            const isItemSelected = isSelected(id);
+            const isItemSelected: boolean = isSelected(id);
             return (
               <TableRow
                 hover

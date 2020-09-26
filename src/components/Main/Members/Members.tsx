@@ -56,7 +56,8 @@ export const Members = () => {
   if (membersLoading || rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
 
-  const isSelected = (id: number) => selectedRows.indexOf(id) !== -1;
+  const isSelected: (arg: number) => boolean = (id: number) =>
+    selectedRows.indexOf(id) !== -1;
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.target.checked
@@ -88,15 +89,17 @@ export const Members = () => {
   ) => {
     event.stopPropagation();
     setLastSelected(id);
-    const updatedRows = event.shiftKey ? makeNewRows(lastSelected, id, data) : [id];
+    const updatedRows: number[] = event.shiftKey
+      ? makeNewRows(lastSelected, id, data)
+      : [id];
     selectedRows.includes(id)
       ? setSelectedRows(selectedRows.filter((rowId) => !updatedRows.includes(rowId)))
       : setSelectedRows([...selectedRows, ...updatedRows]);
   };
 
-  const filteredMembers = data.filter(
+  const filteredMembers: MemberStateData[] = data.filter(
     ({ email, firstName, lastName }: MemberStateData) => {
-      const filterChar = searchField.toLowerCase();
+      const filterChar: string = searchField.toLowerCase();
       return (
         firstName.toLowerCase().includes(filterChar) ||
         lastName.toLowerCase().includes(filterChar) ||
