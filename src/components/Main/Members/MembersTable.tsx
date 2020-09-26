@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { cardTheme } from '../../../shared/styles/theme.js';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -20,21 +20,22 @@ const styleHead: CSS.Properties = {
 };
 
 export interface MembersTableProps {
-  selected: boolean;
-  handleCheck: (event: boolean) => void;
+  selectedRowLength: number;
+  handleCheck: (event: React.ChangeEvent<HTMLInputElement>) => void;
   members: MemberStateData[];
   isSelected: (id: number) => boolean;
   handleClick: (event: React.MouseEvent<unknown>, row: MemberStateData) => void;
 }
 
 export const MembersTable = ({
-  selected,
+  selectedRowLength,
   members,
   handleCheck,
   isSelected,
   handleClick,
 }: MembersTableProps) => {
   const classes = useStyles();
+  const setIndeterminate = selectedRowLength > 0 && selectedRowLength !== members.length;
   return (
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
@@ -42,10 +43,11 @@ export const MembersTable = ({
           <TableRow>
             <TableCell padding="checkbox">
               <Checkbox
-                checked={selected}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleCheck(event.target.checked)
-                }
+                indeterminate={setIndeterminate}
+                checked={selectedRowLength > 0}
+                onChange={(event) => {
+                  handleCheck(event);
+                }}
               />
             </TableCell>
             <TableCell style={styleHead}>First&nbsp;Name</TableCell>

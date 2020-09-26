@@ -7,7 +7,7 @@ import { Error404 } from '../../components/shared';
 import '../../assets/fonts.css';
 import '../../assets/global.css';
 import theme from '../../shared/styles/theme';
-import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query';
+import { QueryCache, ReactQueryCacheProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools';
 
 const Main = () => {
@@ -17,6 +17,7 @@ const Main = () => {
       <Router>
         <ThemeProvider theme={theme}>
           <Header />
+
           <Switch>
             <Route path={'/home'}>
               <Home />
@@ -28,9 +29,9 @@ const Main = () => {
               <Teams />
             </Route>
             <Route path={'/members'}>
-              {/* <ReactQueryCacheProvider queryCache={queryCache}> */}
-              <Members />
-              {/* </ReactQueryCacheProvider> */}
+              <ReactQueryCacheProvider queryCache={queryCache}>
+                <Members />
+              </ReactQueryCacheProvider>
             </Route>
             {/* <Route>
               <Error404 />
