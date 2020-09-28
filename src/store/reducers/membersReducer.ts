@@ -1,6 +1,5 @@
 import {
   MemberActionTypes,
-  MemberStateData,
   LOAD_MEMBERS,
   ADD_MEMBER,
   DELETE_MEMBERS,

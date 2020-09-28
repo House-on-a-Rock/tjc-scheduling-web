@@ -11,7 +11,7 @@ export function getAllUsers(): Promise<AxiosResponse> {
   });
 }
 
-export function getAllLocalChurchUsers(churchId: string): Promise<AxiosResponse> {
+export function getAllLocalMembers(churchId: number): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
   return axios.get(`${secretIp}/api/users?churchId=${churchId}`, {
     headers: {
@@ -20,7 +20,7 @@ export function getAllLocalChurchUsers(churchId: string): Promise<AxiosResponse>
   });
 }
 
-export function getOneUser(userId: string): Promise<AxiosResponse> {
+export function getUser(userId: number): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
   return axios.get(`${secretIp}/api/users/${userId}`, {
     headers: {
@@ -29,10 +29,10 @@ export function getOneUser(userId: string): Promise<AxiosResponse> {
   });
 }
 
-export function deleteUser(userId: string): Promise<AxiosResponse> {
+export function deleteUser(userId: number): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
-  const loggedInUser = extractUserId(accessToken);
-  if (loggedInUser.toString() !== userId)
+  const loggedInUserId = extractUserId(accessToken);
+  if (loggedInUserId !== userId)
     return axios.delete(`${secretIp}/api/users/${userId}`, {
       headers: {
         authorization: accessToken,
@@ -45,7 +45,7 @@ export function addUser(
   firstName: string,
   lastName: string,
   password: string,
-  churchId: string,
+  churchId: number,
 ): Promise<AxiosResponse> {
   const accessToken = localStorage.getItem('access_token');
   return axios.post(
