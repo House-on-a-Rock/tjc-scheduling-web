@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from 'react-query';
 import history from '../../../history';
@@ -52,6 +52,7 @@ export const Members = () => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const [lastSelected, setLastSelected] = useState<number>(null);
+  useEffect(() => console.log(data), [data]);
 
   if (membersLoading || rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
@@ -88,13 +89,13 @@ export const Members = () => {
     { userId: id }: MemberStateData,
   ) => {
     event.stopPropagation();
-    setLastSelected(id);
     const updatedRows: number[] = event.shiftKey
       ? makeNewRows(lastSelected, id, data)
       : [id];
     selectedRows.includes(id)
       ? setSelectedRows(selectedRows.filter((rowId) => !updatedRows.includes(rowId)))
       : setSelectedRows([...selectedRows, ...updatedRows]);
+    setLastSelected(id);
   };
 
   const filteredMembers: MemberStateData[] = data.filter(
