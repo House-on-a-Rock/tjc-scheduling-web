@@ -1,15 +1,9 @@
 import { Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import history from '../../history';
 import { errorDataExtractor, extractUserId } from '../../shared/utilities';
 import { AuthStateActions } from '.';
-import {
-  getOneUser,
-  getAllUsers,
-  getUserRoles,
-  getAllLocalChurchUsers,
-  deleteUser,
-  addUser,
-} from '../apis';
+import { getUser, getUserRoles, getAllLocalMembers, deleteUser, addUser } from '../apis';
 import {
   MemberActionTypes,
   LOAD_MEMBERS,
@@ -49,17 +43,15 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
     try {
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
-      const loggedInUserResponse = await getOneUser(userId.toString());
-      const response = await getAllLocalChurchUsers(
-        loggedInUserResponse.data.ChurchId.toString(),
-      );
+      const loggedInUserResponse = await getUser(userId);
+      const response = await getAllLocalMembers(loggedInUserResponse.data.ChurchId);
 
       // update users with their roles
       let updatedMemberList = response.data;
       updatedMemberList.map(async (user: MemberStateData) => {
-        const userId = user.id;
+        const userId = user.userId;
         let roleList: string[] = [];
-        const userRolesResponse = await getUserRoles(userId.toString());
+        const userRolesResponse = await getUserRoles(userId);
         userRolesResponse.data.map((userRole: any) => {
           roleList.push(userRole.role.name);
         });
@@ -69,6 +61,7 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       dispatch(loadMembers(updatedMemberList, loggedInUserResponse.data.church.name));
     } catch (error) {
       const errorData = errorDataExtractor(error);
+      history.push('/auth/login');
       dispatch(AuthStateActions.Error(errorData));
     }
   };
@@ -93,7 +86,7 @@ export const onDeleteMembers = (
   return async (dispatch) => {
     try {
       selectedMembers.map(async (member) => {
-        const response = await deleteUser(member.toString());
+        const response = await deleteUser(member);
         dispatch(deleteMembers(response.data.id));
       });
     } catch (error) {
@@ -113,15 +106,9 @@ export const onAddMember = (
     try {
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
-      const loggedInUserResponse = await getOneUser(userId.toString());
+      const loggedInUserResponse = await getUser(userId);
       const churchId = loggedInUserResponse.data.ChurchId;
-      const response = await addUser(
-        email,
-        firstName,
-        lastName,
-        password,
-        churchId.toString(),
-      );
+      const response = await addUser(email, firstName, lastName, password, churchId);
       const newUserData = response.data;
       newUserData.roles = [];
       dispatch(addMember(newUserData));

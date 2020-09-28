@@ -1,17 +1,9 @@
 import React from 'react';
 import { themeExtension } from '../../../shared/styles/theme.js';
 
-import {
-  fade,
-  makeStyles,
-  withStyles,
-  Theme,
-  createStyles,
-} from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableContainer from '@material-ui/core/TableContainer';

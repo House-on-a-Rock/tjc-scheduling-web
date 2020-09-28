@@ -7,6 +7,7 @@ import {
   EmailMemory,
   FORGET_ME,
 } from '../types';
+import history from '../../history';
 import { AuthStateActions } from './loadActions';
 import { Action } from 'redux';
 import {
@@ -30,6 +31,7 @@ export const forgetMe = (): AuthActionTypes => ({ type: FORGET_ME });
 export const onValidated = (): ThunkAction<any, any, any, Action> => (dispatch) => {
   dispatch(login());
   dispatch(AuthStateActions.Loaded());
+  history.push('/');
 };
 
 export const checkCredentials = (
