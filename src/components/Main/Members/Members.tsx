@@ -17,7 +17,7 @@ import { MembersTable } from './MembersTable';
 
 import { onDeleteMembers, onAddMember } from '../../../store/actions';
 import { isValidEmail } from '../../../shared/helper_functions';
-import { makeNewRows } from './utilities';
+import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData, bootstrapMembersData } from '../../../query';
 
@@ -90,7 +90,7 @@ export const Members = () => {
   ) => {
     event.stopPropagation();
     const updatedRows: number[] = event.shiftKey
-      ? makeNewRows(lastSelected, id, data)
+      ? updateSelectedRows(lastSelected, id, data)
       : [id];
     selectedRows.includes(id)
       ? setSelectedRows(selectedRows.filter((rowId) => !updatedRows.includes(rowId)))

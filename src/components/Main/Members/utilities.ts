@@ -1,6 +1,6 @@
 import { MemberStateData } from '../../../store/types';
 
-export function makeNewRows(start: number, end: number, data: MemberStateData[]) {
+export function updateSelectedRows(start: number, end: number, data: MemberStateData[]) {
   let newRows: number[] = [];
   let startPushing: boolean = false;
   const vectoredData: MemberStateData[] = start < end ? data : data.reverse();
