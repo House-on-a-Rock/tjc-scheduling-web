@@ -7,7 +7,7 @@ import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
 import { PasswordState } from '../../shared/types/models';
-import { useQuery } from '../../shared/helper_functions';
+import { useQuery } from '../../shared/utilities';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -201,7 +201,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(1),
   },
   submit: {

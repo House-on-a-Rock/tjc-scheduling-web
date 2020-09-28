@@ -16,7 +16,7 @@ import { MembersHeader } from './MembersHeader';
 import { MembersTable } from './MembersTable';
 
 import { onDeleteMembers, onAddMember } from '../../../store/actions';
-import { isValidEmail } from '../../../shared/helper_functions';
+import { isValidEmail } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData, bootstrapMembersData } from '../../../query';

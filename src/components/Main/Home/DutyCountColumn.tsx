@@ -7,29 +7,29 @@ import GridListTile from '@material-ui/core/GridListTile';
 import Divider from '@material-ui/core/Divider';
 
 interface DutyCountType {
-    role: string;
-    count: number;
+  role: string;
+  count: number;
 }
 
 export interface DutyCountColumnProps {
-    name: string;
-    dutyCounts: DutyCountType[];
+  name: string;
+  dutyCounts: DutyCountType[];
 }
 
-export const DutyCountColumn = ({name, dutyCounts}: DutyCountColumnProps) => {
-    return (
-        <GridListTile>
-            <List dense={false}>
-                <ListItem>
-                    <ListItemText primary={name}/>
-                </ListItem>
-                <Divider />
-                {dutyCounts.map((dutyCount) => (
-                    <ListItem>
-                        <ListItemText primary={dutyCount.role} secondary={dutyCount.count}/>
-                    </ListItem>
-                ))}
-            </List>
-        </GridListTile>
-    )
-}
+export const DutyCountColumn = ({ name, dutyCounts }: DutyCountColumnProps) => {
+  return (
+    <GridListTile>
+      <List dense={false}>
+        <ListItem>
+          <ListItemText primary={name} />
+        </ListItem>
+        <Divider />
+        {dutyCounts.map((dutyCount) => (
+          <ListItem>
+            <ListItemText primary={dutyCount.role} secondary={dutyCount.count} />
+          </ListItem>
+        ))}
+      </List>
+    </GridListTile>
+  );
+};

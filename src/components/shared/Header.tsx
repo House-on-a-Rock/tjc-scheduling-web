@@ -1,16 +1,12 @@
 import React from 'react';
-import logo from '../../assets/tjc_logo_english.png';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 
-import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
@@ -33,9 +29,6 @@ function ElevationScroll(props: any) {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // grow: {
-    //     flexGrow: 1,
-    // },
     menuButton: {
       marginRight: theme.spacing(2),
     },
@@ -120,7 +113,6 @@ export const Header = (props: any) => {
               <IconButton
                 edge="end"
                 aria-label="account of current user"
-                // aria-controls={menuId}
                 aria-haspopup="true"
                 // onClick={handleProfileMenuOpen}
                 color="inherit"
@@ -131,7 +123,6 @@ export const Header = (props: any) => {
             <div className={classes.sectionMobile}>
               <IconButton
                 aria-label="show more"
-                // aria-controls={mobileMenuId}
                 aria-haspopup="true"
                 // onClick={handleMobileMenuOpen}
                 color="inherit"

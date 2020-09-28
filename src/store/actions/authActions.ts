@@ -16,7 +16,7 @@ import {
   authenticateLogin,
   sendNewPassword,
 } from '../apis';
-import { errorDataExtractor } from '../../shared/helper_functions';
+import { errorDataExtractor } from '../../shared/utilities';
 
 export const login = (): AuthActionTypes => ({ type: LOGIN });
 export const logout = (): AuthActionTypes => ({ type: LOGOUT });
