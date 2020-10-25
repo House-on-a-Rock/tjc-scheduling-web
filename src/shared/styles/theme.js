@@ -132,6 +132,8 @@ export const themeExtension = {
   tab: {
     'text-transform': 'none',
     borderRadius: '1rem 1rem 0 0',
+    borderWidth: '2px 2px 0 2px',
+    borderStyle: 'solid',
     margin: '0 -1px',
     transition: fastTransitionTime,
     'box-sizing': 'border-box',
@@ -140,22 +142,20 @@ export const themeExtension = {
     },
 
     color: mainTextColor,
-    borderLeft: `${greyedOutBorderColor} 2px solid`,
-    borderTop: `${greyedOutBorderColor} 2px solid`,
-    borderRight: `${greyedOutBorderColor} 2px solid`,
+    borderColor: greyedOutBorderColor,
     boxShadow: '#C8C8C850 0 15px 20px inset',
 
     '&:hover, &:focus': {
       color: 'white',
       background: tjcBlue,
-      border: `${tjcBlue} 2px solid`,
+      borderColor: tjcBlue,
       zIndex: 2,
-      boxShadow: '#CCDBE0 0 20px 23px',
+      boxShadow: `${greyedOutBackgroundColor} 0 20px 23px`,
     },
     '&[aria-selected="true"]': {
       color: 'white',
       background: tjcLightBlue,
-      border: `${tjcLightBlue} 2px solid`,
+      borderColor: tjcLightBlue,
       zIndex: 1,
       boxShadow: 'none',
     },
