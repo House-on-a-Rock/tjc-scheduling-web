@@ -139,7 +139,7 @@ export const themeExtension = {
     '&:hover button[aria-selected="true"]': {
       color: 'white',
       background: tjcLightBlue,
-      border: 'none',
+      border: `${tjcLightBlue} 2px solid`,
       zIndex: 1,
       boxShadow: 'none',
     },
@@ -148,23 +148,29 @@ export const themeExtension = {
     'text-transform': 'none',
     borderRadius: '1rem 1rem 0 0',
     margin: '0 -1px',
+    transition: fastTransitionTime,
+    'box-sizing': 'border-box',
+    '& span': {
+      fontSize: 'large',
+    },
+
     color: mainTextColor,
     borderLeft: `${greyedOutBorderColor} 2px solid`,
     borderTop: `${greyedOutBorderColor} 2px solid`,
     borderRight: `${greyedOutBorderColor} 2px solid`,
     boxShadow: '#C8C8C850 0 15px 20px inset',
-    transition: fastTransitionTime,
+
     '&:hover, &:focus': {
       color: 'white',
       background: tjcBlue,
-      border: 'none',
-      zIndex: 1,
-      boxShadow: 'none',
+      border: `${tjcBlue} 2px solid`,
+      zIndex: 2,
+      boxShadow: '#CCDBE0 0 20px 23px',
     },
     '&[aria-selected="true"]': {
       color: 'white',
       background: tjcLightBlue,
-      border: 'none',
+      border: `${tjcLightBlue} 2px solid`,
       zIndex: 1,
       boxShadow: 'none',
     },
