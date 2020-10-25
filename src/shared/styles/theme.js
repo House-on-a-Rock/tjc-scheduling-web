@@ -10,6 +10,7 @@ const mainTextColor = '#556071';
 const mainTitleColor = mainTextColor;
 const mainBackgroundColor = '#FFFFFF';
 const secondaryBackgroundColor = '#EDEEF3';
+const veryLightGrey = secondaryBackgroundColor;
 const greyedOutButtonColor = '#C8C8C8';
 const greyedOutBorderColor = greyedOutButtonColor;
 const greyedOutBackgroundColor = '#2F2F2F';
@@ -125,6 +126,49 @@ export const themeExtension = {
       backgroundColor: interactiveColorBlue,
     },
   },
+  tabs: {
+    borderBottom: `${veryLightGrey} 2px solid`,
+    '&:hover button:not(:hover):not(:focus):not([aria-selected="true"])': {
+      color: mainTextColor,
+      borderLeft: `${greyedOutBorderColor} 2px solid`,
+      borderTop: `${greyedOutBorderColor} 2px solid`,
+      borderRight: `${greyedOutBorderColor} 2px solid`,
+      boxShadow: '#C8C8C850 0 15px 20px inset',
+      background: 'white',
+    },
+    '&:hover button[aria-selected="true"]': {
+      color: 'white',
+      background: tjcLightBlue,
+      border: 'none',
+      zIndex: 1,
+      boxShadow: 'none',
+    },
+  },
+  tab: {
+    'text-transform': 'none',
+    borderRadius: '1rem 1rem 0 0',
+    margin: '0 -1px',
+    color: mainTextColor,
+    borderLeft: `${greyedOutBorderColor} 2px solid`,
+    borderTop: `${greyedOutBorderColor} 2px solid`,
+    borderRight: `${greyedOutBorderColor} 2px solid`,
+    boxShadow: '#C8C8C850 0 15px 20px inset',
+    transition: fastTransitionTime,
+    '&:hover, &:focus': {
+      color: 'white',
+      background: tjcBlue,
+      border: 'none',
+      zIndex: 1,
+      boxShadow: 'none',
+    },
+    '&[aria-selected="true"]': {
+      color: 'white',
+      background: tjcLightBlue,
+      border: 'none',
+      zIndex: 1,
+      boxShadow: 'none',
+    },
+  },
 };
 
 // to avoid loading the whole object:
@@ -134,3 +178,5 @@ export const transitionTheme = themeExtension.transition;
 export const cardTheme = themeExtension.card;
 export const buttonTheme = themeExtension.button;
 export const sideBarTheme = themeExtension.sideBar;
+export const tabTheme = themeExtension.tab;
+export const tabGroupTheme = themeExtension.tabs;
