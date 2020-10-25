@@ -128,21 +128,6 @@ export const themeExtension = {
   },
   tabs: {
     borderBottom: `${veryLightGrey} 2px solid`,
-    '&:hover button:not(:hover):not(:focus):not([aria-selected="true"])': {
-      color: mainTextColor,
-      borderLeft: `${greyedOutBorderColor} 2px solid`,
-      borderTop: `${greyedOutBorderColor} 2px solid`,
-      borderRight: `${greyedOutBorderColor} 2px solid`,
-      boxShadow: '#C8C8C850 0 15px 20px inset',
-      background: 'white',
-    },
-    '&:hover button[aria-selected="true"]': {
-      color: 'white',
-      background: tjcLightBlue,
-      border: `${tjcLightBlue} 2px solid`,
-      zIndex: 1,
-      boxShadow: 'none',
-    },
   },
   tab: {
     'text-transform': 'none',
