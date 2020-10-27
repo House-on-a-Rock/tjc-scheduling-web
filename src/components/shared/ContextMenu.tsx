@@ -4,6 +4,7 @@ import { ContextMenu as CMenu, MenuItem, ContextMenuTrigger } from 'react-contex
 interface ContextMenuProps {
   children: React.ReactNode;
   menuId: string;
+  value: any;
 }
 
 interface MenuItemProps {
@@ -13,7 +14,7 @@ interface MenuItemProps {
 }
 
 //This doesn't come with default styling unfortunately. They're style sheets are here: https://github.com/vkbansal/react-contextmenu/blob/master/examples/react-contextmenu.css
-export const ContextMenu = ({ children, menuId }: ContextMenuProps) => {
+export const ContextMenu = ({ children, menuId, value }: ContextMenuProps) => {
   function handleClick({ event, data, target }: MenuItemProps) {
     console.log('hiiii');
   }
@@ -34,7 +35,7 @@ export const ContextMenu = ({ children, menuId }: ContextMenuProps) => {
         }}
       >
         <MenuItem data={{ foo: 'bar' }} onClick={handleClick}>
-          ContextMenu Item 1 CLick mee
+          {value}
         </MenuItem>
         <MenuItem data={{ foo: 'bar' }} onClick={handleClick}>
           ContextMenu Item 2

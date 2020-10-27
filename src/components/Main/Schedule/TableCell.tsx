@@ -31,7 +31,7 @@ export const DataCell = ({
   }, [initialValue]);
 
   return initialValue ? (
-    <ContextMenu menuId={`${index} and ${id} and ${value}`}>
+    <ContextMenu menuId={`${index}-${id}-${value}`} value={value}>
       <Input
         value={value}
         onChange={onChange}
