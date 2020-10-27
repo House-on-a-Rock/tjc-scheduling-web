@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Input from '@material-ui/core/Input';
 import { DataCellProps } from '../../../shared/types';
+import { ContextMenu } from '../../shared/ContextMenu';
 
 export const DataCell = ({
   value: initialValue,
@@ -30,12 +31,14 @@ export const DataCell = ({
   }, [initialValue]);
 
   return initialValue ? (
-    <Input
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      onKeyUp={(e) => handleEnter(e)}
-    />
+    <ContextMenu menuId={`${index} and ${id} and ${value}`}>
+      <Input
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyUp={(e) => handleEnter(e)}
+      />
+    </ContextMenu>
   ) : (
     ''
   );
