@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useQuery } from 'react-query';
 import history from '../../../history';
@@ -21,8 +21,8 @@ import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData, bootstrapMembersData } from '../../../query';
 
 const initialChurchProfile = {
-  name: 'Hillsborough',
-  churchId: 1,
+  name: 'Philadelphia',
+  churchId: 2,
 };
 
 export const Members = () => {
@@ -35,6 +35,7 @@ export const Members = () => {
     ['memberData', initialChurchProfile.churchId],
     getChurchMembersData,
   );
+
   const { isLoading: rolesLoading, data } = useQuery(
     ['roleData', members],
     bootstrapMembersData,
@@ -47,7 +48,6 @@ export const Members = () => {
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const [lastSelected, setLastSelected] = useState<number>(null);
-  useEffect(() => console.log(data), [data]);
 
   if (membersLoading || rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
@@ -55,11 +55,10 @@ export const Members = () => {
   const isSelected: (arg: number) => boolean = (id: number) =>
     selectedRows.indexOf(id) !== -1;
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) =>
     event.target.checked
       ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
       : setSelectedRows([]);
-  };
 
   const handleDeleteMembers = () => {
     dispatch(onDeleteMembers(selectedRows));
@@ -73,9 +72,9 @@ export const Members = () => {
     email: string,
     password: string,
   ) => {
-    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
+    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email))
       dispatch(onAddMember(firstName, lastName, email, password));
-    }
+
     setIsAddMemberDialogOpen(false);
   };
 
