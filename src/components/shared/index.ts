@@ -7,3 +7,4 @@ export * from './VisiblePassword';
 export * from './AuthEmail';
 export * from './PasswordStrengthMeter';
 export * from './PasswordForm';
+export * from './Error404';

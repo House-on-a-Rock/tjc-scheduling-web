@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from '../../shared/types/useSelector';
+import { useSelector } from '../../shared/utilities';
 import { Link as RouterLink, Redirect } from 'react-router-dom';
 
 // Custom Components
@@ -28,164 +28,165 @@ import { checkCredentials } from '../../store/actions';
 import { HttpError, PasswordState, EmailState } from '../../shared/types/models';
 import { PasswordForm } from '../shared';
 import {
-    setLocalStorageState,
-    removeLocalStorageState,
-    getLocalStorageState,
-    isValidEmail,
-} from '../../shared/helper_functions';
+  setLocalStorageState,
+  removeLocalStorageState,
+  getLocalStorageState,
+  isValidEmail,
+} from '../../shared/utilities';
 import { EmailForm } from '../shared/EmailForm';
 
 export const Login = () => {
-    const classes = useStyles();
-    const dispatch = useDispatch();
-    const rememberedEmailState: EmailState = {
-        value: getLocalStorageState('auth')?.email,
-        valid: true,
-        message: '',
-    };
+  const classes = useStyles();
+  const dispatch = useDispatch();
+  const rememberedEmailState: EmailState = {
+    value: getLocalStorageState('auth')?.email,
+    valid: true,
+    message: '',
+  };
 
-    const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
-    const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
-    const loadState: string = useSelector(({ load }) => load.loadStatus.AUTH);
+  const isLoggedIn: boolean = useSelector(({ auth }) => auth.isLoggedIn);
+  const errorMessage: HttpError = useSelector(({ load }) => load.loadErrorStatus.AUTH);
+  const loadState: string = useSelector(({ load }) => load.loadStatus.AUTH);
 
-    const [remembered, setRemembered] = useState<boolean>(
-        getLocalStorageState('auth') ? true : false,
-    );
+  const [remembered, setRemembered] = useState<boolean>(
+    getLocalStorageState('auth') ? true : false,
+  );
 
-    const [email, setEmail] = useState<EmailState>(
-        rememberedEmailState.value
-            ? rememberedEmailState
-            : { value: '', valid: true, message: null },
-    );
-    const [password, setPassword] = useState<PasswordState>({
-        value: '',
-        valid: true,
-        visible: false,
-        message: null,
-    });
+  const [email, setEmail] = useState<EmailState>(
+    rememberedEmailState.value
+      ? rememberedEmailState
+      : { value: '', valid: true, message: null },
+  );
+  const [password, setPassword] = useState<PasswordState>({
+    value: '',
+    valid: true,
+    visible: false,
+    message: null,
+  });
 
-    function handleLogin(event?: FormEvent<HTMLFormElement>) {
-        event?.preventDefault();
-        setEmail({ ...email, valid: true, message: '' });
-        setPassword({ ...password, valid: true, message: '' });
-        if (isValidEmail(email.value) && password.value.length > 0) {
-            dispatch(checkCredentials(email.value, password.value));
-        } else {
-            if (password.value.length === 0)
-                setPassword({
-                    ...password,
-                    valid: false,
-                    message: 'Please enter a password',
-                });
-            if (!isValidEmail(email.value)) {
-                setEmail({
-                    ...email,
-                    valid: false,
-                    message: 'Enter a valid email address.',
-                });
-            }
-            if (email.value.length === 0)
-                setEmail({
-                    ...email,
-                    valid: false,
-                    message: 'Please enter an email address.',
-                });
-        }
+  function handleLogin(event?: FormEvent<HTMLFormElement>): void {
+    event?.preventDefault();
+    setEmail({ ...email, valid: true, message: '' });
+    setPassword({ ...password, valid: true, message: '' });
+    if (isValidEmail(email.value) && password.value.length > 0) {
+      dispatch(checkCredentials(email.value, password.value));
+    } else {
+      if (password.value.length === 0)
+        setPassword({
+          ...password,
+          valid: false,
+          message: 'Please enter a password',
+        });
+      if (!isValidEmail(email.value)) {
+        setEmail({
+          ...email,
+          valid: false,
+          message: 'Enter a valid email address.',
+        });
+      }
+      if (email.value.length === 0)
+        setEmail({
+          ...email,
+          valid: false,
+          message: 'Please enter an email address.',
+        });
     }
+  }
 
-    if (isLoggedIn) {
-        remembered
-            ? setLocalStorageState('auth', { email: email.value })
-            : removeLocalStorageState('auth');
-        return <Redirect to="/" />;
-    }
+  if (isLoggedIn) {
+    remembered
+      ? setLocalStorageState('auth', { email: email.value })
+      : removeLocalStorageState('auth');
+    // return <Redirect to="/" />;
+  }
 
-    return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline />
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Login
-                </Typography>
-                {errorMessage && (
-                    <Typography color="error">{`${errorMessage?.status}: ${errorMessage?.message}`}</Typography>
-                )}
+  return (
+    <Container component="main" maxWidth="xs" className={classes.root}>
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Login
+        </Typography>
+        {errorMessage && (
+          <Typography color="error">{`${errorMessage?.status}: ${errorMessage?.message}`}</Typography>
+        )}
 
-                <form className={classes.form} noValidate onSubmit={handleLogin}>
-                    <EmailForm
-                        name={'email'}
-                        label={'Email Address'}
-                        email={email}
-                        handleEmail={setEmail}
-                    />
-                    <PasswordForm
-                        name={'Password'}
-                        label={'Password'}
-                        password={password}
-                        handlePassword={setPassword}
-                    />
+        <form className={classes.form} noValidate onSubmit={handleLogin}>
+          <EmailForm
+            name={'email'}
+            label={'Email Address'}
+            email={email}
+            handleEmail={setEmail}
+          />
+          <PasswordForm
+            name={'Password'}
+            label={'Password'}
+            password={password}
+            handlePassword={setPassword}
+          />
 
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                value={remembered}
-                                color="primary"
-                                checked={remembered}
-                            />
-                        }
-                        label="Remember me"
-                        onChange={() => setRemembered(!remembered)}
-                    />
-                    <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        type="submit"
-                        onClick={() => handleLogin()}
-                    >
-                        {loadState === 'LOADING' ? <CircularProgress /> : 'Sign In'}
-                    </Button>
-                </form>
-            </div>
+          <FormControlLabel
+            control={<Checkbox value={remembered} color="primary" checked={remembered} />}
+            label="Remember me"
+            onChange={() => setRemembered(!remembered)}
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            type="submit"
+            onClick={() => handleLogin()}
+          >
+            {loadState === 'LOADING' ? <CircularProgress /> : 'Sign In'}
+          </Button>
+          {/* HI TT */}
+        </form>
+      </div>
 
-            <Grid container>
-                <Grid item xs>
-                    <RouterLink to={`/auth/forgotPassword`}>Forgot password</RouterLink>
-                </Grid>
-                <Grid item>
-                    <Link href="#" variant="body2">
-                        {"Don't have an account?"}
-                    </Link>
-                </Grid>
-            </Grid>
+      <Grid container>
+        <Grid item xs>
+          <RouterLink to={`/auth/forgotPassword`}>Forgot password</RouterLink>
+        </Grid>
+        <Grid item>
+          <Link href="#" variant="body2">
+            {"Don't have an account?"}
+          </Link>
+        </Grid>
+      </Grid>
 
-            <Box mt={8}>
-                <Copyright />
-            </Box>
-        </Container>
-    );
+      <Box mt={8}>
+        <Copyright />
+      </Box>
+    </Container>
+  );
 };
 
 const useStyles = makeStyles((theme) => ({
-    paper: {
-        marginTop: theme.spacing(25),
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+  root: {
+    [theme.breakpoints.down('xs')]: {
+      position: 'absolute',
+      bottom: 0,
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
-    },
-    form: {
-        width: '100%',
-        marginTop: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
+  },
+  paper: {
+    marginTop: '20%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%',
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
