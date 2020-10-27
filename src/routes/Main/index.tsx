@@ -7,11 +7,12 @@ import { Error404 } from '../../components/shared';
 import '../../assets/fonts.css';
 import '../../assets/global.css';
 import theme from '../../shared/styles/theme';
-import { QueryCache, ReactQueryCacheProvider } from 'react-query';
+import { QueryCache, ReactQueryCacheProvider, useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools';
 
 const Main = () => {
   const queryCache = new QueryCache();
+  // const {isLoading, error, data} = useQuery()
   return (
     <>
       <Router>
