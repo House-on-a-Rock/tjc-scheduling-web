@@ -5,7 +5,6 @@ import history from '../../../history';
 
 // material UI
 import Grid from '@material-ui/core/Grid';
-import CSS from 'csstype';
 
 // shared components
 import { ConfirmationDialog } from '../../shared/ConfirmationDialog';
@@ -20,10 +19,6 @@ import { isValidEmail } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData, bootstrapMembersData } from '../../../query';
-
-const styleHead: CSS.Properties = {
-  fontWeight: 'bold',
-};
 
 const initialChurchProfile = {
   name: 'Hillsborough',

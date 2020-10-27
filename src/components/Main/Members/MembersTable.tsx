@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { CSSProperties } from 'react';
 import { cardTheme } from '../../../shared/styles/theme.js';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -13,9 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import { MemberStateData } from '../../../store/types';
 
-import CSS from 'csstype';
-
-const styleHead: CSS.Properties = {
+const styleHead: CSSProperties = {
   fontWeight: 'bold',
 };
 

@@ -1,13 +1,13 @@
 import React, { useState, FormEvent } from 'react';
 import { useDispatch } from 'react-redux';
-import zxcvbn, { ZXCVBNResult } from 'zxcvbn';
+import zxcvbn from 'zxcvbn';
 
 // Custom
 import { resetPassword } from '../../store/actions';
 import { TransitionsModal } from '../shared/TransitionsModal';
 import { PasswordStrengthMeter, PasswordForm } from '../shared';
 import { PasswordState } from '../../shared/types/models';
-import { useQuery } from '../../shared/utilities';
+import { useQuery } from '../../shared/utilities/helperFunctions';
 
 // Material UI
 import Button from '@material-ui/core/Button';
@@ -36,9 +36,9 @@ export const ResetPassword = () => {
   });
   const [passwordMessage, setPasswordMessage] = useState<string>('');
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const testedResult: ZXCVBNResult = zxcvbn(password.value);
+  const testedResult = zxcvbn(password.value);
 
-  function onHandlePassword(newPassword: PasswordState): void {
+  function onHandlePassword(newPassword: PasswordState) {
     if (!password.valid) {
       setPassword({
         ...password,
@@ -46,14 +46,9 @@ export const ResetPassword = () => {
         message: '',
         value: newPassword.value,
       });
-    } else
-      setPassword({
-        ...password,
-        value: newPassword.value,
-        visible: newPassword.visible,
-      });
+    } else setPassword({ ...password, value: newPassword.value });
   }
-  function onHandleConfirmPassword(newConfirmPassword: PasswordState): void {
+  function onHandleConfirmPassword(newConfirmPassword: PasswordState) {
     if (!confirmPassword.valid)
       setConfirmPassword({
         ...confirmPassword,
@@ -61,15 +56,10 @@ export const ResetPassword = () => {
         message: '',
         value: newConfirmPassword.value,
       });
-    else
-      setConfirmPassword({
-        ...confirmPassword,
-        value: newConfirmPassword.value,
-        visible: newConfirmPassword.visible,
-      });
+    else setConfirmPassword({ ...confirmPassword, value: newConfirmPassword.value });
   }
 
-  function createPasswordLabel(result: ZXCVBNResult): string {
+  function createPasswordLabel(result: any) {
     switch (result.score) {
       case 0:
         return 'Weak';
@@ -89,7 +79,7 @@ export const ResetPassword = () => {
     newPasswordValue: string,
     confirmPasswordValue: string,
     event?: FormEvent<HTMLFormElement>,
-  ): void {
+  ) {
     event?.preventDefault();
     if (newPasswordValue.length === 0)
       setPassword({
@@ -97,7 +87,6 @@ export const ResetPassword = () => {
         valid: false,
         message: 'Please enter a password',
       });
-
     if (confirmPasswordValue.length === 0)
       setConfirmPassword({
         ...confirmPassword,
@@ -123,14 +112,15 @@ export const ResetPassword = () => {
       setPasswordMessage('Please enter a stronger password');
     } else {
       setOpenModal(true);
-      dispatch(resetPassword(token, newPasswordValue));
       setPassword({ ...password, value: '', valid: true, message: '' });
+
       setConfirmPassword({
         ...confirmPassword,
         value: '',
         valid: true,
         message: '',
       });
+      dispatch(resetPassword(token, newPasswordValue));
     }
   }
   return (
@@ -178,7 +168,7 @@ export const ResetPassword = () => {
           <div className={classes.buttonRow}>
             <Button
               type="submit"
-              onSubmit={() => submitNewPassword(password.value, confirmPassword.value)}
+              onClick={() => submitNewPassword(password.value, confirmPassword.value)}
             >
               Reset Password
             </Button>
@@ -201,7 +191,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%',
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
