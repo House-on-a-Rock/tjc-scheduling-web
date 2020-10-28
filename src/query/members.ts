@@ -3,8 +3,7 @@ import { MemberStateData } from '../store/types';
 import { INewMembersData, IRolesData } from './types';
 
 export const getChurchMembersData = async (key: string, churchId: number) => {
-  const { data } = await getAllLocalMembers(churchId);
-  return data;
+  return churchId ? (await getAllLocalMembers(churchId)).data : [];
 };
 
 export const bootstrapMembersData = async (key: string, members: MemberStateData[]) => {

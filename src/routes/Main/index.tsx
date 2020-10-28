@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { Home, Teams, Members } from '../../components/Main';
 import { Header } from '../../components/shared/Header';
@@ -9,10 +9,23 @@ import '../../assets/global.css';
 import theme from '../../shared/styles/theme';
 import { QueryCache, ReactQueryCacheProvider, useQuery } from 'react-query';
 import { ReactQueryDevtools } from 'react-query-devtools';
+import { extractUserId } from '../../shared/utilities';
+import { getUserData } from '../../query/users';
+import { useDispatch } from 'react-redux';
+import { loadProfile } from '../../store/actions/profileActions';
 
 const Main = () => {
   const queryCache = new QueryCache();
-  // const {isLoading, error, data} = useQuery()
+  const dispatch = useDispatch();
+  const { isLoading: userLoading, error: userError, data: user } = useQuery(
+    ['profile', extractUserId(localStorage.getItem('access_token'))],
+    getUserData,
+  );
+
+  useEffect(() => {
+    if (user) dispatch(loadProfile({ churchId: user.churchId, name: user.church.name }));
+  }, [user]);
+
   return (
     <>
       <Router>

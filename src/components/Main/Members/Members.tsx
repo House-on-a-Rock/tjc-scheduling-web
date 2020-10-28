@@ -15,24 +15,20 @@ import { MembersHeader } from './MembersHeader';
 import { MembersTable } from './MembersTable';
 
 import { onDeleteMembers, onAddMember } from '../../../store/actions';
-import { isValidEmail } from '../../../shared/utilities';
+import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData, bootstrapMembersData } from '../../../query';
 
-const initialChurchProfile = {
-  name: 'Philadelphia',
-  churchId: 2,
-};
-
 export const Members = () => {
   // hooks
   const dispatch = useDispatch();
+  const { churchId, name: churchName } = useSelector((state) => state.profile);
+  console.log(churchId);
 
   // how to handle errors or no members
-  // need to useQuery for initialChurchProfile
   const { isLoading: membersLoading, error, data: members } = useQuery(
-    ['memberData', initialChurchProfile.churchId],
+    ['memberData', churchId],
     getChurchMembersData,
   );
 
@@ -107,7 +103,7 @@ export const Members = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <MembersHeader
-          localChurch={initialChurchProfile.name}
+          localChurch={churchName}
           onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchField(event.target.value);
           }}
