@@ -31,6 +31,19 @@ export const Members = () => {
 
   // how to handle errors or no members
   // need to useQuery for initialChurchProfile
+
+  // old two query implementation
+  // const { isLoading: membersLoading, error, data: members } = useQuery(
+  //   ['memberData', initialChurchProfile.churchId],
+  //   getChurchMembersData,
+  // );
+
+  // const { isLoading: rolesLoading, data } = useQuery(
+  //   ['roleData', members],
+  //   bootstrapMembersData,
+  //   { enabled: members },
+  // );
+
   const { isLoading: rolesLoading, error, data } = useQuery(
     ['roleData', initialChurchProfile.churchId],
     getChurchMembersData,
@@ -43,6 +56,7 @@ export const Members = () => {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const [lastSelected, setLastSelected] = useState<number>(null);
 
+  // if (membersLoading ||rolesLoading) return <h1>Loading</h1>;
   if (rolesLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
 
