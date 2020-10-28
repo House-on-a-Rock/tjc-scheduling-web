@@ -18,7 +18,7 @@ import { onDeleteMembers, onAddMember } from '../../../store/actions';
 import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
-import { getChurchMembersData, bootstrapMembersData } from '../../../query';
+import { getChurchMembersData } from '../../../query';
 
 export const Members = () => {
   // hooks
@@ -27,15 +27,9 @@ export const Members = () => {
   console.log(churchId);
 
   // how to handle errors or no members
-  const { isLoading: membersLoading, error, data: members } = useQuery(
-    ['memberData', churchId],
+  const { isLoading, error, data } = useQuery(
+    ['roleData', churchId],
     getChurchMembersData,
-  );
-
-  const { isLoading: rolesLoading, data } = useQuery(
-    ['roleData', members],
-    bootstrapMembersData,
-    { enabled: members },
   );
 
   // component state
@@ -45,7 +39,7 @@ export const Members = () => {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const [lastSelected, setLastSelected] = useState<number>(null);
 
-  if (membersLoading || rolesLoading) return <h1>Loading</h1>;
+  if (isLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
 
   const isSelected: (arg: number) => boolean = (id: number) =>
