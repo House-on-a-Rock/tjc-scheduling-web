@@ -15,37 +15,20 @@ import { MembersHeader } from './MembersHeader';
 import { MembersTable } from './MembersTable';
 
 import { onDeleteMembers, onAddMember } from '../../../store/actions';
-import { isValidEmail } from '../../../shared/utilities';
+import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
 
-const initialChurchProfile = {
-  name: 'Philadelphia',
-  churchId: 2,
-};
-
 export const Members = () => {
   // hooks
   const dispatch = useDispatch();
+  const { churchId, name: churchName } = useSelector((state) => state.profile);
+  console.log(churchId);
 
   // how to handle errors or no members
-  // need to useQuery for initialChurchProfile
-
-  // old two query implementation
-  // const { isLoading: membersLoading, error, data: members } = useQuery(
-  //   ['memberData', initialChurchProfile.churchId],
-  //   getChurchMembersData,
-  // );
-
-  // const { isLoading: rolesLoading, data } = useQuery(
-  //   ['roleData', members],
-  //   bootstrapMembersData,
-  //   { enabled: members },
-  // );
-
-  const { isLoading: rolesLoading, error, data } = useQuery(
-    ['roleData', initialChurchProfile.churchId],
+  const { isLoading, error, data } = useQuery(
+    ['roleData', churchId],
     getChurchMembersData,
   );
 
@@ -56,8 +39,7 @@ export const Members = () => {
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState<boolean>(false);
   const [lastSelected, setLastSelected] = useState<number>(null);
 
-  // if (membersLoading ||rolesLoading) return <h1>Loading</h1>;
-  if (rolesLoading) return <h1>Loading</h1>;
+  if (isLoading) return <h1>Loading</h1>;
   else if (error) history.push('/auth/login');
 
   const isSelected: (arg: number) => boolean = (id: number) =>
@@ -115,7 +97,7 @@ export const Members = () => {
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <MembersHeader
-          localChurch={initialChurchProfile.name}
+          localChurch={churchName}
           onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setSearchField(event.target.value);
           }}

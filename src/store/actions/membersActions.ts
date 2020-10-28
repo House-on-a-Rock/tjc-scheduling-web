@@ -18,23 +18,23 @@ export const loadMembers = (
   church: string,
 ): MemberActionTypes => ({
   type: LOAD_MEMBERS,
-  payload: payload,
-  church: church,
+  payload,
+  church,
 });
 
 export const addMember = (payload: MemberStateData): MemberActionTypes => ({
   type: ADD_MEMBER,
-  payload: payload,
+  payload,
 });
 
 export const deleteMembers = (payload: number): MemberActionTypes => ({
   type: DELETE_MEMBERS,
-  payload: payload,
+  payload,
 });
 
 export const loadUser = (payload: MemberStateData): MemberActionTypes => ({
   type: LOAD_USER,
-  payload: payload,
+  payload,
 });
 
 //action creators or THUNKS
@@ -44,10 +44,11 @@ export const onLoadMembers = (): ThunkAction<any, any, any, Action> => {
       const accessToken = localStorage.getItem('access_token');
       const userId = extractUserId(accessToken);
       const loggedInUserResponse = await getUser(userId);
-      const response = await getAllLocalMembers(loggedInUserResponse.data.ChurchId);
+      const { data: updatedMemberList } = await getAllLocalMembers(
+        loggedInUserResponse.data.ChurchId,
+      );
 
       // update users with their roles
-      let updatedMemberList = response.data;
       updatedMemberList.map(async (user: MemberStateData) => {
         const userId = user.userId;
         let roleList: string[] = [];

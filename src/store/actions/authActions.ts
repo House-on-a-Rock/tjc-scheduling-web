@@ -40,15 +40,15 @@ export const checkCredentials = (
 ): ThunkAction<any, any, any, Action> => {
   return async (dispatch) => {
     try {
-      const response = await authenticateLogin(email, password);
+      const { data, status, statusText } = await authenticateLogin(email, password);
       dispatch(AuthStateActions.Loading());
-      localStorage.setItem('access_token', response.data.access_token);
-      response.status === 200
+      localStorage.setItem('access_token', data.access_token);
+      status === 200
         ? dispatch(onValidated())
         : dispatch(
             AuthStateActions.Error({
-              status: response.status,
-              message: response.statusText,
+              status,
+              message: statusText,
             }),
           );
     } catch (error) {
@@ -62,13 +62,13 @@ export const validateResetToken = (token: string): ThunkAction<any, any, any, Ac
   return async (dispatch) => {
     dispatch(AuthStateActions.Loading());
     try {
-      const response = await checkResetToken(token);
-      response.status === 200
+      const { status, statusText } = await checkResetToken(token);
+      status === 200
         ? dispatch(AuthStateActions.Loaded())
         : dispatch(
             AuthStateActions.Error({
-              status: response.status,
-              message: response.statusText,
+              status,
+              message: statusText,
             }),
           );
     } catch (error) {
@@ -83,13 +83,13 @@ export const sendAuthEmail = (
 ): ThunkAction<any, any, any, Action> => async (dispatch) => {
   dispatch(AuthStateActions.Loading());
   try {
-    const response = await recoverEmail(email);
-    response.status === 200
+    const { status, statusText } = await recoverEmail(email);
+    status === 200
       ? dispatch(AuthStateActions.Loaded())
       : dispatch(
           AuthStateActions.Error({
-            status: response.status,
-            message: response.statusText,
+            status,
+            message: statusText,
           }),
         );
   } catch (error) {
@@ -104,13 +104,13 @@ export const resetPassword = (
 ): ThunkAction<any, any, any, Action> => async (dispatch) => {
   dispatch(AuthStateActions.Loading());
   try {
-    const response = await sendNewPassword(token, newPassword);
-    response.status === 201
+    const { status, statusText } = await sendNewPassword(token, newPassword);
+    status === 201
       ? dispatch(AuthStateActions.Loaded())
       : dispatch(
           AuthStateActions.Error({
-            status: response.status,
-            message: response.statusText,
+            status,
+            message: statusText,
           }),
         );
   } catch (error) {
