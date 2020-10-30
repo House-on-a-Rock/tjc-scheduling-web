@@ -19,6 +19,7 @@ const Main = () => {
     defaultConfig: {
       queries: {
         refetchOnWindowFocus: false,
+        // refetchOnMount: false,
       },
     },
   });

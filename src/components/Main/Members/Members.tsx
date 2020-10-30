@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useQuery, useMutation } from 'react-query';
+import { useQuery, useMutation, useQueryCache } from 'react-query';
 import history from '../../../history';
 
 // material UI
@@ -20,20 +19,31 @@ import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
 import { addUserProps } from '../../../shared/types';
+// import { deleteMembers } from '../../../store/actions';
 
 export const Members = () => {
   // hooks
-  const dispatch = useDispatch();
   const { churchId, name: churchName } = useSelector((state) => state.profile);
 
   //useQuery hooks
   // how to handle errors or no members
+  const cache = useQueryCache();
   const { isLoading, error, data } = useQuery(
     ['roleData', churchId],
     getChurchMembersData,
+    {
+      staleTime: 300000,
+      cacheTime: 3000000,
+      refetchOnWindowFocus: false, //these dont work properly eugh
+      refetchOnMount: false,
+    },
   );
-  const [mutateAddUser] = useMutation(addUser);
-  const [mutateRemoveUser] = useMutation(deleteUser);
+  const [mutateAddUser] = useMutation(addUser, {
+    onSuccess: () => cache.invalidateQueries('roleData'), //causes the roleData query to call and update on success
+  });
+  const [mutateRemoveUser] = useMutation(deleteUser, {
+    onSuccess: () => cache.invalidateQueries('roleData'),
+  });
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -54,14 +64,10 @@ export const Members = () => {
       : setSelectedRows([]);
 
   const handleDeleteMembers = async () => {
-    // dispatch(onDeleteMembers(selectedRows));
-    // await mutateRemoveUser(selectedRows);
     try {
-      selectedRows.map(async (member) => {
-        await mutateRemoveUser(member);
-      });
+      selectedRows.map(async (member) => await mutateRemoveUser(member));
     } catch (error) {
-      console.log('uh oh cant dlete he too stonks');
+      console.log('uh oh cant dlete this guy too stonks');
     }
     setSelectedRows([]);
   };
@@ -82,10 +88,8 @@ export const Members = () => {
         churchId,
       };
       await mutateAddUser(mutateAddUserVars);
+      //dont need response, the query will automatically rerun and update on successful mutation
     }
-    // dispatch(onAddMember(firstName, lastName, email, password));
-    //email: string, firstName: string, lastName: string, password: string, churchId: number
-
     setIsAddMemberDialogOpen(false);
   };
 
