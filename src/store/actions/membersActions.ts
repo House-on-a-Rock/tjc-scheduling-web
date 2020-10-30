@@ -97,25 +97,25 @@ export const onDeleteMembers = (
   };
 };
 
-export const onAddMember = (
-  firstName: string,
-  lastName: string,
-  email: string,
-  password: string,
-): ThunkAction<any, any, any, Action> => {
-  return async (dispatch) => {
-    try {
-      const accessToken = localStorage.getItem('access_token');
-      const userId = extractUserId(accessToken);
-      const loggedInUserResponse = await getUser(userId);
-      const churchId = loggedInUserResponse.data.ChurchId;
-      const response = await addUser(email, firstName, lastName, password, churchId);
-      const newUserData = response.data;
-      newUserData.roles = [];
-      dispatch(addMember(newUserData));
-    } catch (error) {
-      const errorData = errorDataExtractor(error);
-      dispatch(AuthStateActions.Error(errorData));
-    }
-  };
-};
+// export const onAddMember = (
+//   firstName: string,
+//   lastName: string,
+//   email: string,
+//   password: string,
+// ): ThunkAction<any, any, any, Action> => {
+//   return async (dispatch) => {
+//     try {
+//       const accessToken = localStorage.getItem('access_token');
+//       const userId = extractUserId(accessToken);
+//       const loggedInUserResponse = await getUser(userId);
+//       const churchId = loggedInUserResponse.data.ChurchId;
+//       const response = await addUser(email, firstName, lastName, password, churchId);
+//       const newUserData = response.data;
+//       newUserData.roles = [];
+//       dispatch(addMember(newUserData));
+//     } catch (error) {
+//       const errorData = errorDataExtractor(error);
+//       dispatch(AuthStateActions.Error(errorData));
+//     }
+//   };
+// };

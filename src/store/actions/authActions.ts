@@ -17,6 +17,7 @@ import {
   sendNewPassword,
 } from '../apis';
 import { errorDataExtractor } from '../../shared/utilities';
+import axios from 'axios';
 
 export const login = (): AuthActionTypes => ({ type: LOGIN });
 export const logout = (): AuthActionTypes => ({ type: LOGOUT });
@@ -43,6 +44,7 @@ export const checkCredentials = (
       const { data, status, statusText } = await authenticateLogin(email, password);
       dispatch(AuthStateActions.Loading());
       localStorage.setItem('access_token', data.access_token);
+      axios.defaults.headers.common['authorization'] = data.access_token;
       status === 200
         ? dispatch(onValidated())
         : dispatch(

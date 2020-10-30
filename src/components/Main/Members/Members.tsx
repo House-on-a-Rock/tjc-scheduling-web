@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import history from '../../../history';
 
 // material UI
@@ -14,23 +14,26 @@ import { FormDialog } from '../../shared/FormDialog';
 import { MembersHeader } from './MembersHeader';
 import { MembersTable } from './MembersTable';
 
-import { onDeleteMembers, onAddMember } from '../../../store/actions';
+import { addUser, deleteUser } from '../../../store/apis';
 import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
+import { addUserProps } from '../../../shared/types';
 
 export const Members = () => {
   // hooks
   const dispatch = useDispatch();
   const { churchId, name: churchName } = useSelector((state) => state.profile);
-  console.log(churchId);
 
+  //useQuery hooks
   // how to handle errors or no members
   const { isLoading, error, data } = useQuery(
     ['roleData', churchId],
     getChurchMembersData,
   );
+  const [mutateAddUser] = useMutation(addUser);
+  const [mutateRemoveUser] = useMutation(deleteUser);
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -50,20 +53,38 @@ export const Members = () => {
       ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
       : setSelectedRows([]);
 
-  const handleDeleteMembers = () => {
-    dispatch(onDeleteMembers(selectedRows));
+  const handleDeleteMembers = async () => {
+    // dispatch(onDeleteMembers(selectedRows));
+    // await mutateRemoveUser(selectedRows);
+    try {
+      selectedRows.map(async (member) => {
+        await mutateRemoveUser(member);
+      });
+    } catch (error) {
+      console.log('uh oh cant dlete he too stonks');
+    }
     setSelectedRows([]);
   };
 
-  const onCloseAddMemberDialog = (
+  const onCloseAddMemberDialog = async (
     shouldAdd: boolean,
     firstName: string,
     lastName: string,
     email: string,
     password: string,
   ) => {
-    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email))
-      dispatch(onAddMember(firstName, lastName, email, password));
+    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
+      const mutateAddUserVars: addUserProps = {
+        email,
+        firstName,
+        lastName,
+        password,
+        churchId,
+      };
+      await mutateAddUser(mutateAddUserVars);
+    }
+    // dispatch(onAddMember(firstName, lastName, email, password));
+    //email: string, firstName: string, lastName: string, password: string, churchId: number
 
     setIsAddMemberDialogOpen(false);
   };
