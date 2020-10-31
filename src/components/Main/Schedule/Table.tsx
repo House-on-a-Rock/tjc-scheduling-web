@@ -15,7 +15,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { TableProps } from '../../../shared/types';
 
 // Styles
-import { typographyTheme } from '../../../shared/styles/theme.js';
+import { typographyTheme, buttonTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
@@ -29,11 +29,16 @@ export const Table = (props: TableProps) => {
     defaultColumn: { Cell: DataCell },
     updateMyData,
   });
+  console.log(headerGroups[0].headers[0].getHeaderProps());
 
   return (
     <>
-      {title && <h3 className={classes.title}>{title}</h3>}
-      <MaUTable {...getTableProps()}>
+      {title && (
+        <h3 style={{ margin: '5px 0 2px' }}>
+          <span className={classes.title}>{title}</span>
+        </h3>
+      )}
+      <MaUTable {...getTableProps()} className={classes.table}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -64,27 +69,73 @@ export const Table = (props: TableProps) => {
   );
 };
 
+const normalCellBorder = '1px solid rgba(224, 224, 224, 1)';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       ...theme.typography.h3,
-      marginBottom: 0,
+      marginTop: 5,
+      marginBottom: 2,
+      position: 'sticky',
+      left: 0,
     },
     headerCell: {
       textAlign: 'center',
       padding: '1px 5px',
       color: typographyTheme.common.color,
-      border: '1px solid rgba(224, 224, 224, 1)',
+      border: normalCellBorder,
       fontWeight: 'bold',
     },
     cell: {
       padding: '1px 5px',
-      border: '1px solid rgba(224, 224, 224, 1)',
+      border: normalCellBorder,
       '& div:before': {
         borderBottom: 'none',
       },
+      '&:hover': {
+        background: `${buttonTheme.filled.hover.backgroundColor} !important`,
+        '& > div': {
+          color: 'white',
+        },
+      },
       '& input': {
         // ...horizontalScrollIndicatorShadow('transparent'),
+      },
+    },
+    table: {
+      borderCollapse: 'inherit',
+
+      // first two columns:
+      '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
+        background: 'white',
+        position: 'sticky',
+        zIndex: 1,
+        border: normalCellBorder,
+        boxSizing: 'border-box',
+      },
+
+      // first column:
+      '& td:first-child, th:first-child': {
+        left: 0,
+        width: '8ch !important',
+        '& > div': {
+          width: '8ch !important',
+        },
+      },
+
+      // second column:
+      '& td:nth-child(2)': {
+        left: '75px', // 'calc(12ch - 8px)',
+      },
+      '& th:nth-child(2)': {
+        left: '75px', // 'calc(12ch - 14px)',
+      },
+      '& td:nth-child(2), th:nth-child(2)': {
+        width: '14ch !important',
+        '& > div': {
+          width: '14ch !important',
+        },
       },
     },
   }),

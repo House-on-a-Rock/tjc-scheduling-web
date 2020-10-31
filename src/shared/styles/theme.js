@@ -128,6 +128,7 @@ export const themeExtension = {
   },
   tabs: {
     borderBottom: `${veryLightGrey} 2px solid`,
+    marginBottom: '-1px',
   },
   tab: {
     'text-transform': 'none',
