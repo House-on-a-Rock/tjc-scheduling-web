@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme: Theme) =>
     cell: {
       padding: '1px 5px',
       border: normalCellBorder,
+      '&:not(:first-child)': {
+        minWidth: '12ch',
+      },
       '& div:before': {
         borderBottom: 'none',
       },
@@ -118,16 +121,18 @@ const useStyles = makeStyles((theme: Theme) =>
       // first column:
       '& td:first-child, th:first-child': {
         left: 0,
+        width: '8ch', // if few columns
         '& > div': {
-          width: '8ch !important',
+          width: '8ch', // if many columns
         },
       },
 
       // second column:
       '& td:nth-child(2), th:nth-child(2)': {
         left: '75px',
+        width: '14ch', // if few columns
         '& > div': {
-          width: '14ch !important',
+          width: '14ch', // if many columns
         },
       },
     },
