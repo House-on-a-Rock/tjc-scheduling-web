@@ -34,7 +34,7 @@ export const Table = (props: TableProps) => {
   return (
     <>
       {title && (
-        <h3 style={{ margin: '5px 0 2px' }}>
+        <h3 style={{ margin: '5px 0 2px', height: '2rem' }}>
           <span className={classes.title}>{title}</span>
         </h3>
       )}

@@ -7,7 +7,11 @@ import { ScheduleTabs } from './ScheduleTabs';
 
 import { logout } from '../../../store/actions';
 
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+
 export const Home = () => {
+  const classes = useStyles();
+
   const dispatch = useDispatch();
   const [tabIdx, setTabIdx] = useState(0);
   const [schedules, setSchedules] = useState(makeData(0));
@@ -24,6 +28,7 @@ export const Home = () => {
           // remove from local storage
           dispatch(logout());
         }}
+        className={classes.logoutButton}
       >
         Log Out
       </button>
@@ -34,3 +39,12 @@ export const Home = () => {
     </>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    logoutButton: {
+      position: 'fixed',
+      zIndex: 9002,
+    },
+  }),
+);
