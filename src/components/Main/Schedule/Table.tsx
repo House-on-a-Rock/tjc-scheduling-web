@@ -118,21 +118,14 @@ const useStyles = makeStyles((theme: Theme) =>
       // first column:
       '& td:first-child, th:first-child': {
         left: 0,
-        width: '8ch !important',
         '& > div': {
           width: '8ch !important',
         },
       },
 
       // second column:
-      '& td:nth-child(2)': {
-        left: '75px', // 'calc(12ch - 8px)',
-      },
-      '& th:nth-child(2)': {
-        left: '75px', // 'calc(12ch - 14px)',
-      },
       '& td:nth-child(2), th:nth-child(2)': {
-        width: '14ch !important',
+        left: '75px',
         '& > div': {
           width: '14ch !important',
         },
