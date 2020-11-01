@@ -21,18 +21,17 @@ import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
 
 export const Members = () => {
-  // hooks
   const dispatch = useDispatch();
-  const { churchId, name: churchName } = useSelector((state) => state.profile);
-  console.log(churchId);
 
-  // how to handle errors or no members
+  // React-query
+  const { churchId, name: churchName } = useSelector((state) => state.profile);
   const { isLoading, error, data } = useQuery(
     ['roleData', churchId],
+    // how to handle errors or no members
     getChurchMembersData,
   );
 
-  // component state
+  // Component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [searchField, setSearchField] = useState<string>('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
@@ -98,9 +97,9 @@ export const Members = () => {
       <Grid item xs={12}>
         <MembersHeader
           localChurch={churchName}
-          onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setSearchField(event.target.value);
-          }}
+          onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchField(event.target.value)
+          }
           handleAddOpen={() => setIsAddMemberDialogOpen(!isAddMemberDialogOpen)}
           handleDeleteOpen={() => {
             selectedRows.length > 0 && setIsConfirmDialogOpen(!isConfirmDialogOpen);

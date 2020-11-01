@@ -53,14 +53,14 @@ export function everyRepeatingDayBetweenTwoDates(
   endDate: string,
   day: string,
 ) {
-  let everyRepeatingDay = [];
+  const everyRepeatingDay = [];
   let start = new Date(startDate);
 
   if (start.getDay() !== dayIndex[day])
     start = determineStartDate(startDate, dayIndex[day]);
 
   let current = new Date(start);
-  let end = new Date(endDate);
+  const end = new Date(endDate);
 
   while (current <= end) {
     everyRepeatingDay.push(readableDate(current));
@@ -101,9 +101,9 @@ export function isInTime(target: string, start: string, end: string): boolean {
 export function timeToMilliSeconds(time: string) {
   const [hourMin, period] = time.split(' ');
   const [hour, min] = hourMin.split(':');
-  let convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
-  let convertedMin = 60000 * parseInt(min);
-  let convertedPeriod = period === 'AM' ? 0 : 43200000;
+  const convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
+  const convertedMin = 60000 * parseInt(min);
+  const convertedPeriod = period === 'AM' ? 0 : 43200000;
 
   return convertedHour + convertedMin + convertedPeriod;
 }
@@ -132,8 +132,7 @@ export const contrivedDate = (date: string) => {
 export const makeData = (value: number): MappedScheduleInterface[] => {
   const { daterange, weeklyEvents } = SCHEDULE[value];
   let allSchedulesForTheWeek: MappedScheduleInterface[] = [];
-  weeklyEvents.map((schedule: WeeklyEventData, index: number) => {
-    const { day, events, dividers } = weeklyEvents[index];
+  weeklyEvents.map(({ day, events, dividers }: WeeklyEventData) => {
     const columns = createColumns(daterange, day);
     let fullDaySchedule: MappedScheduleInterface[] = [];
 
@@ -155,7 +154,6 @@ export const makeData = (value: number): MappedScheduleInterface[] => {
               const assignedDate = contrivedDate(date);
               assignments[assignedDate] = assignee;
             });
-
             everyWeeksAssignment.push(assignments);
           });
         data = [...data, ...everyWeeksAssignment];

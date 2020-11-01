@@ -13,47 +13,52 @@ import { extractUserId } from '../../shared/utilities';
 import { getUserData } from '../../query/users';
 import { useDispatch } from 'react-redux';
 import { loadProfile } from '../../store/actions/profileActions';
+import { getScheduleData } from '../../query/schedules';
 
 const Main = () => {
   const queryCache = new QueryCache();
   const dispatch = useDispatch();
-  const { isLoading: userLoading, error: userError, data: user } = useQuery(
+
+  // Need a better handle of isLoading, error, data
+  const { isLoading, error: userError, data: profile } = useQuery(
     ['profile', extractUserId(localStorage.getItem('access_token'))],
     getUserData,
+    { refetchOnWindowFocus: false, staleTime: 100000000000000 },
   );
 
   useEffect(() => {
-    if (user) dispatch(loadProfile({ churchId: user.churchId, name: user.church.name }));
-  }, [user]);
+    if (profile)
+      dispatch(loadProfile({ churchId: profile.churchId, name: profile.church.name }));
+  }, [profile]);
 
   return (
     <>
-      <Router>
-        <ThemeProvider theme={theme}>
-          <Header />
+      <ReactQueryCacheProvider queryCache={queryCache}>
+        <Router>
+          <ThemeProvider theme={theme}>
+            <Header />
 
-          <Switch>
-            <Route path={'/home'}>
-              <Home />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
-            <Route path={'/teams'}>
-              <Teams />
-            </Route>
-            <Route path={'/members'}>
-              <ReactQueryCacheProvider queryCache={queryCache}>
+            <Switch>
+              <Route path={'/home'}>
+                <Home />
+              </Route>
+              <Route exact path="/">
+                <Redirect to="/home" />
+              </Route>
+              <Route path={'/teams'}>
+                <Teams />
+              </Route>
+              <Route path={'/members'}>
                 <Members />
-              </ReactQueryCacheProvider>
-            </Route>
-            {/* <Route>
+              </Route>
+              {/* <Route>
               <Error404 />
             </Route> */}
-          </Switch>
-        </ThemeProvider>
-      </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
+            </Switch>
+          </ThemeProvider>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </ReactQueryCacheProvider>
     </>
   );
 };
