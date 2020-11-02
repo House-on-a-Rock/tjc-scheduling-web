@@ -15,7 +15,14 @@ import { useDispatch } from 'react-redux';
 import { loadProfile } from '../../store/actions/profileActions';
 
 const Main = () => {
-  const queryCache = new QueryCache();
+  const queryCache = new QueryCache({
+    defaultConfig: {
+      queries: {
+        refetchOnWindowFocus: false,
+        // refetchOnMount: false,
+      },
+    },
+  });
   const dispatch = useDispatch();
   const { isLoading: userLoading, error: userError, data: user } = useQuery(
     ['profile', extractUserId(localStorage.getItem('access_token'))],
