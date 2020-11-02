@@ -29,7 +29,7 @@ export const Members = () => {
   // how to handle errors or no members
   const cache = useQueryCache();
   const { isLoading, error, data } = useQuery(
-    ['roleData', churchId],
+    ['memberData', churchId],
     getChurchMembersData,
     {
       staleTime: 300000,
@@ -39,11 +39,15 @@ export const Members = () => {
     },
   );
   const [mutateAddUser] = useMutation(addUser, {
-    onSuccess: () => cache.invalidateQueries('roleData'), //causes the roleData query to call and update on success
+    onSuccess: onMutateSuccess, //causes the memberData query to call and update on success
   });
   const [mutateRemoveUser] = useMutation(deleteUser, {
-    onSuccess: () => cache.invalidateQueries('roleData'),
+    onSuccess: onMutateSuccess,
   });
+
+  function onMutateSuccess() {
+    cache.invalidateQueries('memberData');
+  }
 
   // component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
