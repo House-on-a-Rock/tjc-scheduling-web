@@ -18,7 +18,7 @@ export const Home = () => {
   const { isLoading, error, data = [] } = useQuery(
     ['schedulesData', churchId],
     getScheduleData,
-    { enabled: churchId },
+    { enabled: churchId, refetchOnWindowFocus: false, staleTime: 100000000000000 },
   );
 
   if (status === 'loading') return <div>loading...</div>; // loading state
