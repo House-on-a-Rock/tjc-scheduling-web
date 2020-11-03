@@ -125,3 +125,11 @@ export interface ScheduleTabsProps {
   tabIdx: number;
   handleChange: (e: React.ChangeEvent, value: number) => void;
 }
+
+export interface AddUserProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  churchId: number;
+}

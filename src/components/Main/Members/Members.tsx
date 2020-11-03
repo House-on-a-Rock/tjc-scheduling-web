@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryCache } from 'react-query';
 import history from '../../../history';
 
 // material UI
@@ -14,22 +13,38 @@ import { FormDialog } from '../../shared/FormDialog';
 import { MembersHeader } from './MembersHeader';
 import { MembersTable } from './MembersTable';
 
-import { onDeleteMembers, onAddMember } from '../../../store/actions';
+import { addUser, deleteUser } from '../../../store/apis';
 import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
+import { AddUserProps } from '../../../shared/types';
+// import { deleteMembers } from '../../../store/actions';
 
 export const Members = () => {
-  const dispatch = useDispatch();
-
-  // React-query
+  // hooks
   const { churchId, name: churchName } = useSelector((state) => state.profile);
+
+  //useQuery hooks
+  // how to handle errors or no members
+  const cache = useQueryCache();
   const { isLoading, error, data } = useQuery(
     ['roleData', churchId],
     // how to handle errors or no members
     getChurchMembersData,
+    {
+      staleTime: 300000,
+      cacheTime: 3000000,
+      refetchOnWindowFocus: false, //these dont work properly eugh
+      refetchOnMount: false,
+    },
   );
+  const [mutateAddUser] = useMutation(addUser, {
+    onSuccess: () => cache.invalidateQueries('roleData'), //causes the roleData query to call and update on success
+  });
+  const [mutateRemoveUser] = useMutation(deleteUser, {
+    onSuccess: () => cache.invalidateQueries('roleData'),
+  });
 
   // Component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
@@ -49,21 +64,33 @@ export const Members = () => {
       ? setSelectedRows(data.map(({ userId }: MemberStateData) => userId))
       : setSelectedRows([]);
 
-  const handleDeleteMembers = () => {
-    dispatch(onDeleteMembers(selectedRows));
+  const handleDeleteMembers = async () => {
+    try {
+      selectedRows.map(async (member) => await mutateRemoveUser(member));
+    } catch (error) {
+      console.log('uh oh cant dlete this guy too stonks');
+    }
     setSelectedRows([]);
   };
 
-  const onCloseAddMemberDialog = (
+  const onCloseAddMemberDialog = async (
     shouldAdd: boolean,
     firstName: string,
     lastName: string,
     email: string,
     password: string,
   ) => {
-    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email))
-      dispatch(onAddMember(firstName, lastName, email, password));
-
+    if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
+      const mutateAddUserVars: AddUserProps = {
+        email,
+        firstName,
+        lastName,
+        password,
+        churchId,
+      };
+      await mutateAddUser(mutateAddUserVars);
+      //dont need response, the query will automatically rerun and update on successful mutation
+    }
     setIsAddMemberDialogOpen(false);
   };
 

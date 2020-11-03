@@ -16,7 +16,14 @@ import { loadProfile } from '../../store/actions/profileActions';
 import { getScheduleData } from '../../query/schedules';
 
 const Main = () => {
-  const queryCache = new QueryCache();
+  const queryCache = new QueryCache({
+    defaultConfig: {
+      queries: {
+        refetchOnWindowFocus: false,
+        // refetchOnMount: false,
+      },
+    },
+  });
   const dispatch = useDispatch();
 
   // Need a better handle of isLoading, error, data
