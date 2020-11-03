@@ -10,8 +10,8 @@ export const DataCell = ({
   updateMyData, // This is a custom function that we supplied to our table instance
 }: DataCellProps) => {
   // We need to keep and update the state of the cell normally
-  const [value, setValue] = useState(initialValue);
 
+  const [value, setValue] = useState(initialValue?.data);
   const onChange = (e: any) => {
     setValue(e.target.value);
   };
@@ -27,7 +27,7 @@ export const DataCell = ({
 
   // If the initialValue is changed external, sync it up with our state
   useEffect(() => {
-    setValue(initialValue);
+    setValue(initialValue?.data);
   }, [initialValue]);
 
   return initialValue ? (

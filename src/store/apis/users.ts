@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { secretIp } from '../../../secrets/secretStuff';
 import { extractUserId } from '../../shared/utilities';
-import { addUserProps } from '../../shared/types';
+import { AddUserProps } from '../../shared/types';
 
 export function getAllUsers(): Promise<AxiosResponse> {
   return axios.get(`${secretIp}/api/users`);
@@ -27,7 +27,7 @@ export function addUser({
   lastName,
   password,
   churchId,
-}: addUserProps): Promise<AxiosResponse> {
+}: AddUserProps): Promise<AxiosResponse> {
   console.log('adding user');
   return axios.post(`${secretIp}/api/users`, {
     email: email,

@@ -1,12 +1,11 @@
 import React from 'react';
-import { SCHEDULE } from './database';
 
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 
 import { ScheduleTabsProps } from '../../../shared/types';
 
-export const ScheduleTabs = ({ tabIdx, handleChange }: ScheduleTabsProps) => {
+export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps) => {
   return (
     <Tabs
       value={tabIdx}
@@ -15,8 +14,8 @@ export const ScheduleTabs = ({ tabIdx, handleChange }: ScheduleTabsProps) => {
       textColor="primary"
       centered
     >
-      {SCHEDULE.map((schedule: any, index: number) => (
-        <Tab key={`${schedule.title}-${index}`} label={schedule.title} />
+      {titles.map((title, index) => (
+        <Tab key={`${title}-${index}`} label={title} />
       ))}
       <Tab label="+" disabled />
     </Tabs>

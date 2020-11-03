@@ -1,5 +1,9 @@
 import React from 'react';
-import { ContextMenu as CMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  ContextMenu as ContextMenuComponent,
+  MenuItem,
+  ContextMenuTrigger,
+} from 'react-contextmenu';
 
 interface ContextMenuProps {
   children: React.ReactNode;
@@ -9,19 +13,22 @@ interface ContextMenuProps {
 
 interface MenuItemProps {
   event: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement, MouseEvent>;
-  data: Object;
   target: HTMLElement;
+}
+
+interface FooObject {
+  foo: string;
 }
 
 //This doesn't come with default styling unfortunately. They're style sheets are here: https://github.com/vkbansal/react-contextmenu/blob/master/examples/react-contextmenu.css
 export const ContextMenu = ({ children, menuId, value }: ContextMenuProps) => {
-  function handleClick({ event, data, target }: MenuItemProps) {
-    console.log('hiiii');
+  function handleClick({ target }: MenuItemProps, data: FooObject) {
+    console.log(data, target.innerText);
   }
 
-  const cellMenu = (
+  const CellMenu = (
     <div>
-      <CMenu
+      <ContextMenuComponent
         id={menuId}
         hideOnLeave={true}
         style={{
@@ -44,14 +51,14 @@ export const ContextMenu = ({ children, menuId, value }: ContextMenuProps) => {
         <MenuItem data={{ foo: 'bar' }} onClick={handleClick}>
           ContextMenu Item 3
         </MenuItem>
-      </CMenu>
+      </ContextMenuComponent>
     </div>
   );
 
   return (
     <>
       <ContextMenuTrigger id={menuId}>{children}</ContextMenuTrigger>
-      {cellMenu}
+      {CellMenu}
     </>
   );
 };

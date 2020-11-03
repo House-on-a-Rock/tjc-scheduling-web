@@ -1,14 +1,4 @@
-import {
-  DayIndexOptions,
-  MappedScheduleInterface,
-  WeeklyEventData,
-  Divider,
-  WeeklyAssignmentInterface,
-  EventData,
-  DutyData,
-  TaskData,
-} from '../../../shared/types';
-import { SCHEDULE } from './database';
+import { DayIndexOptions } from '../../../shared/types';
 
 const idxToMonth = [
   'Jan',
@@ -53,14 +43,14 @@ export function everyRepeatingDayBetweenTwoDates(
   endDate: string,
   day: string,
 ) {
-  let everyRepeatingDay = [];
+  const everyRepeatingDay = [];
   let start = new Date(startDate);
 
   if (start.getDay() !== dayIndex[day])
     start = determineStartDate(startDate, dayIndex[day]);
 
   let current = new Date(start);
-  let end = new Date(endDate);
+  const end = new Date(endDate);
 
   while (current <= end) {
     everyRepeatingDay.push(readableDate(current));
@@ -101,25 +91,11 @@ export function isInTime(target: string, start: string, end: string): boolean {
 export function timeToMilliSeconds(time: string) {
   const [hourMin, period] = time.split(' ');
   const [hour, min] = hourMin.split(':');
-  let convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
-  let convertedMin = 60000 * parseInt(min);
-  let convertedPeriod = period === 'AM' ? 0 : 43200000;
+  const convertedHour = hour === '12' ? 3600000 : 3600000 * parseInt(hour);
+  const convertedMin = 60000 * parseInt(min);
+  const convertedPeriod = period === 'AM' ? 0 : 43200000;
 
   return convertedHour + convertedMin + convertedPeriod;
-}
-
-export function createColumns(daterange: any, day: any) {
-  return [
-    {
-      Header: 'Time',
-      accessor: 'time',
-    },
-    {
-      Header: 'Duty',
-      accessor: 'duty',
-    },
-    ...columnizedDates(everyRepeatingDayBetweenTwoDates(daterange[0], daterange[1], day)),
-  ];
 }
 
 export const contrivedDate = (date: string) => {
@@ -127,46 +103,6 @@ export const contrivedDate = (date: string) => {
   const monthIdx = jsDate.getMonth();
   const dayIdx = jsDate.getDate();
   return zeroPaddingDates(monthIdx, dayIdx);
-};
-
-export const makeData = (value: number): MappedScheduleInterface[] => {
-  const { daterange, weeklyEvents } = SCHEDULE[value];
-  let allSchedulesForTheWeek: MappedScheduleInterface[] = [];
-  weeklyEvents.map((schedule: WeeklyEventData, index: number) => {
-    const { day, events, dividers } = weeklyEvents[index];
-    const columns = createColumns(daterange, day);
-    let fullDaySchedule: MappedScheduleInterface[] = [];
-
-    dividers.map((divider: Divider) => {
-      let data: WeeklyAssignmentInterface[] = [];
-      let { name, timerange } = divider;
-
-      events.map((event: EventData) => {
-        let { duties, time } = event;
-        let everyWeeksAssignment: WeeklyAssignmentInterface[] = [];
-        if (isInTime(time, timerange.start, timerange.end))
-          duties.map((duty: DutyData, index: number) => {
-            const { title, tasks } = duty;
-            let assignments: WeeklyAssignmentInterface = { duty: title };
-            if (index === 0) assignments.time = time;
-
-            tasks.map((task: TaskData) => {
-              const { date, assignee } = task;
-              const assignedDate = contrivedDate(date);
-              assignments[assignedDate] = assignee;
-            });
-
-            everyWeeksAssignment.push(assignments);
-          });
-        data = [...data, ...everyWeeksAssignment];
-      });
-
-      fullDaySchedule.push({ day, columns, data, name });
-    });
-
-    allSchedulesForTheWeek = [...allSchedulesForTheWeek, ...fullDaySchedule];
-  });
-  return allSchedulesForTheWeek;
 };
 
 export const memoizeData = (data: any) => {

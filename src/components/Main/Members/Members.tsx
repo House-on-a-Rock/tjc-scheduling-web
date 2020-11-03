@@ -18,7 +18,7 @@ import { isValidEmail, useSelector } from '../../../shared/utilities';
 import { updateSelectedRows } from './utilities';
 import { MemberStateData } from '../../../store/types';
 import { getChurchMembersData } from '../../../query';
-import { addUserProps } from '../../../shared/types';
+import { AddUserProps } from '../../../shared/types';
 // import { deleteMembers } from '../../../store/actions';
 
 export const Members = () => {
@@ -30,6 +30,7 @@ export const Members = () => {
   const cache = useQueryCache();
   const { isLoading, error, data } = useQuery(
     ['roleData', churchId],
+    // how to handle errors or no members
     getChurchMembersData,
     {
       staleTime: 300000,
@@ -45,7 +46,7 @@ export const Members = () => {
     onSuccess: () => cache.invalidateQueries('roleData'),
   });
 
-  // component state
+  // Component state
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [searchField, setSearchField] = useState<string>('');
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState<boolean>(false);
@@ -80,7 +81,7 @@ export const Members = () => {
     password: string,
   ) => {
     if (shouldAdd && firstName && lastName && email && password && isValidEmail(email)) {
-      const mutateAddUserVars: addUserProps = {
+      const mutateAddUserVars: AddUserProps = {
         email,
         firstName,
         lastName,
@@ -123,9 +124,9 @@ export const Members = () => {
       <Grid item xs={12}>
         <MembersHeader
           localChurch={churchName}
-          onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setSearchField(event.target.value);
-          }}
+          onSearchChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchField(event.target.value)
+          }
           handleAddOpen={() => setIsAddMemberDialogOpen(!isAddMemberDialogOpen)}
           handleDeleteOpen={() => {
             selectedRows.length > 0 && setIsConfirmDialogOpen(!isConfirmDialogOpen);
