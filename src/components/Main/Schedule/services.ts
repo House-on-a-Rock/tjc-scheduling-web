@@ -1,14 +1,4 @@
-import {
-  DayIndexOptions,
-  MappedScheduleInterface,
-  WeeklyEventData,
-  Divider,
-  WeeklyAssignmentInterface,
-  EventData,
-  DutyData,
-  TaskData,
-} from '../../../shared/types';
-import { SCHEDULE } from './database';
+import { DayIndexOptions } from '../../../shared/types';
 
 const idxToMonth = [
   'Jan',
@@ -108,63 +98,11 @@ export function timeToMilliSeconds(time: string) {
   return convertedHour + convertedMin + convertedPeriod;
 }
 
-export function createColumns(daterange: any, day: any) {
-  return [
-    {
-      Header: 'Time',
-      accessor: 'time',
-    },
-    {
-      Header: 'Duty',
-      accessor: 'duty',
-    },
-    ...columnizedDates(everyRepeatingDayBetweenTwoDates(daterange[0], daterange[1], day)),
-  ];
-}
-
 export const contrivedDate = (date: string) => {
   const jsDate = new Date(date);
   const monthIdx = jsDate.getMonth();
   const dayIdx = jsDate.getDate();
   return zeroPaddingDates(monthIdx, dayIdx);
-};
-
-export const makeData = (value: number): MappedScheduleInterface[] => {
-  const { daterange, weeklyEvents } = SCHEDULE[value];
-  let allSchedulesForTheWeek: MappedScheduleInterface[] = [];
-  weeklyEvents.map(({ day, events, dividers }: WeeklyEventData) => {
-    const columns = createColumns(daterange, day);
-    let fullDaySchedule: MappedScheduleInterface[] = [];
-
-    dividers.map((divider: Divider) => {
-      let data: WeeklyAssignmentInterface[] = [];
-      let { name, timerange } = divider;
-
-      events.map((event: EventData) => {
-        let { duties, time } = event;
-        let everyWeeksAssignment: WeeklyAssignmentInterface[] = [];
-        if (isInTime(time, timerange.start, timerange.end))
-          duties.map((duty: DutyData, index: number) => {
-            const { title, tasks } = duty;
-            let assignments: WeeklyAssignmentInterface = { duty: title };
-            if (index === 0) assignments.time = time;
-
-            tasks.map((task: TaskData) => {
-              const { date, assignee } = task;
-              const assignedDate = contrivedDate(date);
-              assignments[assignedDate] = assignee;
-            });
-            everyWeeksAssignment.push(assignments);
-          });
-        data = [...data, ...everyWeeksAssignment];
-      });
-
-      fullDaySchedule.push({ day, columns, data, name });
-    });
-
-    allSchedulesForTheWeek = [...allSchedulesForTheWeek, ...fullDaySchedule];
-  });
-  return allSchedulesForTheWeek;
 };
 
 export const memoizeData = (data: any) => {

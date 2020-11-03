@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { makeData } from './services';
 import { useDispatch } from 'react-redux';
+import { useQuery } from 'react-query';
 
 import { Scheduler } from './Scheduler';
 import { ScheduleTabs } from './ScheduleTabs';
 
 import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
-import { useQuery } from 'react-query';
 import { getScheduleData } from '../../../query/schedules';
 
 export const Home = () => {
@@ -18,7 +17,11 @@ export const Home = () => {
   const { isLoading, error, data = [] } = useQuery(
     ['schedulesData', churchId],
     getScheduleData,
-    { enabled: churchId, refetchOnWindowFocus: false, staleTime: 100000000000000 },
+    {
+      enabled: churchId,
+      refetchOnWindowFocus: false,
+      staleTime: 100000000000000,
+    },
   );
 
   if (status === 'loading') return <div>loading...</div>; // loading state
