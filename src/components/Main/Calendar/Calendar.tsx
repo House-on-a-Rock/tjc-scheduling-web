@@ -4,14 +4,14 @@ import { DayNameRow } from './DayNameRow';
 
 interface CalendarProps {
   displayedMonth: Date;
-  onTilePress?: (date: Date) => void;
+  onTileClick?: (date: Date) => void;
   // selectedDates?;
   // initialTasks;
 }
 
 export const Calendar = ({
   displayedMonth,
-  onTilePress,
+  onTileClick,
 }: // selectedDates = [],
 // initialTasks,
 CalendarProps) => {
@@ -27,7 +27,7 @@ CalendarProps) => {
     dateArray[j] = new Array(7);
     for (let k = 0; k < dateArray[j].length; k++) {
       const day: Date = getNextDate();
-      // const isCurrentMonth = day.getMonth() === month;
+      const isCurrentMonth = day.getMonth() === month;
       // const isSelected = selectedDates.some((date) => isSameDate(day, date));
       // const hasTask = initialTasks.some((item) => isSameDate(new Date(item.date), day));
 
@@ -35,11 +35,12 @@ CalendarProps) => {
         <DateTile
           day={day}
           key={`${day.toDateString()}${j}-${k}`}
-          onTilePress={onTilePress}
-          // isCurrentMonth={isCurrentMonth}
+          onTileClick={onTileClick}
+          isCurrentMonth={isCurrentMonth}
           // isSelected={isSelected}
           // textStyling={isSameDate(day, today) && styles.todayText}
           // hasTask={hasTask}
+          // do i think i type better like this?
         />
       );
     }
@@ -52,7 +53,7 @@ CalendarProps) => {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        width: '100%',
+        width: 1500,
       }}
     >
       <div style={{ padding: 20 }}>
@@ -61,7 +62,12 @@ CalendarProps) => {
       </div>
       <DayNameRow />
       <div
-        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '100%' }}
+        style={{
+          display: 'grid',
+          gridTemplateColumns:
+            '14.2857% 14.2857% 14.2857% 14.2857% 14.2857% 14.2857% 14.2857%',
+          gridTemplateRows: '16.66% 16.66% 16.66% 16.66% 16.66% 16.66%',
+        }}
       >
         {dateArray}
       </div>

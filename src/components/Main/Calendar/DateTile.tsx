@@ -1,18 +1,19 @@
 import React, { ReactNode } from 'react';
 
-// interface DateTileProps {
-//     day;
-//     onTilePress?;
-//     isSelected;
-//     isCurrentMonth;
-//     textStyling?;
-//     hasTask;
-// }
+interface DateTileProps {
+  day: Date;
+  onTileClick: (day: Date) => void;
+  // isSelected: boolean;
+  isCurrentMonth: boolean;
+  // textStyling?;
+  // hasTask;
+}
 
-export const DateTile = (props: any) => {
+export const DateTile = (props: DateTileProps) => {
   const {
     day,
-    // isCurrentMonth,
+    isCurrentMonth,
+    onTileClick,
     // , isSelected,  onTilePress, textStyling, hasTask
   } = props;
   // const TileComponent = isCurrentMonth ? TouchableOpacity : View;
@@ -25,13 +26,17 @@ export const DateTile = (props: any) => {
   return (
     <div
       style={{
-        width: '14.2857%',
-        height: 300,
+        width: 200,
+        height: 200,
+        border: '1px solid rgba(0, 0, 0, 1)',
+        display: 'flex',
+        justifyContent: 'center',
       }}
-      // onPress={() => onTilePress(day)}
-      // style={{ ...styles.tile, ...styling }}
+      onClick={() => onTileClick(day)}
     >
-      <div>{day.getDate()}</div>
+      <div style={isCurrentMonth ? { color: 'black' } : { color: 'grey' }}>
+        {day.getDate()}
+      </div>
       {/* {hasTask && <Entypo name="dot-single" size={20} color="black" />} */}
     </div>
   );
