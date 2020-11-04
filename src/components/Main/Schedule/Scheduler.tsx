@@ -8,7 +8,6 @@ import {
 
 export const Scheduler = ({ schedule }: SchedulerProps) => {
   const { day, name, data, columns } = schedule;
-  console.log('whats going on', data);
   const [scheduleData, setScheduleData] = useState(data);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>

@@ -28,7 +28,6 @@ export function addUser({
   password,
   churchId,
 }: AddUserProps): Promise<AxiosResponse> {
-  console.log('adding user');
   return axios.post(`${secretIp}/api/users`, {
     email: email,
     firstName: firstName,
