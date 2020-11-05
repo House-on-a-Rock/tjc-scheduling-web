@@ -29,7 +29,6 @@ export const Table = (props: TableProps) => {
     defaultColumn: { Cell: DataCell },
     updateMyData,
   });
-  console.log(headerGroups[0].headers[0].getHeaderProps());
 
   return (
     <>
