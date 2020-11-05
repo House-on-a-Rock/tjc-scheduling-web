@@ -9,7 +9,11 @@ import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
 import { getScheduleData } from '../../../query/schedules';
 
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+
 export const Home = () => {
+  const classes = useStyles();
+
   const dispatch = useDispatch();
 
   // React-query
@@ -46,6 +50,7 @@ export const Home = () => {
           localStorage.removeItem('access_token');
           dispatch(logout());
         }}
+        className={classes.logoutButton}
       >
         Log Out
       </button>
@@ -60,3 +65,12 @@ export const Home = () => {
     </>
   );
 };
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    logoutButton: {
+      position: 'fixed',
+      zIndex: 9002,
+    },
+  }),
+);
