@@ -102,7 +102,7 @@ interface CellColumnType {
   id: string;
 }
 export interface DataCellProps {
-  value: string;
+  value: any;
   row: CellIndexType;
   column: CellColumnType;
   updateMyData: (rowIndex: number, columnId: string, value: string) => void;
@@ -117,9 +117,19 @@ export interface TableProps {
 
 export interface SchedulerProps {
   schedule: MappedScheduleInterface;
+  // schedule: MappedScheduleInterface;
 }
 
 export interface ScheduleTabsProps {
+  titles: string[];
   tabIdx: number;
   handleChange: (e: React.ChangeEvent, value: number) => void;
+}
+
+export interface AddUserProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  churchId: number;
 }

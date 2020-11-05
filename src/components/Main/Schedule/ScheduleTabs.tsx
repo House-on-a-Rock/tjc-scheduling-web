@@ -1,5 +1,4 @@
 import React from 'react';
-import { SCHEDULE } from './database';
 
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
@@ -10,7 +9,7 @@ import { ScheduleTabsProps } from '../../../shared/types';
 import { tabGroupTheme, tabTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
-export const ScheduleTabs = ({ tabIdx, handleChange }: ScheduleTabsProps) => {
+export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -22,14 +21,14 @@ export const ScheduleTabs = ({ tabIdx, handleChange }: ScheduleTabsProps) => {
         centered
         className={classes.tabs}
       >
-        {SCHEDULE.map((schedule: any, index: number) => (
+        {titles.map((title, index) => (
           <Tab
-            key={`${schedule.title}-${index}`}
-            label={schedule.title}
+            key={`${title}-${index}`}
+            label={title}
             className={classes.tab}
           />
         ))}
-        <Tab label={<AddIcon />} disabled className={classes.tab} />
+        <Tab label="+" disabled className={classes.tab} />
       </Tabs>
     </div>
   );

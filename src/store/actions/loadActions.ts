@@ -5,15 +5,15 @@ export const AuthStateActions = mapLoadStateActions(ReducerDomains.AUTH)();
 
 //this may be moved to a more appropriate location?
 function mapLoadStateActions(domain: ReducerDomains) {
-    return () => {
-        return {
-            Loaded: () => ({ domain: domain, type: LoadStateTypes.LOADED }),
-            Loading: () => ({ domain: domain, type: LoadStateTypes.LOADING }),
-            Error: (error: HttpError) => ({
-                domain: domain,
-                type: LoadStateTypes.ERROR,
-                error: error,
-            }),
-        };
+  return () => {
+    return {
+      Loaded: () => ({ domain, type: LoadStateTypes.LOADED }),
+      Loading: () => ({ domain, type: LoadStateTypes.LOADING }),
+      Error: (error: HttpError) => ({
+        domain,
+        type: LoadStateTypes.ERROR,
+        error: error,
+      }),
     };
+  };
 }

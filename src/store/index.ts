@@ -1,5 +1,5 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import { authReducer, loadReducer, membersReducer } from './reducers';
+import { authReducer, loadReducer, profileReducer } from './reducers';
 import ReduxThunk from 'redux-thunk';
 
 declare global {
@@ -11,7 +11,7 @@ declare global {
 const rootReducer = combineReducers({
   auth: authReducer,
   load: loadReducer,
-  members: membersReducer,
+  profile: profileReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

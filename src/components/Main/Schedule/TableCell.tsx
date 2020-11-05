@@ -3,6 +3,7 @@ import Input from '@material-ui/core/Input';
 import { DataCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { ContextMenu } from '../../shared/ContextMenu';
 
 export const DataCell = ({
   value: initialValue,
@@ -13,8 +14,8 @@ export const DataCell = ({
   const classes = useStyles();
 
   // We need to keep and update the state of the cell normally
-  const [value, setValue] = useState(initialValue);
 
+  const [value, setValue] = useState(initialValue?.data);
   const onChange = (e: any) => {
     setValue(e.target.value);
   };
@@ -30,17 +31,19 @@ export const DataCell = ({
 
   // If the initialValue is changed external, sync it up with our state
   useEffect(() => {
-    setValue(initialValue);
+    setValue(initialValue?.data);
   }, [initialValue]);
 
   return initialValue ? (
-    <Input
-      className={classes.input}
-      value={value}
-      onChange={onChange}
-      onBlur={onBlur}
-      onKeyUp={(e) => handleEnter(e)}
-    />
+    <ContextMenu menuId={`${index}-${id}-${value}`} value={value}>
+      <Input
+        className={classes.input}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyUp={(e) => handleEnter(e)}
+      />
+    </ContextMenu>
   ) : (
     ''
   );

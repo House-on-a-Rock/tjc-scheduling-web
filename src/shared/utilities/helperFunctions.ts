@@ -26,7 +26,7 @@ export function isValidEmail(emailValue: string): boolean {
   return re.test(String(emailValue).toLowerCase());
 }
 
-export function extractUserId(jwt: string) {
+export function extractUserId(jwt: string): number {
   let decodedAccessKey: JWTDataType = jwtDecode(jwt);
   return parseInt(decodedAccessKey.sub.split('|')[1]);
 }
