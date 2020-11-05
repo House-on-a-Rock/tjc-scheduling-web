@@ -14,7 +14,14 @@ import TableRow from '@material-ui/core/TableRow';
 // Types
 import { TableProps } from '../../../shared/types';
 
+// Styles
+import { typographyTheme, buttonTheme } from '../../../shared/styles/theme.js';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
+
 export const Table = (props: TableProps) => {
+  const classes = useStyles();
+
   const { columns, data, updateMyData, title } = props;
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
@@ -25,13 +32,17 @@ export const Table = (props: TableProps) => {
 
   return (
     <>
-      {title}
-      <MaUTable {...getTableProps()}>
+      {title && (
+        <h3 style={{ margin: '5px 0 2px', height: '2rem' }}>
+          <span className={classes.title}>{title}</span>
+        </h3>
+      )}
+      <MaUTable {...getTableProps()} className={classes.table}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <TableCell {...column.getHeaderProps()}>
+                <TableCell className={classes.headerCell} {...column.getHeaderProps()}>
                   {column.render('Header')}
                 </TableCell>
               ))}
@@ -44,7 +55,9 @@ export const Table = (props: TableProps) => {
             return (
               <TableRow {...row.getRowProps()}>
                 {row.cells.map((cell) => (
-                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                  <TableCell className={classes.cell} {...cell.getCellProps()}>
+                    {cell.render('Cell')}
+                  </TableCell>
                 ))}
               </TableRow>
             );
@@ -54,3 +67,74 @@ export const Table = (props: TableProps) => {
     </>
   );
 };
+
+const normalCellBorder = '1px solid rgba(224, 224, 224, 1)';
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    title: {
+      ...theme.typography.h3,
+      marginTop: 5,
+      marginBottom: 2,
+      position: 'sticky',
+      left: 0,
+    },
+    headerCell: {
+      textAlign: 'center',
+      padding: '1px 5px',
+      color: typographyTheme.common.color,
+      border: normalCellBorder,
+      fontWeight: 'bold',
+    },
+    cell: {
+      padding: '1px 5px',
+      border: normalCellBorder,
+      '&:not(:first-child)': {
+        minWidth: '12ch',
+      },
+      '& div:before': {
+        borderBottom: 'none',
+      },
+      '&:hover': {
+        background: `${buttonTheme.filled.hover.backgroundColor} !important`,
+        '& > div': {
+          color: 'white',
+        },
+      },
+      '& input': {
+        // ...horizontalScrollIndicatorShadow('transparent'),
+      },
+    },
+    table: {
+      borderCollapse: 'inherit',
+      marginBottom: '1rem',
+
+      // first two columns:
+      '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
+        background: 'white',
+        position: 'sticky',
+        zIndex: 1,
+        border: normalCellBorder,
+        boxSizing: 'border-box',
+      },
+
+      // first column:
+      '& td:first-child, th:first-child': {
+        left: 0,
+        width: '8ch', // if few columns
+        '& > div': {
+          width: '8ch', // if many columns
+        },
+      },
+
+      // second column:
+      '& td:nth-child(2), th:nth-child(2)': {
+        left: '75px',
+        width: '14ch', // if few columns
+        '& > div': {
+          width: '14ch', // if many columns
+        },
+      },
+    },
+  }),
+);

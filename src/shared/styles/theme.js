@@ -10,6 +10,7 @@ const mainTextColor = '#556071';
 const mainTitleColor = mainTextColor;
 const mainBackgroundColor = '#FFFFFF';
 const secondaryBackgroundColor = '#EDEEF3';
+const veryLightGrey = secondaryBackgroundColor;
 const greyedOutButtonColor = '#C8C8C8';
 const greyedOutBorderColor = greyedOutButtonColor;
 const greyedOutBackgroundColor = '#2F2F2F';
@@ -125,6 +126,41 @@ export const themeExtension = {
       backgroundColor: interactiveColorBlue,
     },
   },
+  tabs: {
+    borderBottom: `${veryLightGrey} 2px solid`,
+    marginBottom: '-1px',
+  },
+  tab: {
+    'text-transform': 'none',
+    borderRadius: '1rem 1rem 0 0',
+    borderWidth: '2px 2px 0 2px',
+    borderStyle: 'solid',
+    margin: '0 -1px',
+    transition: fastTransitionTime,
+    'box-sizing': 'border-box',
+    '& span': {
+      fontSize: 'large',
+    },
+
+    color: mainTextColor,
+    borderColor: greyedOutBorderColor,
+    boxShadow: '#C8C8C850 0 15px 20px inset',
+
+    '&:hover, &:focus': {
+      color: 'white',
+      background: tjcBlue,
+      borderColor: tjcBlue,
+      zIndex: 2,
+      boxShadow: `${greyedOutBackgroundColor} 0 20px 23px`,
+    },
+    '&[aria-selected="true"]': {
+      color: 'white',
+      background: tjcLightBlue,
+      borderColor: tjcLightBlue,
+      zIndex: 1,
+      boxShadow: 'none',
+    },
+  },
 };
 
 // to avoid loading the whole object:
@@ -134,3 +170,5 @@ export const transitionTheme = themeExtension.transition;
 export const cardTheme = themeExtension.card;
 export const buttonTheme = themeExtension.button;
 export const sideBarTheme = themeExtension.sideBar;
+export const tabTheme = themeExtension.tab;
+export const tabGroupTheme = themeExtension.tabs;
