@@ -16,6 +16,9 @@ export const DataCell = ({
   // We need to keep and update the state of the cell normally
 
   const [value, setValue] = useState(initialValue?.data);
+  const [display, setDisplay] = useState('');
+
+  // value.display ? value.display : `${value.firstName} ${value.lastName}`;
   const onChange = (e: any) => {
     setValue(e.target.value);
   };
@@ -31,14 +34,19 @@ export const DataCell = ({
 
   // If the initialValue is changed external, sync it up with our state
   useEffect(() => {
+    const initialData = initialValue?.data;
     setValue(initialValue?.data);
+    if (initialData)
+      initialData?.display
+        ? setDisplay(initialData.display)
+        : setDisplay(`${initialData.firstName} ${initialData.lastName}`);
   }, [initialValue]);
 
   return initialValue ? (
-    <ContextMenu menuId={`${index}-${id}-${value}`} value={value}>
+    <ContextMenu menuId={`${index}-${id}-${display}`} value={display}>
       <Input
         className={classes.input}
-        value={value}
+        value={display}
         onChange={onChange}
         onBlur={onBlur}
         onKeyUp={(e) => handleEnter(e)}
