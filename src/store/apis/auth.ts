@@ -9,9 +9,7 @@ export function recoverEmail(email: string): Promise<AxiosResponse> {
 
 export function checkResetToken(token: string): Promise<AxiosResponse> {
   return axios.get(`${secretIp}/api/authentication/checkResetToken`, {
-    headers: {
-      authorization: token,
-    },
+    headers: { authorization: token },
   });
 }
 
@@ -32,10 +30,6 @@ export function sendNewPassword(
   return axios.post(
     `${secretIp}/api/authentication/resetPassword`,
     { email: 'shaun.tung@gmail.com', password: newPassword },
-    {
-      headers: {
-        authorization: token,
-      },
-    },
+    { headers: { authorization: token } },
   );
 }
