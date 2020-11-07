@@ -15,9 +15,14 @@ import TableRow from '@material-ui/core/TableRow';
 import { TableProps } from '../../../shared/types';
 
 // Styles
-import { typographyTheme, buttonTheme } from '../../../shared/styles/theme.js';
+import {
+  typographyTheme,
+  buttonTheme,
+  paletteTheme,
+} from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
+import { fade, darken } from '@material-ui/core/styles';
+// import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
 export const Table = (props: TableProps) => {
   const classes = useStyles();
@@ -33,8 +38,8 @@ export const Table = (props: TableProps) => {
   return (
     <>
       {title && (
-        <h3 style={{ margin: '5px 0 2px', height: '2rem' }}>
-          <span className={classes.title}>{title}</span>
+        <h3 className={classes.titleContainer}>
+          <span className={classes.titleText}>{title}</span>
         </h3>
       )}
       <MaUTable {...getTableProps()} className={classes.table}>
@@ -68,16 +73,23 @@ export const Table = (props: TableProps) => {
   );
 };
 
-const normalCellBorder = '1px solid rgba(224, 224, 224, 1)';
-
+const normalCellBorderColor = 'rgba(234, 234, 234, 1)';
+const normalCellBorder = `1px solid ${normalCellBorderColor}`;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    title: {
+    titleContainer: {
+      margin: '5px 0 2px',
+      height: '2rem',
+      width: '200vw',
+      position: 'sticky',
+      left: '8px',
+    },
+    titleText: {
       ...theme.typography.h3,
       marginTop: 5,
       marginBottom: 2,
       position: 'sticky',
-      left: 0,
+      left: '8px',
     },
     headerCell: {
       textAlign: 'center',
@@ -87,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 'bold',
     },
     cell: {
-      padding: '1px 5px',
+      padding: '0px 0px 1px',
       border: normalCellBorder,
       '&:not(:first-child)': {
         minWidth: '12ch',
@@ -97,11 +109,13 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '&:hover': {
         background: `${buttonTheme.filled.hover.backgroundColor} !important`,
-        '& > div': {
+        '& input': {
           color: 'white',
         },
       },
       '& input': {
+        width: '20ch',
+        padding: '10px 15px 3px',
         // ...horizontalScrollIndicatorShadow('transparent'),
       },
     },
@@ -120,20 +134,51 @@ const useStyles = makeStyles((theme: Theme) =>
 
       // first column:
       '& td:first-child, th:first-child': {
-        left: 0,
-        width: '8ch', // if few columns
-        '& > div': {
-          width: '8ch', // if many columns
+        left: '8px',
+        width: '12ch', // need this when there's very few columns
+        '& input': {
+          width: '12ch',
+          textAlign: 'center',
+        },
+        '&:before': {
+          content: '""',
+          background: 'white',
+          position: 'absolute',
+          width: '8px',
+          top: '-1px',
+          left: '-9px',
+          height: '106%',
         },
       },
 
       // second column:
       '& td:nth-child(2), th:nth-child(2)': {
-        left: '75px',
-        width: '14ch', // if few columns
-        '& > div': {
-          width: '14ch', // if many columns
+        left: '136px',
+        width: '14ch', // need this when there's very few columns
+        '& input': {
+          width: '14ch',
         },
+        borderRightWidth: 0,
+        '&:after': {
+          content: '""',
+          background: fade(paletteTheme.common.lightBlue, 0.15),
+          position: 'absolute',
+          width: '5px',
+          top: '-1px',
+          left: 'calc(100% - 2.5px)',
+          height: '106%',
+        },
+      },
+
+      // third column:
+      '& td:nth-child(3), th:nth-child(3)': {
+        borderLeftWidth: 0,
+      },
+
+      // last row:
+      '& tr:last-child td': {
+        borderBottomWidth: '2px',
+        borderBottomColor: darken(normalCellBorderColor, 0.25),
       },
     },
   }),
