@@ -122,7 +122,6 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       borderCollapse: 'inherit',
       marginBottom: '1rem',
-      position: 'absolute',
 
       // first two columns:
       '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
