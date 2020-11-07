@@ -10,6 +10,7 @@ import { useSelector } from '../../../shared/utilities';
 import { getScheduleData } from '../../../query/schedules';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { buttonTheme } from '../../../shared/styles/theme.js';
 
 export const Home = () => {
   const classes = useStyles();
@@ -59,9 +60,11 @@ export const Home = () => {
         handleChange={handleChange}
         titles={data.map((schedule: any) => schedule.title)}
       />
-      {schedules?.map((schedule: any, idx: any) => (
-        <Scheduler schedule={schedule} key={idx} />
-      ))}
+      <div className={classes.schedulesContainer}>
+        {schedules?.map((schedule: any, idx: any) => (
+          <Scheduler schedule={schedule} key={idx} />
+        ))}
+      </div>
     </>
   );
 };
@@ -71,6 +74,15 @@ const useStyles = makeStyles((theme: Theme) =>
     logoutButton: {
       position: 'fixed',
       zIndex: 9002,
+      padding: '10px',
+      borderRadius: '5px',
+      border: 'none',
+      '&:hover, &:focus': {
+        ...buttonTheme.filled,
+      },
+    },
+    schedulesContainer: {
+      position: 'absolute',
     },
   }),
 );

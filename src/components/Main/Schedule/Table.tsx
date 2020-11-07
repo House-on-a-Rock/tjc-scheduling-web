@@ -122,7 +122,6 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       borderCollapse: 'inherit',
       marginBottom: '1rem',
-      position: 'absolute',
 
       // first two columns:
       '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
@@ -154,7 +153,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
       // second column:
       '& td:nth-child(2), th:nth-child(2)': {
-        left: '136px',
+        left: '135px',
         width: '14ch', // need this when there's very few columns
         '& input': {
           width: '14ch',

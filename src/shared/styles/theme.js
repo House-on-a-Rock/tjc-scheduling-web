@@ -100,9 +100,11 @@ export const themeExtension = {
       transition: fastTransitionTime,
       hover: {
         backgroundColor: interactiveColorBlue,
+        color: 'white',
       },
       '&:hover, &:focus': {
         backgroundColor: interactiveColorBlue,
+        color: 'white',
       },
     },
     icon: {
