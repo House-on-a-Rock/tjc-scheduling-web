@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     transition: '0',
   },
   details: {
-    width: '15vw',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
