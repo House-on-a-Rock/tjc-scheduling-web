@@ -22,13 +22,9 @@ export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps
         className={classes.tabs}
       >
         {titles.map((title, index) => (
-          <Tab
-            key={`${title}-${index}`}
-            label={title}
-            className={classes.tab}
-          />
+          <Tab key={`${title}-${index}`} label={title} className={classes.tab} />
         ))}
-        <Tab label="+" disabled className={classes.tab} />
+        <Tab label={<AddIcon />} disabled className={classes.tab} />
       </Tabs>
     </div>
   );
