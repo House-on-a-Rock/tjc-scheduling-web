@@ -11,9 +11,11 @@ import { getScheduleData } from '../../../query/schedules';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
+import { useSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
+  useSpinner();
 
   const dispatch = useDispatch();
 
