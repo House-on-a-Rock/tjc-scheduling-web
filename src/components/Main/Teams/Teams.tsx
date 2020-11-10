@@ -34,10 +34,10 @@ export const Teams = () => {
           handleDraggedItem={setDraggedItem}
         >
           <>
-            <Grid item xs={2} style={{ paddingLeft: '30px' }}>
+            <Grid item md={3} sm={4} xs={12}>
               <UserBank members={MEMBERS} droppableId="USERBANK" className="userbank" />
             </Grid>
-            <Grid item xs={10}>
+            <Grid item md={9} sm={8} xs={12}>
               <TeamList teams={teams} draggedMember={draggedItem} />
             </Grid>
           </>

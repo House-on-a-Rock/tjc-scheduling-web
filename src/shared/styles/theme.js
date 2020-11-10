@@ -100,9 +100,11 @@ export const themeExtension = {
       transition: fastTransitionTime,
       hover: {
         backgroundColor: interactiveColorBlue,
+        color: 'white',
       },
       '&:hover, &:focus': {
         backgroundColor: interactiveColorBlue,
+        color: 'white',
       },
     },
     icon: {
@@ -130,35 +132,41 @@ export const themeExtension = {
     borderBottom: `${veryLightGrey} 2px solid`,
     marginBottom: '-1px',
   },
+  tabIndicator: {
+    backgroundColor: tjcLightBlue,
+    height: '0.3rem',
+    width: '80px',
+    marginLeft: '40px',
+    zIndex: 2,
+    borderRadius: '3px 3px 0 0',
+  },
   tab: {
-    'text-transform': 'none',
-    borderRadius: '1rem 1rem 0 0',
-    borderWidth: '2px 2px 0 2px',
-    borderStyle: 'solid',
-    margin: '0 -1px',
-    transition: fastTransitionTime,
-    'box-sizing': 'border-box',
-    '& span': {
-      fontSize: 'large',
-    },
-
     color: mainTextColor,
-    borderColor: greyedOutBorderColor,
-    boxShadow: '#C8C8C850 0 15px 20px inset',
-
-    '&:hover, &:focus': {
-      color: 'white',
-      background: tjcBlue,
-      borderColor: tjcBlue,
-      zIndex: 2,
-      boxShadow: `${greyedOutBackgroundColor} 0 20px 23px`,
+    background: 'transparent',
+    'text-transform': 'none',
+    border: 'none',
+    transition: fastTransitionTime,
+    padding: '0 0 5px',
+    margin: '0 -1px',
+    '& span:first-child': {
+      fontSize: 'large',
+      borderWidth: '0 2px',
+      borderColor: veryLightGrey,
+      borderStyle: 'solid',
     },
     '&[aria-selected="true"]': {
+      color: 'black',
+      fontWeight: 'bold',
+    },
+    '&:hover, &:focus': {
       color: 'white',
       background: tjcLightBlue,
-      borderColor: tjcLightBlue,
-      zIndex: 1,
-      boxShadow: 'none',
+      zIndex: 3,
+      borderRadius: '5px 5px 0 0',
+      boxShadow: `${greyedOutBackgroundColor} 0 20px 23px`,
+      '& span:first-child': {
+        border: 'none',
+      },
     },
   },
 };
@@ -172,3 +180,4 @@ export const buttonTheme = themeExtension.button;
 export const sideBarTheme = themeExtension.sideBar;
 export const tabTheme = themeExtension.tab;
 export const tabGroupTheme = themeExtension.tabs;
+export const tabIndicatorTheme = themeExtension.tabIndicator;

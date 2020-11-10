@@ -55,11 +55,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     margin: '.5em',
     height: '20vh',
-    borderRadius: '1rem',
+    borderRadius: '5px',
     transition: '0',
   },
   details: {
-    width: '15vw',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
