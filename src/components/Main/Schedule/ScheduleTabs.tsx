@@ -6,7 +6,11 @@ import AddIcon from '@material-ui/icons/Add';
 
 import { ScheduleTabsProps } from '../../../shared/types';
 
-import { tabGroupTheme, tabTheme } from '../../../shared/styles/theme.js';
+import {
+  tabGroupTheme,
+  tabTheme,
+  tabIndicatorTheme,
+} from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps) => {
@@ -16,10 +20,14 @@ export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps
       <Tabs
         value={tabIdx}
         onChange={handleChange}
-        indicatorColor="primary"
         textColor="primary"
         centered
         className={classes.tabs}
+        TabIndicatorProps={{
+          style: {
+            ...tabIndicatorTheme,
+          },
+        }}
       >
         {titles.map((title, index) => (
           <Tab key={`${title}-${index}`} label={title} className={classes.tab} />
