@@ -12,9 +12,12 @@ import {
   tabIndicatorTheme,
 } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { useSpinner } from '../../../shared/styles/loading-spinner';
 
 export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps) => {
   const classes = useStyles();
+  useSpinner();
+
   return (
     <div className={classes.root}>
       <Tabs
