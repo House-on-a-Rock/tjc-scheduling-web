@@ -124,6 +124,7 @@ export interface ScheduleTabsProps {
   titles: string[];
   tabIdx: number;
   handleChange: (e: React.ChangeEvent, value: number) => void;
+  onNewSchedule: () => void;
 }
 
 export interface AddUserProps {
