@@ -30,7 +30,8 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   const [scheduleTitle, setScheduleName] = useState('');
   const [startDate, setStartDate] = useState(toDateString(new Date()));
   const [endDate, setEndDate] = useState(toDateString(new Date()));
-  const [view, setView] = useState<string>('weekly');
+  // const [view, setView] = useState<string>('weekly');
+  const view = 'weekly';
   const [team, setTeam] = useState<number>(0);
   const classes = useStyles();
 
@@ -87,26 +88,6 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
           />
         </div>
 
-        <FormControl className={classes.selectContainer}>
-          {/* <InputLabel>View</InputLabel> */}
-          <Select
-            className={classes.selectInput}
-            value={view}
-            required={true}
-            variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
-              setView(e.target.value)
-            }
-          >
-            <MenuItem value={'weekly'}>Weekly</MenuItem>
-            <MenuItem value={'monthly'}>Monthly</MenuItem>
-          </Select>
-          <FormHelperText>View</FormHelperText>
-          <Tooltip
-            id="View"
-            text="Select if this schedule will be shown in weekly or monthly view. This can be changed later"
-          />
-        </FormControl>
         <FormControl className={classes.selectContainer}>
           {/* <InputLabel>Team</InputLabel> */}
           <Select

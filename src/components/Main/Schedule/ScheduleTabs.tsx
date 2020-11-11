@@ -16,7 +16,7 @@ import { useSpinner } from '../../../shared/styles/loading-spinner';
 
 export const ScheduleTabs = ({ tabIdx, onTabClick, titles }: ScheduleTabsProps) => {
   const classes = useStyles();
-  useSpinner();
+  // useSpinner();
 
   return (
     <div className={classes.root}>

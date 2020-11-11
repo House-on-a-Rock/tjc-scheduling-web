@@ -18,7 +18,7 @@ import { useSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
-  useSpinner();
+  // useSpinner();
 
   const dispatch = useDispatch();
 
@@ -37,8 +37,6 @@ export const Home = () => {
   const [mutateAddSchedule] = useMutation(addSchedule, {
     onSuccess: () => cache.invalidateQueries('schedulesData'), //causes the roleData query to call and update on success
   });
-
-  console.log('data', data);
 
   // if (status === 'loading') return <div>loading...</div>; // loading state
 
