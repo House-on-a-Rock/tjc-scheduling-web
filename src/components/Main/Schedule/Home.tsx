@@ -18,7 +18,7 @@ import { useSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
-  // useSpinner();
+  useSpinner();
 
   const dispatch = useDispatch();
 
@@ -38,7 +38,9 @@ export const Home = () => {
     onSuccess: () => cache.invalidateQueries('schedulesData'), //causes the roleData query to call and update on success
   });
 
-  if (status === 'loading') return <div>loading...</div>; // loading state
+  console.log('data', data);
+
+  // if (status === 'loading') return <div>loading...</div>; // loading state
 
   // Component state
   const [tabIdx, setTabIdx] = useState(0);
@@ -75,7 +77,10 @@ export const Home = () => {
       churchId,
     });
     console.log('response', response);
+    //display error messages if needed
   }
+
+  const closeDialogHandler = () => setIsDialogVisible(false);
 
   return (
     <>
@@ -88,8 +93,8 @@ export const Home = () => {
       >
         Log Out
       </button>
-      <Dialog open={isDialogVisible} onClose={() => setIsDialogVisible(false)}>
-        <NewScheduleForm onSubmit={onNewScheduleSubmit} />
+      <Dialog open={isDialogVisible} onClose={closeDialogHandler}>
+        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
       </Dialog>
       <ScheduleTabs
         tabIdx={tabIdx}
