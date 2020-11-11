@@ -22,11 +22,17 @@ export const removeLocalStorageState = (type: string) =>
   localStorage.removeItem(`${type}_state`);
 
 export function isValidEmail(emailValue: string): boolean {
-  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(emailValue).toLowerCase());
 }
 
 export function extractUserId(jwt: string): number {
-  let decodedAccessKey: JWTDataType = jwtDecode(jwt);
+  const decodedAccessKey: JWTDataType = jwtDecode(jwt);
   return parseInt(decodedAccessKey.sub.split('|')[1]);
+}
+
+export function extractRoleIds(jwt: string): number[] {
+  const decodedAccessKey: JWTDataType = jwtDecode(jwt);
+  const roleIds = decodedAccessKey.roleIds.split('|');
+  return roleIds.map((roleId) => parseInt(roleId, 10));
 }

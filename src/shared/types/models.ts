@@ -26,6 +26,7 @@ export interface JWTDataType {
   sub: string;
   exp: string;
   type: string;
+  roleIds: string;
 }
 
 export interface ColumnFields {
