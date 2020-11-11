@@ -37,8 +37,8 @@ export const TeamList = ({ teams, draggedMember }: TeamListProps) => {
 const NewTeamCard = ({ handleClick }: any) => {
   const classes = useStyles();
   return (
-    <Card className={classes.root}>
-      <CardContent className={classes.details}>
+    <Card className={classes.card}>
+      <CardContent className={classes.cardDetails}>
         <IconButton>
           <AddIcon />
         </IconButton>
@@ -46,22 +46,17 @@ const NewTeamCard = ({ handleClick }: any) => {
     </Card>
   );
 };
+
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
+  card: {
     display: 'flex',
     margin: '.5em',
     height: '20vh',
-    // backgroundColor: 'yellow',
   },
-  details: {
+  cardDetails: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     width: '15vw',
-    // backgroundColor: 'red',
-  },
-  list: {
-    flexGrow: 10,
-    // backgroundColor: 'blue',
   },
 }));

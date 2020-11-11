@@ -79,6 +79,7 @@ export const themeExtension = {
     backgroundColor: mainBackgroundColor,
     boxShadow: '#CCCCCC 0 2px 23px',
     transition: fastTransitionTime,
+    border: 'transparent 2px solid',
     hover: {
       border: `${interactiveColorBlue} 2px solid`,
       boxShadow: '#CCDBE0 0 2px 23px',

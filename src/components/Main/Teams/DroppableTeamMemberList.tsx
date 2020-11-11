@@ -127,6 +127,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
     width: '79%',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, 20ch)',
   },
   droppableArea: {
     background: 'lightblue',
