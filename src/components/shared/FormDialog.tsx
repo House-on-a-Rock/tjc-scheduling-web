@@ -69,9 +69,10 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
         clearPresets();
       }}
       open={isOpen}
+      className={classes.root}
     >
       <DialogTitle id="confirm-dialog">{title} </DialogTitle>
-      <form className={classes.root} noValidate autoComplete="off">
+      <form noValidate autoComplete="off" className={classes.form}>
         <FormField
           name={'firstname'}
           label={'First Name'}
@@ -112,6 +113,7 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
             }
           }}
           key="yes-button"
+          className={classes.listItem}
         >
           <ListItemIcon style={{ color: green[500] }}>
             <CheckIcon />
@@ -125,6 +127,7 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
             clearPresets();
           }}
           key="no-button"
+          className={classes.listItem}
         >
           <ListItemIcon style={{ color: '#ba000d' }}>
             <ClearIcon />
@@ -139,9 +142,23 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      '& [role="dialog"]': {
+        width: '300px',
+      },
+    },
+    form: {
       '& > *': {
-        margin: theme.spacing(1),
-        width: '25ch',
+        margin: '8px',
+        width: 'calc(100% - 8px * 2)',
+      },
+    },
+    listItem: {
+      width: '50%',
+      margin: 'auto',
+      '& > *': {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-start',
       },
     },
   }),
