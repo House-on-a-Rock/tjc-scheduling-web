@@ -32,6 +32,7 @@ const readableDate = (unreadableDate: Date) =>
 
 const incrementDay = (date: Date) => new Date(date.setDate(date.getDate() + 1));
 
+//these look unused, i think this functionality was moved to server since I had to modify a function there
 function determineStartDate(startDate: string, day: number) {
   let current = incrementDay(new Date(startDate));
   while (current.getDay() !== day) current = incrementDay(current);

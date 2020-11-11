@@ -142,3 +142,10 @@ export interface AddScheduleProps {
   team: number;
   churchId: number;
 }
+
+export interface AddServiceProps {
+  name: string;
+  order: number;
+  dayOfWeek: number;
+  scheduleId: number;
+}

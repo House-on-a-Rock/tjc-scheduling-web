@@ -7,7 +7,7 @@ import {
 } from '../../../shared/types';
 
 export const Scheduler = ({ schedule }: SchedulerProps) => {
-  const { day, name, data, columns } = schedule;
+  const { name, data, columns } = schedule;
   const [scheduleData, setScheduleData] = useState(data);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>
