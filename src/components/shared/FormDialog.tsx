@@ -61,6 +61,7 @@ export function FormDialog({ handleClose, isOpen, title }: AddUserProps) {
 
   // validations needed
   // valid email provided
+  // why are the submit/cancel buttons listitems?
 
   return (
     <Dialog

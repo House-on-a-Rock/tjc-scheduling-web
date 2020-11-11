@@ -14,20 +14,15 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { useSpinner } from '../../../shared/styles/loading-spinner';
 
-export const ScheduleTabs = ({
-  tabIdx,
-  handleChange,
-  titles,
-  onNewSchedule,
-}: ScheduleTabsProps) => {
+export const ScheduleTabs = ({ tabIdx, onTabClick, titles }: ScheduleTabsProps) => {
   const classes = useStyles();
-  useSpinner();
+  // useSpinner();
 
   return (
     <div className={classes.root}>
       <Tabs
         value={tabIdx}
-        onChange={handleChange}
+        onChange={onTabClick}
         textColor="primary"
         centered
         className={classes.tabs}
@@ -40,7 +35,7 @@ export const ScheduleTabs = ({
         {titles.map((title, index) => (
           <Tab key={`${title}-${index}`} label={title} className={classes.tab} />
         ))}
-        <Tab label={<AddIcon />} onClick={onNewSchedule} className={classes.tab} />
+        <Tab label={<AddIcon />} className={classes.tab} />
       </Tabs>
     </div>
   );
