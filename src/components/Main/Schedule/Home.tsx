@@ -16,6 +16,8 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 import { useSpinner } from '../../../shared/styles/loading-spinner';
 
+import AddIcon from '@material-ui/icons/Add';
+
 export const Home = () => {
   const classes = useStyles();
   // useSpinner();
@@ -100,6 +102,10 @@ export const Home = () => {
         titles={data.map((schedule: any) => schedule.title)}
       />
       <div className={classes.schedulesContainer}>
+        <button>
+          <AddIcon height={50} width={50} />
+        </button>
+        Add New Service
         {displayedSchedule?.map((schedule: any, idx: any) => (
           <Scheduler schedule={schedule} key={idx} />
         ))}
@@ -122,6 +128,11 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     schedulesContainer: {
       position: 'absolute',
+      paddingTop: 10,
+      // display: 'flex',
+      // flexDirection: 'column',
+      // justifyContent: 'center',
+      // alignItems: 'center',
     },
   }),
 );
