@@ -12,8 +12,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 // import ReactTooltip from 'react-tooltip';
 import { Tooltip } from '../../shared/Tooltip';
 
-// TODO hook up with db
-// not sure if form control is needed
+// TODO hook up teams with data from DB
 
 interface NewScheduleFormProps {
   onSubmit: (
@@ -30,9 +29,9 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   const [scheduleTitle, setScheduleName] = useState('');
   const [startDate, setStartDate] = useState(toDateString(new Date()));
   const [endDate, setEndDate] = useState(toDateString(new Date()));
-  // const [view, setView] = useState<string>('weekly');
   const view = 'weekly';
   const [team, setTeam] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState('');
   const classes = useStyles();
 
   //needed to format date so that the date picker can display it properly
@@ -40,9 +39,32 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
 
+  function NewlineText(props: { text: string }) {
+    const text = props.text;
+    const newText = text.split('\n').map((str) => <p>{str}</p>);
+    return <div>{newText}</div>;
+  }
+
+  function onSubmitForm() {
+    setErrorMessage('');
+    let msg: string = '';
+    if (scheduleTitle.length === 0 || scheduleTitle.length >= 32)
+      msg = '-Title must be not be blank and be under 32 characters long'; //line breaks don't work ahhh
+    if (new Date(endDate) <= new Date(startDate)) msg += '\n-Invalid Date Range';
+    if (team === 0) msg += '\n-Please assign a team to this schedule';
+    if (msg.length > 0) return setErrorMessage(msg);
+
+    onSubmit(scheduleTitle, startDate, endDate, view, team);
+  }
+
   return (
     <div className={classes.root}>
       New Schedule Form
+      {errorMessage.length > 0 && (
+        <div style={{ color: 'red' }}>
+          <NewlineText text={errorMessage} />
+        </div>
+      )}
       <form className={classes.formStyle}>
         <div className={classes.tooltipContainer}>
           <FormField
@@ -99,21 +121,19 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
               setTeam(e.target.value)
             }
           >
-            <MenuItem value={0}>Church Council</MenuItem>
-            <MenuItem value={1}>RE</MenuItem>
+            <MenuItem value={0}>Assign this schedule to a team</MenuItem>
+            <MenuItem value={1}>Church Council</MenuItem>
+            <MenuItem value={2}>RE</MenuItem>
           </Select>
           <FormHelperText>Team</FormHelperText>
           <Tooltip id="Team" text="Select who is able to edit this schedule" />
         </FormControl>
       </form>
-      <button onClick={() => onSubmit(scheduleTitle, startDate, endDate, view, team)}>
-        Create a new schedule!
-      </button>
+      <button onClick={onSubmitForm}>Create a new schedule!</button>
       <button onClick={onClose}>Cancel</button>
     </div>
   );
 };
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
