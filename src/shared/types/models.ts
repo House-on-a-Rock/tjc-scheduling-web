@@ -26,7 +26,7 @@ export interface JWTDataType {
   sub: string;
   exp: string;
   type: string;
-  roleIds: string;
+  access: string;
 }
 
 export interface ColumnFields {
@@ -48,6 +48,7 @@ export interface MappedScheduleInterface {
   name: string;
   columns: ColumnFields[];
   data: WeeklyAssignmentInterface[];
+  role: any;
 }
 
 export interface WeeklyAssignment {
@@ -102,23 +103,31 @@ interface CellIndexType {
 interface CellColumnType {
   id: string;
 }
-export interface DataCellProps {
+export interface UpdatableCellProps {
   value: any;
   row: CellIndexType;
   column: CellColumnType;
   updateMyData: (rowIndex: number, columnId: string, value: string) => void;
 }
+export interface DataCellProps {
+  value: any;
+  row: CellIndexType;
+  column: CellColumnType;
+}
+
+type AccessTypes = 'read' | 'write';
 
 export interface TableProps {
   columns: ColumnFields[];
   data: WeeklyAssignmentInterface[];
   updateMyData: (rowIndex: number, columnId: string, value: string) => void;
   title: string;
+  access: AccessTypes;
 }
 
 export interface SchedulerProps {
   schedule: MappedScheduleInterface;
-  // schedule: MappedScheduleInterface;
+  role: any;
 }
 
 export interface ScheduleTabsProps {

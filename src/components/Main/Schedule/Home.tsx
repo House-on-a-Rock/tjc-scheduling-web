@@ -35,15 +35,17 @@ export const Home = () => {
 
   // Component state
   const [tabIdx, setTabIdx] = useState(0);
-  const [schedules, setSchedules] = useState(data[tabIdx]);
+  const [services, setServices] = useState([]);
+  const [role, setRole] = useState({});
 
   function handleChange(e: React.ChangeEvent, value: number) {
     setTabIdx(value);
-    setSchedules(data[tabIdx]?.services);
+    setServices(data[tabIdx]?.services);
   }
 
   useEffect(() => {
-    setSchedules(data[tabIdx]?.services);
+    setServices(data[tabIdx]?.services);
+    setRole(data[tabIdx]?.role);
   }, [data, tabIdx]);
 
   return (
@@ -63,9 +65,9 @@ export const Home = () => {
         titles={data.map((schedule: any) => schedule.title)}
       />
       <div className={classes.schedulesContainer}>
-        {schedules?.map((schedule: any, idx: any) => (
-          <Scheduler schedule={schedule} key={idx} />
-        ))}
+        {services?.map((schedule: any, idx: any) => {
+          return <Scheduler schedule={schedule} key={idx} role={role} />;
+        })}
       </div>
     </>
   );

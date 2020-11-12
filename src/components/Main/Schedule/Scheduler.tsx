@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Table } from './Table';
-import {
-  MappedScheduleInterface,
-  SchedulerProps,
-  WeeklyAssignmentInterface,
-} from '../../../shared/types';
+import { SchedulerProps, WeeklyAssignmentInterface } from '../../../shared/types';
+import { extractRoleIds } from '../../../shared/utilities';
 
-export const Scheduler = ({ schedule }: SchedulerProps) => {
-  const { day, name, data, columns } = schedule;
+const accessLevel = extractRoleIds(localStorage.getItem('access_token'));
+
+export const Scheduler = ({ schedule, role }: SchedulerProps) => {
+  const { name, data, columns } = schedule;
   const [scheduleData, setScheduleData] = useState(data);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>
@@ -16,13 +15,13 @@ export const Scheduler = ({ schedule }: SchedulerProps) => {
         index === rowIndex ? { ...old[rowIndex], [columnId]: value } : row,
       ),
     );
-
   return (
     <Table
       columns={columns}
       data={scheduleData}
       updateMyData={updateMyData}
       title={name}
+      access={accessLevel.includes(role.id) || accessLevel.includes(0) ? 'write' : 'read'}
     />
   );
 };

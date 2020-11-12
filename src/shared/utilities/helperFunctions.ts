@@ -33,6 +33,6 @@ export function extractUserId(jwt: string): number {
 
 export function extractRoleIds(jwt: string): number[] {
   const decodedAccessKey: JWTDataType = jwtDecode(jwt);
-  const roleIds = decodedAccessKey.roleIds.split('|');
-  return roleIds.map((roleId) => parseInt(roleId, 10));
+  const accessLevel = decodedAccessKey.access.split('|');
+  return accessLevel.map((level) => parseInt(level, 10));
 }
