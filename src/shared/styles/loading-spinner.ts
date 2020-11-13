@@ -6,6 +6,7 @@ export function useSpinner() {
   document.body.classList.add('loading');
   showWaitingMessage();
   useEffect(() => {
+    console.log('component mounted');
     document.body.classList.remove('loading');
     hideWaitingMessage();
   });

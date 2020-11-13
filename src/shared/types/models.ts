@@ -123,7 +123,7 @@ export interface SchedulerProps {
 export interface ScheduleTabsProps {
   titles: string[];
   tabIdx: number;
-  handleChange: (e: React.ChangeEvent, value: number) => void;
+  onTabClick: (e: React.ChangeEvent, value: number) => void;
 }
 
 export interface AddUserProps {
@@ -131,5 +131,14 @@ export interface AddUserProps {
   lastName: string;
   email: string;
   password: string;
+  churchId: number;
+}
+
+export interface AddScheduleProps {
+  scheduleTitle: string;
+  startDate: string;
+  endDate: string;
+  view: string;
+  team: number;
   churchId: number;
 }
