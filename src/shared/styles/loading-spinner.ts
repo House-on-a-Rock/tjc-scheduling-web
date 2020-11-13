@@ -3,12 +3,21 @@ import { useEffect } from 'react';
 const numberOfMessages = 3;
 
 export function useSpinner() {
-  document.body.classList.add('loading');
-  showWaitingMessage();
+  showLoadingSpinner(true);
   useEffect(() => {
+    console.log('component mounted');
+    showLoadingSpinner(false);
+  });
+}
+
+export function showLoadingSpinner(showIt: boolean) {
+  if (showIt) {
+    document.body.classList.add('loading');
+    showWaitingMessage();
+  } else {
     document.body.classList.remove('loading');
     hideWaitingMessage();
-  });
+  }
 }
 
 function showWaitingMessage() {

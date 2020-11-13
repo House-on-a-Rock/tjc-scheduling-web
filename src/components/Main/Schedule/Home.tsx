@@ -11,11 +11,10 @@ import { getScheduleData } from '../../../query/schedules';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
-import { useSpinner } from '../../../shared/styles/loading-spinner';
+import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
-  useSpinner();
 
   const dispatch = useDispatch();
 
@@ -31,7 +30,7 @@ export const Home = () => {
     },
   );
 
-  if (status === 'loading') return <div>loading...</div>; // loading state
+  showLoadingSpinner(isLoading);
 
   // Component state
   const [tabIdx, setTabIdx] = useState(0);
