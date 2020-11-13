@@ -142,3 +142,16 @@ export interface AddScheduleProps {
   team: number;
   churchId: number;
 }
+
+export interface AddServiceProps {
+  name: string;
+  order: number;
+  dayOfWeek: number;
+  scheduleId: number;
+}
+
+export interface TextFieldState {
+  valid: boolean;
+  message: string;
+  value: string;
+}

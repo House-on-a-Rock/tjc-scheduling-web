@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { secretIp } from '../../../secrets/secretStuff';
-import { AddScheduleProps } from '../../shared/types/models';
+import { AddScheduleProps, AddServiceProps } from '../../shared/types/models';
 
 const accessToken = localStorage.getItem('access_token');
 axios.defaults.headers.common['authorization'] = accessToken;
@@ -27,3 +27,11 @@ export const addSchedule = ({
     churchId,
   });
 };
+
+export const addService = ({ name, order, dayOfWeek, scheduleId }: AddServiceProps) =>
+  axios.post(`${secretIp}/api/services`, {
+    name,
+    order,
+    dayOfWeek,
+    scheduleId,
+  });

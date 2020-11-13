@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
-import { FormField } from '../../shared/FormField';
-
-import { TextField, Select } from '@material-ui/core';
+import {
+  ValidatedTextField,
+  createTextFieldState,
+  constructError,
+} from '../../shared/ValidatedTextField';
+import { TextFieldState } from '../../../shared/types/models';
+import { Select } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
+
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
-// import InfoIcon from '@material-ui/icons/Info';
 
-// import ReactTooltip from 'react-tooltip';
 import { Tooltip } from '../../shared/Tooltip';
 
-// TODO hook up with db
-// not sure if form control is needed
+// TODO hook up teams with data from DB
 
 interface NewScheduleFormProps {
   onSubmit: (
@@ -27,17 +29,59 @@ interface NewScheduleFormProps {
 }
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
-  const [scheduleTitle, setScheduleName] = useState('');
-  const [startDate, setStartDate] = useState(toDateString(new Date()));
-  const [endDate, setEndDate] = useState(toDateString(new Date()));
-  // const [view, setView] = useState<string>('weekly');
+  const today = new Date();
+  const tomorrow = new Date(today.setDate(today.getDate() + 1));
+  const [scheduleTitle, setScheduleTitle] = useState<TextFieldState>(
+    createTextFieldState(''),
+  );
+  const [startDate, setStartDate] = useState<TextFieldState>(
+    createTextFieldState(toDateString(new Date())),
+  );
+  const [endDate, setEndDate] = useState<TextFieldState>(
+    createTextFieldState(toDateString(new Date(tomorrow))),
+  );
   const view = 'weekly';
-  const [team, setTeam] = useState<number>(0);
+  const [team, setTeam] = useState<TextFieldState>(createTextFieldState('0'));
   const classes = useStyles();
 
   //needed to format date so that the date picker can display it properly
   function toDateString(date: Date): string {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }
+
+  function onSubmitForm() {
+    setScheduleTitle({ ...scheduleTitle, valid: true, message: '' });
+    setStartDate({ ...startDate, valid: true, message: '' });
+    setEndDate({ ...endDate, valid: true, message: '' });
+    setTeam({ ...team, valid: true, message: '' });
+    let teamInt = parseInt(team.value);
+    if (
+      scheduleTitle.value.length > 0 &&
+      scheduleTitle.value.length < 32 &&
+      endDate.value > startDate.value &&
+      teamInt > 0
+    )
+      onSubmit(scheduleTitle.value, startDate.value, endDate.value, view, teamInt);
+
+    constructError(
+      scheduleTitle.value.length === 0 || scheduleTitle.value.length >= 32,
+      'Title must not be blank and be under 32 characters long',
+      scheduleTitle,
+      setScheduleTitle,
+    );
+    constructError(
+      endDate.value < startDate.value,
+      'Invalid date range',
+      endDate,
+      setEndDate,
+    );
+    constructError(
+      endDate.value < startDate.value,
+      'Invalid date range',
+      startDate,
+      setStartDate,
+    );
+    constructError(teamInt === 0, 'Please assign a team to this schedule', team, setTeam);
   }
 
   return (
@@ -45,12 +89,13 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
       New Schedule Form
       <form className={classes.formStyle}>
         <div className={classes.tooltipContainer}>
-          <FormField
+          <ValidatedTextField
             className={classes.nameInput}
-            name="Name"
-            label="Schedule Name"
-            value={scheduleTitle}
-            handleChange={setScheduleName}
+            name="Schedule Title"
+            label="Schedule Title"
+            input={scheduleTitle}
+            handleChange={setScheduleTitle}
+            autofocus
           />
           <Tooltip
             id="scheduleName"
@@ -58,29 +103,25 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
           />
         </div>
         <div className={classes.tooltipContainer}>
-          <TextField
+          <ValidatedTextField
             className={classes.datePicker}
-            variant="outlined"
-            id="start date"
             label="Start Date"
+            input={startDate}
+            handleChange={setStartDate}
             type="date"
             InputLabelProps={{
               shrink: true,
             }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
           />
-          <TextField
+          <ValidatedTextField
             className={classes.datePicker}
-            variant="outlined"
-            id="end date"
             label="End Date"
+            input={endDate}
+            handleChange={setEndDate}
             type="date"
             InputLabelProps={{
               shrink: true,
             }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
           />
           <Tooltip
             id="datePicker"
@@ -88,32 +129,30 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
           />
         </div>
 
-        <FormControl className={classes.selectContainer}>
-          {/* <InputLabel>Team</InputLabel> */}
+        <FormControl className={classes.selectContainer} error={!team.valid}>
+          <InputLabel>Team</InputLabel>
           <Select
             className={classes.selectInput}
-            value={team}
+            value={team.value}
             required={true}
             variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: number }>) =>
-              setTeam(e.target.value)
+            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
+              setTeam({ ...team, value: e.target.value })
             }
           >
-            <MenuItem value={0}>Church Council</MenuItem>
-            <MenuItem value={1}>RE</MenuItem>
+            <MenuItem value={0}>Assign this schedule to a team</MenuItem>
+            <MenuItem value={1}>Church Council</MenuItem>
+            <MenuItem value={2}>RE</MenuItem>
           </Select>
-          <FormHelperText>Team</FormHelperText>
+          <FormHelperText style={{ color: 'red' }}>{team.message}</FormHelperText>
           <Tooltip id="Team" text="Select who is able to edit this schedule" />
         </FormControl>
       </form>
-      <button onClick={() => onSubmit(scheduleTitle, startDate, endDate, view, team)}>
-        Create a new schedule!
-      </button>
+      <button onClick={onSubmitForm}>Create a new schedule!</button>
       <button onClick={onClose}>Cancel</button>
     </div>
   );
 };
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -148,9 +187,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selectContainer: {
       width: 400,
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'center',
     },
     selectInput: {
       width: 300,
