@@ -44,8 +44,6 @@ export const Home = () => {
     onSuccess: () => cache.invalidateQueries('schedulesData'),
   });
 
-  // if (status === 'loading') return <div>loading...</div>; // replaced by useSpinner() ??
-
   // Component state
   const [tabIdx, setTabIdx] = useState(0);
   const [displayedSchedule, setDisplayedSchedule] = useState(data[tabIdx]);

@@ -149,3 +149,9 @@ export interface AddServiceProps {
   dayOfWeek: number;
   scheduleId: number;
 }
+
+export interface TextFieldState {
+  valid: boolean;
+  message: string;
+  value: string;
+}
