@@ -68,7 +68,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
           label="Service Name"
           input={serviceName}
           handleChange={setServiceName}
-          autofocus
+          autoFocus
         />
         <FormControl>
           <InputLabel>Day of the Week</InputLabel>

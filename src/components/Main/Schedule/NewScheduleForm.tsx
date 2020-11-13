@@ -95,7 +95,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
             label="Schedule Title"
             input={scheduleTitle}
             handleChange={setScheduleTitle}
-            autofocus
+            autoFocus
           />
           <Tooltip
             id="scheduleName"

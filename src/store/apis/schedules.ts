@@ -5,8 +5,14 @@ import { AddScheduleProps, AddServiceProps } from '../../shared/types/models';
 const accessToken = localStorage.getItem('access_token');
 axios.defaults.headers.common['authorization'] = accessToken;
 
-export const getSchedule = (churchId: number): Promise<AxiosResponse> => {
-  return axios.get(`${secretIp}/api/schedules?churchId=${churchId}`);
+export const getTabs = (churchId: number): Promise<AxiosResponse> => {
+  return axios.get(`${secretIp}/api/schedules/tabs?churchId=${churchId}`);
+};
+
+//rename this to get tab data or something
+export const getSchedule = (scheduleId: number): Promise<AxiosResponse> => {
+  console.log('grabbing schedule');
+  return axios.get(`${secretIp}/api/schedules?churchId=${scheduleId}`);
 };
 
 export const addSchedule = ({
@@ -17,7 +23,6 @@ export const addSchedule = ({
   team,
   churchId,
 }: AddScheduleProps) => {
-  console.log('scheduleTitle', scheduleTitle);
   return axios.post(`${secretIp}/api/schedules`, {
     title: scheduleTitle,
     startDate,
