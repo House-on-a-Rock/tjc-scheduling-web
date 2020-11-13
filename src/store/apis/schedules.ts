@@ -12,7 +12,7 @@ export const getTabs = (churchId: number): Promise<AxiosResponse> => {
 //rename this to get tab data or something
 export const getSchedule = (scheduleId: number): Promise<AxiosResponse> => {
   console.log('grabbing schedule');
-  return axios.get(`${secretIp}/api/schedules?churchId=${scheduleId}`);
+  return axios.get(`${secretIp}/api/schedules?scheduleId=${scheduleId}`);
 };
 
 export const addSchedule = ({

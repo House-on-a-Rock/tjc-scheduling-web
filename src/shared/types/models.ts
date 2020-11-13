@@ -116,7 +116,7 @@ export interface TableProps {
 }
 
 export interface SchedulerProps {
-  schedule: MappedScheduleInterface;
+  service: MappedScheduleInterface;
   // schedule: MappedScheduleInterface;
 }
 

@@ -20,13 +20,10 @@ import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
-
   const dispatch = useDispatch();
 
-  // React-query
   const cache = useQueryCache();
   const { churchId, name: churchName } = useSelector((state) => state.profile);
-
   const { isLoading, error, data }: any = useQuery(
     ['scheduleTabs', churchId],
     getTabData,
@@ -36,23 +33,13 @@ export const Home = () => {
       staleTime: 100000000000000, //1157407.4 days fyi lol
     },
   );
-  console.log('data received', data); //should be tabs
-
-  // showLoadingSpinner(isLoading);
-
   const [mutateAddSchedule] = useMutation(addSchedule, {
-    onSuccess: () => cache.invalidateQueries('schedulesData'), //causes the schedulesData query to call and update on success
+    onSuccess: () => cache.invalidateQueries('scheduleTabs'), //causes the schedulesData query to call and update on success
   });
-
-  // Component state
   const [tabIdx, setTabIdx] = useState(0);
   const [isAddScheduleVisible, setIsAddScheduleVisible] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   console.log('setting displayed scheudle');
-  //   // setDisplayedSchedule(data[tabIdx]?.services);
-  // }, [data, tabIdx]);
-
+  // showLoadingSpinner(isLoading);
   return (
     <>
       <button

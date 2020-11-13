@@ -6,11 +6,10 @@ import {
   WeeklyAssignmentInterface,
 } from '../../../shared/types';
 
-//a table for each of the services
-export const Scheduler = ({ schedule }: SchedulerProps) => {
-  const { name, data, columns } = schedule;
+//receives one service and creates a table for it
+export const Scheduler = ({ service }: SchedulerProps) => {
+  const { name, data, columns } = service;
   const [scheduleData, setScheduleData] = useState(data);
-  console.log('scheduler name', name);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>
     setScheduleData((old: WeeklyAssignmentInterface[]) =>

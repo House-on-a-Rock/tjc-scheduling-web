@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 
 //react query and data manipulation
-import { useSelector } from '../../../shared/utilities';
+
 import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { addService } from '../../../store/apis/schedules';
 
 import { Scheduler } from './Scheduler';
 import AddIcon from '@material-ui/icons/Add';
+import { Dialog } from '@material-ui/core/';
+import { NewServiceForm } from './NewServiceForm';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
@@ -20,34 +22,41 @@ export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
   const classes = useStyles();
   const cache = useQueryCache();
 
-  // const { isLoading, error, data = [] } = useQuery(
-  //   ['schedulesData', scheduleId],
-  //   getScheduleData,
-  //   {
-  //     refetchOnWindowFocus: false,
-  //     staleTime: 100000000000000, //1157407.4 days fyi lol
-  //   },
-  // );
-  // console.log('data received', data);
+  const { isLoading, error, data } = useQuery(
+    ['scheduleData', scheduleId],
+    getScheduleData,
+    {
+      refetchOnWindowFocus: false,
+      staleTime: 100000000000000, //1157407.4 days fyi lol
+    },
+  );
   const [mutateAddService] = useMutation(addService, {
-    onSuccess: () => cache.invalidateQueries('schedulesData'),
+    onSuccess: () => cache.invalidateQueries('scheduleData'),
   });
   const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
-  console.log('scheduleId', scheduleId);
+
   return (
     <div className={classes.schedulesContainer}>
-      {/* <button onClick={onAddServiceClick}>
+      <button onClick={onAddServiceClick}>
         <AddIcon height={50} width={50} /> Add New Service
       </button>
-      {data.map((schedule: any, idx: any) => (
-        <Scheduler schedule={schedule} key={idx} />
-      ))} */}
-      {scheduleId}
+      {data && (
+        <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
+          <NewServiceForm
+            order={data.services?.length || 0}
+            onSubmit={onNewServiceSubmit}
+            onClose={closeDialogHandler}
+          />
+        </Dialog>
+      )}
+      {data &&
+        data.services.map((service: any, idx: any) => (
+          <Scheduler service={service} key={idx} />
+        ))}
     </div>
   );
 
   function closeDialogHandler() {
-    // setIsAddScheduleVisible(false);
     setIsAddServiceVisible(false);
   }
 
@@ -56,10 +65,11 @@ export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
   }
 
   async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
+    //this needs to be fixed
     setIsAddServiceVisible(false);
     const response = await mutateAddService({
       name,
-      order,
+      order: data.services?.length + 1 || 0,
       dayOfWeek,
       scheduleId: scheduleId + 1, //since these aren't 0 based, need to add 1
     });
