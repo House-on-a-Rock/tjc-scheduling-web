@@ -15,13 +15,12 @@ import { addSchedule, addService } from '../../../store/apis/schedules';
 import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
-import { useSpinner } from '../../../shared/styles/loading-spinner';
+import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 import AddIcon from '@material-ui/icons/Add';
 
 export const Home = () => {
   const classes = useStyles();
-  // useSpinner();
 
   const dispatch = useDispatch();
 
@@ -37,6 +36,9 @@ export const Home = () => {
       staleTime: 100000000000000, //1157407.4 days fyi lol
     },
   );
+
+  showLoadingSpinner(isLoading);
+
   const [mutateAddSchedule] = useMutation(addSchedule, {
     onSuccess: () => cache.invalidateQueries('schedulesData'), //causes the schedulesData query to call and update on success
   });
