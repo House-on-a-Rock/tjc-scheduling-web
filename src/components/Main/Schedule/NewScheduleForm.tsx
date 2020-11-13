@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import { FormField } from '../../shared/FormField';
 import {
   ValidatedTextField,
   createTextFieldState,
   constructError,
 } from '../../shared/ValidatedTextField';
 import { TextFieldState } from '../../../shared/types/models';
-import { TextField, Select } from '@material-ui/core';
+import { Select } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import { NewLineText } from '../../shared/NewLineText';
+
 import { Tooltip } from '../../shared/Tooltip';
 
 // TODO hook up teams with data from DB
@@ -27,12 +26,6 @@ interface NewScheduleFormProps {
     team: number,
   ) => void;
   onClose: () => void;
-}
-
-interface SelectFieldState {
-  valid: boolean;
-  message: string;
-  value: number;
 }
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
