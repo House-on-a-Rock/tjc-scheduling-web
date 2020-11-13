@@ -5,7 +5,6 @@ const numberOfMessages = 3;
 export function useSpinner() {
   showLoadingSpinner(true);
   useEffect(() => {
-    console.log('component mounted');
     showLoadingSpinner(false);
   });
 }
