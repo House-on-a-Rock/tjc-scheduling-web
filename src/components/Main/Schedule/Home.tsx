@@ -24,21 +24,18 @@ export const Home = () => {
 
   const cache = useQueryCache();
   const { churchId, name: churchName } = useSelector((state) => state.profile);
-  const { isLoading, error, data }: any = useQuery(
-    ['scheduleTabs', churchId],
-    getTabData,
-    {
-      enabled: churchId,
-      refetchOnWindowFocus: false,
-      staleTime: 100000000000000, //1157407.4 days fyi lol
-    },
-  );
+  const { isLoading, error, data } = useQuery(['scheduleTabs', churchId], getTabData, {
+    enabled: churchId,
+    refetchOnWindowFocus: false,
+    staleTime: 100000000000000,
+  });
   const [mutateAddSchedule] = useMutation(addSchedule, {
-    onSuccess: () => cache.invalidateQueries('scheduleTabs'), //causes the schedulesData query to call and update on success
+    onSuccess: () => cache.invalidateQueries('scheduleTabs'),
   });
   const [tabIdx, setTabIdx] = useState(0);
   const [isAddScheduleVisible, setIsAddScheduleVisible] = useState<boolean>(false);
 
+  console.log('home rerendering');
   // showLoadingSpinner(isLoading);
   return (
     <>

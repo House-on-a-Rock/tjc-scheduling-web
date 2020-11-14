@@ -24,10 +24,9 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 // import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
-export const Table = (props: TableProps) => {
+export const Table = ({ columns, data, updateMyData, title }: TableProps) => {
   const classes = useStyles();
 
-  const { columns, data, updateMyData, title } = props;
   const { getTableProps, headerGroups, rows, prepareRow } = useTable({
     columns,
     data,

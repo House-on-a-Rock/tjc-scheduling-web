@@ -71,7 +71,7 @@ export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
       name,
       order: data.services?.length + 1 || 0,
       dayOfWeek,
-      scheduleId: scheduleId + 1, //since these aren't 0 based, need to add 1
+      scheduleId: scheduleId,
     });
     //need an error/alert reporting system
   }
