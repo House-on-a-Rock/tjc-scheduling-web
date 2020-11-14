@@ -12,6 +12,7 @@ import { Dialog } from '@material-ui/core/';
 import { NewServiceForm } from './NewServiceForm';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 interface ScheduleContainerProps {
   scheduleId: number;
@@ -35,6 +36,7 @@ export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
   });
   const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
 
+  showLoadingSpinner(isLoading);
   return (
     <div className={classes.schedulesContainer}>
       <button onClick={onAddServiceClick}>

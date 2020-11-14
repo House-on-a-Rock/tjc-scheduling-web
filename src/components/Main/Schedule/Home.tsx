@@ -16,7 +16,7 @@ import { addSchedule } from '../../../store/apis/schedules';
 import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
-import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
+// import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
@@ -35,7 +35,6 @@ export const Home = () => {
   const [tabIdx, setTabIdx] = useState(0);
   const [isAddScheduleVisible, setIsAddScheduleVisible] = useState<boolean>(false);
 
-  console.log('home rerendering');
   // showLoadingSpinner(isLoading);
   return (
     <>
