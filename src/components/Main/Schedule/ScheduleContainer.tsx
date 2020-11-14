@@ -19,7 +19,7 @@ interface ScheduleContainerProps {
 }
 
 //makes api calls, distributes data to scheduler
-export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
+export const ScheduleContainer = React.memo(({ scheduleId }: ScheduleContainerProps) => {
   const classes = useStyles();
   const cache = useQueryCache();
 
@@ -77,7 +77,7 @@ export const ScheduleContainer = ({ scheduleId }: ScheduleContainerProps) => {
     });
     //need an error/alert reporting system
   }
-};
+});
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
