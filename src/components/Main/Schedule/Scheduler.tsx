@@ -7,7 +7,7 @@ import {
 } from '../../../shared/types';
 
 //receives one service and creates a table for it
-export const Scheduler = ({ service }: SchedulerProps) => {
+export const Scheduler = React.memo(({ service }: SchedulerProps) => {
   const { name, data, columns } = service;
   const [scheduleData, setScheduleData] = useState(data);
 
@@ -30,4 +30,8 @@ export const Scheduler = ({ service }: SchedulerProps) => {
       title={name}
     />
   );
-};
+}, propsAreEqual);
+
+function propsAreEqual(prevProps: SchedulerProps, nextProps: SchedulerProps): boolean {
+  return prevProps.service.name === nextProps.service.name ? true : false;
+}

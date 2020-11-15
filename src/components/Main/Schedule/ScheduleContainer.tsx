@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 
 //react query and data manipulation
-
 import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { addService } from '../../../store/apis/schedules';
-
+//components
 import { Scheduler } from './Scheduler';
+import { NewServiceForm } from './NewServiceForm';
+//material ui and styling
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import { Dialog } from '@material-ui/core/';
-import { NewServiceForm } from './NewServiceForm';
-
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 interface ScheduleContainerProps {
@@ -67,11 +66,10 @@ export const ScheduleContainer = React.memo(({ scheduleId }: ScheduleContainerPr
   }
 
   async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
-    //this needs to be fixed
     setIsAddServiceVisible(false);
     const response = await mutateAddService({
       name,
-      order: data.services?.length + 1 || 0,
+      order: order,
       dayOfWeek,
       scheduleId: scheduleId,
     });

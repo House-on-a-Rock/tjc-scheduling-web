@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+//react query
 import { useQuery, useMutation, useQueryCache } from 'react-query';
+import { getTabData } from '../../../query/schedules';
+import { addSchedule } from '../../../store/apis/schedules';
 
 import { ScheduleTabs } from './ScheduleTabs';
 import { NewScheduleForm } from './NewScheduleForm';
-
 import { ScheduleContainer } from './ScheduleContainer';
 
 import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
-import { getTabData } from '../../../query/schedules';
-
-import { addSchedule } from '../../../store/apis/schedules';
 
 import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
-// import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
 export const Home = () => {
   const classes = useStyles();
@@ -35,7 +33,6 @@ export const Home = () => {
   const [tabIdx, setTabIdx] = useState(0);
   const [isAddScheduleVisible, setIsAddScheduleVisible] = useState<boolean>(false);
 
-  // showLoadingSpinner(isLoading);
   return (
     <>
       <button

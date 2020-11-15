@@ -5,6 +5,7 @@ import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { ContextMenu } from '../../shared/ContextMenu';
 
+//TODO need a different contextmenu solution
 export const DataCell = ({
   value: initialValue,
   row: { index },
