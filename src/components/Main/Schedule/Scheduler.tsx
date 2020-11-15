@@ -33,5 +33,5 @@ export const Scheduler = React.memo(({ service }: SchedulerProps) => {
 }, propsAreEqual);
 
 function propsAreEqual(prevProps: SchedulerProps, nextProps: SchedulerProps): boolean {
-  return prevProps.service.name === nextProps.service.name ? true : false;
+  return prevProps.service.name === nextProps.service.name;
 }
