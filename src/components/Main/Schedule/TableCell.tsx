@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Input from '@material-ui/core/Input';
-import { DataCellProps } from '../../../shared/types';
+import { DataCellProps, UpdatableCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { ContextMenu } from '../../shared/ContextMenu';
 
-export const DataCell = ({
+export const UpdatableCell = ({
   value: initialValue,
   row: { index },
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
-}: DataCellProps) => {
+}: UpdatableCellProps) => {
   const classes = useStyles();
 
   // We need to keep and update the state of the cell normally
@@ -18,7 +18,6 @@ export const DataCell = ({
   const [value, setValue] = useState(initialValue?.data);
   const [display, setDisplay] = useState('');
 
-  // value.display ? value.display : `${value.firstName} ${value.lastName}`;
   const onChange = (e: any) => {
     setValue(e.target.value);
   };
@@ -55,6 +54,23 @@ export const DataCell = ({
   ) : (
     ''
   );
+};
+
+export const DataCell = ({ value: initialValue }: DataCellProps) => {
+  const classes = useStyles();
+  const [value, setValue] = useState(initialValue?.data);
+  const [display, setDisplay] = useState('');
+
+  useEffect(() => {
+    const initialData = initialValue?.data;
+    setValue(initialValue?.data);
+    if (initialData)
+      initialData?.display
+        ? setDisplay(initialData.display)
+        : setDisplay(`${initialData.firstName} ${initialData.lastName}`);
+  }, [initialValue]);
+
+  return initialValue ? <Input className={classes.input} value={display} /> : '';
 };
 
 const useStyles = makeStyles((theme: Theme) =>

@@ -17,7 +17,7 @@ export function authenticateLogin(
   email: string,
   password: string,
 ): Promise<AxiosResponse> {
-  return axios.post(`${secretIp}/api/authentication/login`, {
+  return axios.post(`${secretIp}/api/authentication/webLogin`, {
     email: email,
     password: password,
   });

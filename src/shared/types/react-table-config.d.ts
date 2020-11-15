@@ -55,7 +55,7 @@ declare module 'react-table' {
       UseResizeColumnsOptions<D>,
       UseRowSelectOptions<D>,
       UseSortByOptions<D> {
-    updateMyData: (rowIndex: number, columnId: string, value: string) => void;
+    updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
   }
 
   export interface Hooks<D extends object = {}>

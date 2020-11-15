@@ -51,6 +51,7 @@ export const Home = () => {
   const [displayedSchedule, setDisplayedSchedule] = useState(data[tabIdx]);
   const [isAddScheduleVisible, setIsAddScheduleVisible] = useState(false);
   const [isAddServiceVisible, setIsAddServiceVisible] = useState(false);
+  const [role, setRole] = useState({});
 
   function onTabClick(e: React.ChangeEvent, value: number) {
     if (value <= data.length - 1) {
@@ -62,6 +63,7 @@ export const Home = () => {
 
   useEffect(() => {
     setDisplayedSchedule(data[tabIdx]?.services);
+    setRole(data[tabIdx]?.role);
   }, [data, tabIdx]);
 
   async function onNewScheduleSubmit(
@@ -133,7 +135,7 @@ export const Home = () => {
           <AddIcon height={50} width={50} /> Add New Service
         </button>
         {displayedSchedule?.map((schedule: any, idx: any) => (
-          <Scheduler schedule={schedule} key={idx} />
+          <Scheduler schedule={schedule} key={idx} role={role} />
         ))}
       </div>
     </>

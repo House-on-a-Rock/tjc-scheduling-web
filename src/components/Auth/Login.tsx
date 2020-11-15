@@ -95,7 +95,7 @@ export const Login = () => {
 
   if (isLoggedIn) {
     remembered
-      ? setLocalStorageState('auth', { email: email.value })
+      ? setLocalStorageState('auth', { email: email.value, password: password.value })
       : removeLocalStorageState('auth');
     // return <Redirect to="/" />;
   }
