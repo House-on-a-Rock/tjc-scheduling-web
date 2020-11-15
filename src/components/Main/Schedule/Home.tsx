@@ -1,25 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryCache } from 'react-query';
 
 import { Scheduler } from './Scheduler';
 import { ScheduleTabs } from './ScheduleTabs';
+import { NewScheduleForm } from './NewScheduleForm';
+import { NewServiceForm } from './NewServiceForm';
 
 import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
 import { getScheduleData } from '../../../query/schedules';
+import { addSchedule, addService } from '../../../store/apis/schedules';
 
+import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
-import { useSpinner } from '../../../shared/styles/loading-spinner';
+import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
+
+import AddIcon from '@material-ui/icons/Add';
 
 export const Home = () => {
   const classes = useStyles();
-  useSpinner();
 
   const dispatch = useDispatch();
 
   // React-query
+  const cache = useQueryCache();
   const { churchId, name: churchName } = useSelector((state) => state.profile);
   const { isLoading, error, data = [] } = useQuery(
     ['schedulesData', churchId],
@@ -27,26 +33,76 @@ export const Home = () => {
     {
       enabled: churchId,
       refetchOnWindowFocus: false,
-      staleTime: 100000000000000,
+      staleTime: 100000000000000, //1157407.4 days fyi lol
     },
   );
 
-  if (status === 'loading') return <div>loading...</div>; // loading state
+  showLoadingSpinner(isLoading);
+
+  const [mutateAddSchedule] = useMutation(addSchedule, {
+    onSuccess: () => cache.invalidateQueries('schedulesData'), //causes the schedulesData query to call and update on success
+  });
+  const [mutateAddService] = useMutation(addService, {
+    onSuccess: () => cache.invalidateQueries('schedulesData'),
+  });
 
   // Component state
   const [tabIdx, setTabIdx] = useState(0);
-  const [services, setServices] = useState([]);
+  const [displayedSchedule, setDisplayedSchedule] = useState(data[tabIdx]);
+  const [isAddScheduleVisible, setIsAddScheduleVisible] = useState(false);
+  const [isAddServiceVisible, setIsAddServiceVisible] = useState(false);
   const [role, setRole] = useState({});
 
-  function handleChange(e: React.ChangeEvent, value: number) {
-    setTabIdx(value);
-    setServices(data[tabIdx]?.services);
+  function onTabClick(e: React.ChangeEvent, value: number) {
+    if (value <= data.length - 1) {
+      //if not the last tab, display that tab
+      setTabIdx(value);
+      setDisplayedSchedule(data[tabIdx]?.services);
+    } else setIsAddScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 
   useEffect(() => {
-    setServices(data[tabIdx]?.services);
+    setDisplayedSchedule(data[tabIdx]?.services);
     setRole(data[tabIdx]?.role);
   }, [data, tabIdx]);
+
+  async function onNewScheduleSubmit(
+    scheduleTitle: string,
+    startDate: string,
+    endDate: string,
+    view: string,
+    team: number,
+  ) {
+    //validations needed
+    setIsAddScheduleVisible(false);
+    const response = await mutateAddSchedule({
+      scheduleTitle,
+      startDate,
+      endDate,
+      view,
+      team,
+      churchId,
+    });
+    //display error messages if needed
+  }
+
+  async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
+    //validations
+    setIsAddServiceVisible(false);
+    const response = await mutateAddService({
+      name,
+      order,
+      dayOfWeek,
+      scheduleId: tabIdx + 1, //since these aren't 0 based, need to add 1
+    });
+    //need an error/alert reporting system
+  }
+
+  const closeDialogHandler = () => {
+    setIsAddScheduleVisible(false);
+    setIsAddServiceVisible(false);
+  };
+  const onAddServiceClick = () => setIsAddServiceVisible(true);
 
   return (
     <>
@@ -59,15 +115,28 @@ export const Home = () => {
       >
         Log Out
       </button>
+      <Dialog open={isAddScheduleVisible} onClose={closeDialogHandler}>
+        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
+      </Dialog>
+      <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
+        <NewServiceForm
+          order={displayedSchedule?.length || 0}
+          onSubmit={onNewServiceSubmit}
+          onClose={closeDialogHandler}
+        />
+      </Dialog>
       <ScheduleTabs
         tabIdx={tabIdx}
-        handleChange={handleChange}
+        onTabClick={onTabClick}
         titles={data.map((schedule: any) => schedule.title)}
       />
       <div className={classes.schedulesContainer}>
-        {services?.map((schedule: any, idx: any) => {
-          return <Scheduler schedule={schedule} key={idx} role={role} />;
-        })}
+        <button onClick={onAddServiceClick}>
+          <AddIcon height={50} width={50} /> Add New Service
+        </button>
+        {displayedSchedule?.map((schedule: any, idx: any) => (
+          <Scheduler schedule={schedule} key={idx} role={role} />
+        ))}
       </div>
     </>
   );
@@ -87,6 +156,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     schedulesContainer: {
       position: 'absolute',
+      paddingTop: 10,
     },
   }),
 );

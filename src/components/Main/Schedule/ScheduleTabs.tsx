@@ -12,17 +12,15 @@ import {
   tabIndicatorTheme,
 } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { useSpinner } from '../../../shared/styles/loading-spinner';
 
-export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps) => {
+export const ScheduleTabs = ({ tabIdx, onTabClick, titles }: ScheduleTabsProps) => {
   const classes = useStyles();
-  useSpinner();
 
   return (
     <div className={classes.root}>
       <Tabs
         value={tabIdx}
-        onChange={handleChange}
+        onChange={onTabClick}
         textColor="primary"
         centered
         className={classes.tabs}
@@ -35,7 +33,7 @@ export const ScheduleTabs = ({ tabIdx, handleChange, titles }: ScheduleTabsProps
         {titles.map((title, index) => (
           <Tab key={`${title}-${index}`} label={title} className={classes.tab} />
         ))}
-        <Tab label={<AddIcon />} disabled className={classes.tab} />
+        <Tab label={<AddIcon />} className={classes.tab} />
       </Tabs>
     </div>
   );

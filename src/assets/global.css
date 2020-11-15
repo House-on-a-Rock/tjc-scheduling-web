@@ -45,6 +45,7 @@ body.loading.message:after {
     var(--w) calc(-1 * var(--w)) 0 var(--c), calc(-1 * var(--w)) var(--w) 0 var(--c),
     0 var(--w) 0 var(--c), 0 calc(-1 * var(--w)) 0 var(--c), var(--w) 0 0 var(--c),
     calc(-1 * var(--w)) 0 0 var(--c);
+  width: 100%;
 }
 
 body.loading.message.message-1:after {
