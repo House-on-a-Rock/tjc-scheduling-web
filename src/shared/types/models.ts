@@ -8,11 +8,8 @@ export interface HttpErrorProps {
   message: string;
 }
 
-export interface PasswordState {
-  value: string;
+export interface PasswordState extends TextFieldState<string> {
   visible: boolean;
-  valid: boolean;
-  message: string;
 }
 
 export interface EmailState {

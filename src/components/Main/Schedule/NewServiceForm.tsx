@@ -7,7 +7,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import {
   ValidatedTextField,
-  useValidatedTextInput,
+  useValidatedTextField,
   stringLengthCheck,
 } from '../../shared/ValidatedTextField';
 
@@ -37,7 +37,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
     setServiceName,
     setServiceNameError,
     resetServiceNameError,
-  ] = useValidatedTextInput(
+  ] = useValidatedTextField(
     '',
     'Title must be not be blank and be under 32 characters long',
   );
@@ -46,7 +46,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
     setDayOfWeek,
     setDayWeekError,
     resetDayWeekError,
-  ] = useValidatedTextInput(-1, 'Must select a day of the week');
+  ] = useValidatedTextField(-1, 'Must select a day of the week');
 
   const classes = useStyles();
   const serviceOrder = order + 1;

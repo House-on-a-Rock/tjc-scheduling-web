@@ -11,7 +11,7 @@ interface IValidatedTextFieldProps<T> {
 }
 
 //use this hook to handle error and state
-export function useValidatedTextInput<T>(initialState: T, message: string) {
+export function useValidatedTextField<T>(initialState: T, message: string) {
   const [inputState, setInputState] = useState<TextFieldState<T>>(
     createTextFieldState(initialState),
   );

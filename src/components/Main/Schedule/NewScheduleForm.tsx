@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   ValidatedTextField,
-  useValidatedTextInput,
+  useValidatedTextField,
   stringLengthCheck,
 } from '../../shared/ValidatedTextField';
 import { TextFieldState } from '../../../shared/types/models';
@@ -32,19 +32,19 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
   const classes = useStyles();
 
-  const [title, setTitle, setTitleError, resetTitleError] = useValidatedTextInput(
+  const [title, setTitle, setTitleError, resetTitleError] = useValidatedTextField(
     '',
     'Title must not be blank and be under 32 characters long',
   );
-  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedTextInput(
+  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedTextField(
     toDateString(new Date()),
     'Invalid date range',
   );
-  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedTextInput(
+  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedTextField(
     toDateString(new Date(tomorrow)),
     'Invalid date range',
   );
-  const [team, setTeam, setTeamError, resetTeamError] = useValidatedTextInput(
+  const [team, setTeam, setTeamError, resetTeamError] = useValidatedTextField(
     0,
     'Please assign a team to this schedule',
   );
@@ -81,7 +81,6 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
         <div className={classes.tooltipContainer}>
           <ValidatedTextField
             className={classes.nameInput}
-            name="Schedule Title"
             label="Schedule Title"
             input={title}
             handleChange={setTitle}
