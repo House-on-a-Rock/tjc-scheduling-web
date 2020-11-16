@@ -33,33 +33,6 @@ export const Home = () => {
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
 
-  return (
-    <>
-      <button
-        onClick={() => {
-          localStorage.removeItem('access_token');
-          dispatch(logout());
-        }}
-        className={classes.logoutButton}
-      >
-        Log Out
-      </button>
-      <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
-        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
-      </Dialog>
-      {data && (
-        <div>
-          <ScheduleTabs
-            tabIdx={tabIdx}
-            onTabClick={onTabClick}
-            titles={data.map((schedule: any) => schedule.title)}
-          />
-          <ScheduleContainer scheduleId={data[tabIdx].id} />
-        </div>
-      )}
-    </>
-  );
-
   function onTabClick(e: React.ChangeEvent, value: number) {
     if (value <= data.length - 1) {
       //if not the last tab, display that tab
@@ -89,6 +62,33 @@ export const Home = () => {
     });
     //display error messages if needed
   }
+
+  return (
+    <>
+      <button
+        onClick={() => {
+          localStorage.removeItem('access_token');
+          dispatch(logout());
+        }}
+        className={classes.logoutButton}
+      >
+        Log Out
+      </button>
+      <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
+        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
+      </Dialog>
+      {data && (
+        <div>
+          <ScheduleTabs
+            tabIdx={tabIdx}
+            onTabClick={onTabClick}
+            titles={data.map((schedule: any) => schedule.title)}
+          />
+          <ScheduleContainer scheduleId={data[tabIdx].id} />
+        </div>
+      )}
+    </>
+  );
 };
 
 const useStyles = makeStyles((theme: Theme) =>
