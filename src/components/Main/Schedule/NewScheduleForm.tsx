@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import {
   ValidatedTextField,
-  createTextFieldState,
-  constructError,
   useValidatedTextInput,
 } from '../../shared/ValidatedTextField';
 import { TextFieldState } from '../../../shared/types/models';
@@ -31,12 +29,6 @@ interface NewScheduleFormProps {
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
-
-  // const [endDate, setEndDate] = useState<TextFieldState<string>>(
-  //   createTextFieldState(toDateString(new Date(tomorrow))),
-  // );
-
-  const [team, setTeam] = useState<TextFieldState<number>>(createTextFieldState(0));
   const classes = useStyles();
 
   const [title, setTitle, setTitleError, resetTitleError] = useValidatedTextInput(
@@ -51,6 +43,10 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     toDateString(new Date(tomorrow)),
     'Invalid date range',
   );
+  const [team, setTeam, setTeamError, resetTeamError] = useValidatedTextInput(
+    0,
+    'Please assign a team to this schedule',
+  );
 
   //needed to format date so that the date picker can display it properly
   function toDateString(date: Date): string {
@@ -61,8 +57,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     resetTitleError();
     resetStartError();
     resetEndError();
-
-    setTeam({ ...team, valid: true, message: '' });
+    resetTeamError();
 
     if (
       title.value.length > 0 &&
@@ -75,12 +70,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     setTitleError(title.value.length === 0 || title.value.length >= 32);
     setStartError(endDate.value < startDate.value);
     setEndError(endDate.value < startDate.value);
-    constructError(
-      team.value === 0,
-      'Please assign a team to this schedule',
-      team,
-      setTeam,
-    );
+    setTeamError(team.value === 0);
   }
 
   return (

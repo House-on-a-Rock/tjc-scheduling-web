@@ -10,9 +10,9 @@ interface IValidatedTextFieldProps<T> {
   [x: string]: any;
 }
 
-//use this hook
-export function useValidatedTextInput(initialState: string, message: string) {
-  const [inputState, setInputState] = useState<TextFieldState<string>>(
+//use this hook to handle error and state
+export function useValidatedTextInput<T>(initialState: T, message: string) {
+  const [inputState, setInputState] = useState<TextFieldState<T>>(
     createTextFieldState(initialState),
   );
 
@@ -31,25 +31,11 @@ export function useValidatedTextInput(initialState: string, message: string) {
   return [inputState, setInputState, setInputStateError, resetInputState] as const;
 }
 
-export const createTextFieldState: <T>(arg: T) => TextFieldState<T> = (value) => ({
+const createTextFieldState: <T>(arg: T) => TextFieldState<T> = (value) => ({
   value: value,
   message: '',
   valid: true,
 });
-
-export const constructError: <T>(
-  condition: boolean,
-  messsage: string,
-  state: TextFieldState<T>,
-  setStateCallback: React.Dispatch<React.SetStateAction<TextFieldState<T>>>,
-) => void = (condition, message, state, setStateCallback) => {
-  if (condition)
-    setStateCallback({
-      ...state,
-      valid: false,
-      message: message,
-    });
-};
 
 export const ValidatedTextField: (
   arg: IValidatedTextFieldProps<string>, //couldn't get this to work with type <T>

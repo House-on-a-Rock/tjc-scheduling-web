@@ -7,8 +7,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import InputLabel from '@material-ui/core/InputLabel';
 import {
   ValidatedTextField,
-  createTextFieldState,
-  constructError,
+  useValidatedTextInput,
 } from '../../shared/ValidatedTextField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -32,19 +31,28 @@ const daysOfWeek = [
 ];
 
 export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps) => {
-  const [serviceName, setServiceName] = useState<TextFieldState<string>>(
-    createTextFieldState(''),
+  const [
+    serviceName,
+    setServiceName,
+    setServiceNameError,
+    resetServiceNameError,
+  ] = useValidatedTextInput(
+    '',
+    'Title must be not be blank and be under 32 characters long',
   );
-  const [dayOfWeek, setDayOfWeek] = useState<TextFieldState<number>>(
-    createTextFieldState(-1),
-  );
+  const [
+    dayOfWeek,
+    setDayOfWeek,
+    setDayWeekError,
+    resetDayWeekError,
+  ] = useValidatedTextInput(-1, 'Must select a day of the week');
 
   const classes = useStyles();
   const serviceOrder = order + 1;
 
   function onSubmitForm() {
-    setServiceName({ ...serviceName, valid: true, message: '' });
-    setDayOfWeek({ ...dayOfWeek, valid: true, message: '' });
+    resetServiceNameError();
+    resetDayWeekError();
 
     if (
       serviceName.value.length > 0 &&
@@ -52,19 +60,8 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
       dayOfWeek.value >= 0
     )
       onSubmit(serviceName.value, serviceOrder, dayOfWeek.value);
-
-    constructError(
-      serviceName.value.length === 0 || serviceName.value.length >= 32,
-      'Title must be not be blank and be under 32 characters long',
-      serviceName,
-      setServiceName,
-    );
-    constructError(
-      dayOfWeek.value < 0,
-      'Must select a day of the week',
-      dayOfWeek,
-      setDayOfWeek,
-    );
+    setServiceNameError(serviceName.value.length === 0 || serviceName.value.length >= 32);
+    setDayWeekError(dayOfWeek.value < 0);
   }
 
   return (
