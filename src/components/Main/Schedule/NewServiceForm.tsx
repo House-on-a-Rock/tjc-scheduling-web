@@ -8,6 +8,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {
   ValidatedTextField,
   useValidatedTextInput,
+  stringLengthCheck,
 } from '../../shared/ValidatedTextField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -60,7 +61,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
       dayOfWeek.value >= 0
     )
       onSubmit(serviceName.value, serviceOrder, dayOfWeek.value);
-    setServiceNameError(serviceName.value.length === 0 || serviceName.value.length >= 32);
+    setServiceNameError(stringLengthCheck(serviceName.value));
     setDayWeekError(dayOfWeek.value < 0);
   }
 

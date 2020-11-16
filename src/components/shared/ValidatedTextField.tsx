@@ -27,9 +27,13 @@ export function useValidatedTextInput<T>(initialState: T, message: string) {
   const resetInputState = () =>
     setInputState({ ...inputState, valid: true, message: '' });
 
-  //not really sure why i need the 'as const' but i need it to work
+  //stupid typescript https://github.com/microsoft/TypeScript/issues/35423
   return [inputState, setInputState, setInputStateError, resetInputState] as const;
 }
+
+//commonly used error checks
+export const stringLengthCheck: (arg: string) => boolean = (title: string) =>
+  title.length === 0 || title.length >= 32;
 
 const createTextFieldState: <T>(arg: T) => TextFieldState<T> = (value) => ({
   value: value,

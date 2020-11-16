@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   ValidatedTextField,
   useValidatedTextInput,
+  stringLengthCheck,
 } from '../../shared/ValidatedTextField';
 import { TextFieldState } from '../../../shared/types/models';
 import { Select } from '@material-ui/core';
@@ -67,7 +68,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     )
       onSubmit(title.value, startDate.value, endDate.value, 'weekly', team.value);
 
-    setTitleError(title.value.length === 0 || title.value.length >= 32);
+    setTitleError(stringLengthCheck(title.value));
     setStartError(endDate.value < startDate.value);
     setEndError(endDate.value < startDate.value);
     setTeamError(team.value === 0);
