@@ -19,7 +19,7 @@ import { Tooltip } from '../../shared/Tooltip';
 
 interface NewScheduleFormProps {
   onSubmit: (
-    scheduleTitle: string,
+    title: string,
     startDate: string,
     endDate: string,
     view: string,
@@ -29,19 +29,16 @@ interface NewScheduleFormProps {
 }
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
-  const today = new Date();
-  const tomorrow = new Date(today.setDate(today.getDate() + 1));
-  const [scheduleTitle, setScheduleTitle] = useState<TextFieldState>(
-    createTextFieldState(''),
-  );
-  const [startDate, setStartDate] = useState<TextFieldState>(
+  const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
+  const [title, setTitle] = useState<TextFieldState<string>>(createTextFieldState(''));
+  const [startDate, setStartDate] = useState<TextFieldState<string>>(
     createTextFieldState(toDateString(new Date())),
   );
-  const [endDate, setEndDate] = useState<TextFieldState>(
+  const [endDate, setEndDate] = useState<TextFieldState<string>>(
     createTextFieldState(toDateString(new Date(tomorrow))),
   );
-  const view = 'weekly';
-  const [team, setTeam] = useState<TextFieldState>(createTextFieldState('0'));
+
+  const [team, setTeam] = useState<TextFieldState<number>>(createTextFieldState(0));
   const classes = useStyles();
 
   //needed to format date so that the date picker can display it properly
@@ -50,24 +47,24 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   }
 
   function onSubmitForm() {
-    setScheduleTitle({ ...scheduleTitle, valid: true, message: '' });
+    setTitle({ ...title, valid: true, message: '' });
     setStartDate({ ...startDate, valid: true, message: '' });
     setEndDate({ ...endDate, valid: true, message: '' });
     setTeam({ ...team, valid: true, message: '' });
-    let teamInt = parseInt(team.value);
+
     if (
-      scheduleTitle.value.length > 0 &&
-      scheduleTitle.value.length < 32 &&
+      title.value.length > 0 &&
+      title.value.length < 32 &&
       endDate.value > startDate.value &&
-      teamInt > 0
+      team.value > 0
     )
-      onSubmit(scheduleTitle.value, startDate.value, endDate.value, view, teamInt);
+      onSubmit(title.value, startDate.value, endDate.value, 'weekly', team.value);
 
     constructError(
-      scheduleTitle.value.length === 0 || scheduleTitle.value.length >= 32,
+      title.value.length === 0 || title.value.length >= 32,
       'Title must not be blank and be under 32 characters long',
-      scheduleTitle,
-      setScheduleTitle,
+      title,
+      setTitle,
     );
     constructError(
       endDate.value < startDate.value,
@@ -81,7 +78,12 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
       startDate,
       setStartDate,
     );
-    constructError(teamInt === 0, 'Please assign a team to this schedule', team, setTeam);
+    constructError(
+      team.value === 0,
+      'Please assign a team to this schedule',
+      team,
+      setTeam,
+    );
   }
 
   return (
@@ -93,8 +95,8 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
             className={classes.nameInput}
             name="Schedule Title"
             label="Schedule Title"
-            input={scheduleTitle}
-            handleChange={setScheduleTitle}
+            input={title}
+            handleChange={setTitle}
             autoFocus
           />
           <Tooltip
@@ -136,7 +138,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
             value={team.value}
             required={true}
             variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
+            onChange={(e: React.ChangeEvent<{ name: string; value: number }>) =>
               setTeam({ ...team, value: e.target.value })
             }
           >

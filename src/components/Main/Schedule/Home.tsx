@@ -31,7 +31,7 @@ export const Home = () => {
     onSuccess: () => cache.invalidateQueries('scheduleTabs'),
   });
   const [tabIdx, setTabIdx] = useState(0);
-  const [isAddScheduleVisible, setIsAddScheduleVisible] = useState<boolean>(false);
+  const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
 
   return (
     <>
@@ -44,7 +44,7 @@ export const Home = () => {
       >
         Log Out
       </button>
-      <Dialog open={isAddScheduleVisible} onClose={closeDialogHandler}>
+      <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
         <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
       </Dialog>
       {data && (
@@ -64,11 +64,11 @@ export const Home = () => {
     if (value <= data.length - 1) {
       //if not the last tab, display that tab
       setTabIdx(value);
-    } else setIsAddScheduleVisible(true); //if last tab, open dialog to make new schedule
+    } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 
   function closeDialogHandler() {
-    setIsAddScheduleVisible(false);
+    setIsNewScheduleVisible(false);
   }
 
   async function onNewScheduleSubmit(
@@ -78,7 +78,7 @@ export const Home = () => {
     view: string,
     team: number,
   ) {
-    setIsAddScheduleVisible(false);
+    setIsNewScheduleVisible(false);
     const response = await mutateAddSchedule({
       scheduleTitle,
       startDate,

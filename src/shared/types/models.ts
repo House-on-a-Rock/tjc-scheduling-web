@@ -150,8 +150,8 @@ export interface AddServiceProps {
   scheduleId: number;
 }
 
-export interface TextFieldState {
+export interface TextFieldState<T> {
   valid: boolean;
   message: string;
-  value: string;
+  value: T;
 }

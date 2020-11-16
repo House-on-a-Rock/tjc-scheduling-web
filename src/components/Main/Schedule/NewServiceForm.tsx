@@ -32,10 +32,12 @@ const daysOfWeek = [
 ];
 
 export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps) => {
-  const [serviceName, setServiceName] = useState<TextFieldState>(
+  const [serviceName, setServiceName] = useState<TextFieldState<string>>(
     createTextFieldState(''),
   );
-  const [dayOfWeek, setDayOfWeek] = useState<TextFieldState>(createTextFieldState('-1'));
+  const [dayOfWeek, setDayOfWeek] = useState<TextFieldState<number>>(
+    createTextFieldState(-1),
+  );
 
   const classes = useStyles();
   const serviceOrder = order + 1;
@@ -44,10 +46,12 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
     setServiceName({ ...serviceName, valid: true, message: '' });
     setDayOfWeek({ ...dayOfWeek, valid: true, message: '' });
 
-    const dayInt = parseInt(dayOfWeek.value);
-
-    if (serviceName.value.length > 0 && serviceName.value.length < 32 && dayInt >= 0)
-      onSubmit(serviceName.value, serviceOrder, dayInt);
+    if (
+      serviceName.value.length > 0 &&
+      serviceName.value.length < 32 &&
+      dayOfWeek.value >= 0
+    )
+      onSubmit(serviceName.value, serviceOrder, dayOfWeek.value);
 
     constructError(
       serviceName.value.length === 0 || serviceName.value.length >= 32,
@@ -55,7 +59,12 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
       serviceName,
       setServiceName,
     );
-    constructError(dayInt < 0, 'Must select a day of the week', dayOfWeek, setDayOfWeek);
+    constructError(
+      dayOfWeek.value < 0,
+      'Must select a day of the week',
+      dayOfWeek,
+      setDayOfWeek,
+    );
   }
 
   return (
@@ -77,7 +86,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
             required
             value={dayOfWeek.value}
             variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
+            onChange={(e: React.ChangeEvent<{ name: string; value: number }>) =>
               setDayOfWeek({ ...dayOfWeek, value: e.target.value })
             }
           >
