@@ -3,6 +3,7 @@ import {
   ValidatedTextField,
   createTextFieldState,
   constructError,
+  useValidatedTextInput,
 } from '../../shared/ValidatedTextField';
 import { TextFieldState } from '../../../shared/types/models';
 import { Select } from '@material-ui/core';
@@ -30,16 +31,26 @@ interface NewScheduleFormProps {
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
-  const [title, setTitle] = useState<TextFieldState<string>>(createTextFieldState(''));
-  const [startDate, setStartDate] = useState<TextFieldState<string>>(
-    createTextFieldState(toDateString(new Date())),
-  );
-  const [endDate, setEndDate] = useState<TextFieldState<string>>(
-    createTextFieldState(toDateString(new Date(tomorrow))),
-  );
+
+  // const [endDate, setEndDate] = useState<TextFieldState<string>>(
+  //   createTextFieldState(toDateString(new Date(tomorrow))),
+  // );
 
   const [team, setTeam] = useState<TextFieldState<number>>(createTextFieldState(0));
   const classes = useStyles();
+
+  const [title, setTitle, setTitleError, resetTitleError] = useValidatedTextInput(
+    '',
+    'Title must not be blank and be under 32 characters long',
+  );
+  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedTextInput(
+    toDateString(new Date()),
+    'Invalid date range',
+  );
+  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedTextInput(
+    toDateString(new Date(tomorrow)),
+    'Invalid date range',
+  );
 
   //needed to format date so that the date picker can display it properly
   function toDateString(date: Date): string {
@@ -47,9 +58,10 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   }
 
   function onSubmitForm() {
-    setTitle({ ...title, valid: true, message: '' });
-    setStartDate({ ...startDate, valid: true, message: '' });
-    setEndDate({ ...endDate, valid: true, message: '' });
+    resetTitleError();
+    resetStartError();
+    resetEndError();
+
     setTeam({ ...team, valid: true, message: '' });
 
     if (
@@ -60,24 +72,9 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     )
       onSubmit(title.value, startDate.value, endDate.value, 'weekly', team.value);
 
-    constructError(
-      title.value.length === 0 || title.value.length >= 32,
-      'Title must not be blank and be under 32 characters long',
-      title,
-      setTitle,
-    );
-    constructError(
-      endDate.value < startDate.value,
-      'Invalid date range',
-      endDate,
-      setEndDate,
-    );
-    constructError(
-      endDate.value < startDate.value,
-      'Invalid date range',
-      startDate,
-      setStartDate,
-    );
+    setTitleError(title.value.length === 0 || title.value.length >= 32);
+    setStartError(endDate.value < startDate.value);
+    setEndError(endDate.value < startDate.value);
     constructError(
       team.value === 0,
       'Please assign a team to this schedule',

@@ -10,13 +10,25 @@ interface IValidatedTextFieldProps<T> {
   [x: string]: any;
 }
 
-//wip hook
-export function useValidatedTextInput(
-  initialState: TextFieldState<string>,
-  condition: boolean,
-  msg: string,
-) {
-  const [inputState, setInputState] = useState(createTextFieldState(initialState));
+//use this hook
+export function useValidatedTextInput(initialState: string, message: string) {
+  const [inputState, setInputState] = useState<TextFieldState<string>>(
+    createTextFieldState(initialState),
+  );
+
+  const setInputStateError = (condition: boolean) => {
+    if (condition)
+      setInputState({
+        ...inputState,
+        valid: false,
+        message: message,
+      });
+  };
+  const resetInputState = () =>
+    setInputState({ ...inputState, valid: true, message: '' });
+
+  //not really sure why i need the 'as const' but i need it to work
+  return [inputState, setInputState, setInputStateError, resetInputState] as const;
 }
 
 export const createTextFieldState: <T>(arg: T) => TextFieldState<T> = (value) => ({
