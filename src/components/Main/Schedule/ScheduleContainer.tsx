@@ -41,7 +41,7 @@ export const ScheduleContainer = React.memo(
     return (
       <div
         className={classes.schedulesContainer}
-        style={{ display: !isViewed ? 'none' : 'block' }}
+        style={{ display: isViewed ? 'block' : 'none' }}
       >
         <button onClick={onAddServiceClick}>
           <AddIcon height={50} width={50} /> Add New Service
