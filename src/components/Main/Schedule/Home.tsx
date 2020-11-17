@@ -32,12 +32,15 @@ export const Home = () => {
   });
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
+  const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
   const [role, setRole] = useState({});
 
   function onTabClick(e: React.ChangeEvent, value: number) {
+    //if not the last tab, open that tab
     if (value <= data.length - 1) {
-      //if not the last tab, display that tab
       setTabIdx(value);
+      const isOpened = openedTabs.indexOf(value);
+      if (isOpened < 0) setOpenedTabs([...openedTabs, value]);
     } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 
@@ -45,6 +48,7 @@ export const Home = () => {
     setIsNewScheduleVisible(false);
   }
 
+  // not too sure how setRole is being used/passed through
   React.useEffect(() => {
     // setDisplayedSchedule(data[tabIdx]?.services);
     // setRole(data[tabIdx]?.role);
@@ -90,7 +94,13 @@ export const Home = () => {
             onTabClick={onTabClick}
             titles={data.map((schedule: any) => schedule.title)}
           />
-          <ScheduleContainer scheduleId={data[tabIdx].id} />
+          {openedTabs.map((tab) => (
+            <ScheduleContainer
+              scheduleId={data[tab].id}
+              isViewed={tab === tabIdx}
+              key={tab.toString()}
+            />
+          ))}
         </div>
       )}
     </>
