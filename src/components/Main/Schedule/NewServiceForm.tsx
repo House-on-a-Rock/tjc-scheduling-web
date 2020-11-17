@@ -67,6 +67,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
           autoFocus
         />
         <ValidatedSelect
+          className={classes.selectInput}
           input={dayOfWeek}
           onChange={setDayOfWeek}
           toolTip={{ id: 'Day of Week', text: 'Select day' }}

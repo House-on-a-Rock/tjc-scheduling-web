@@ -52,7 +52,7 @@ export const ScheduleContainer = React.memo(({ scheduleId }: ScheduleContainerPr
       )}
       {data &&
         data.services.map((service: any, idx: any) => (
-          <Scheduler service={service} key={idx} />
+          <Scheduler role={1} service={service} key={idx} />
         ))}
     </div>
   );

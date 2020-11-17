@@ -115,6 +115,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
           />
         </div>
         <ValidatedSelect
+          className={classes.selectContainer}
           input={team}
           onChange={setTeam}
           toolTip={{ id: 'team', text: 'Select someone' }}
