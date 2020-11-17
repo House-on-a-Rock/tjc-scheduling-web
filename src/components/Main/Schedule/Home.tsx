@@ -32,6 +32,7 @@ export const Home = () => {
   });
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
+  const [role, setRole] = useState({});
 
   function onTabClick(e: React.ChangeEvent, value: number) {
     if (value <= data.length - 1) {
@@ -43,6 +44,11 @@ export const Home = () => {
   function closeDialogHandler() {
     setIsNewScheduleVisible(false);
   }
+
+  React.useEffect(() => {
+    // setDisplayedSchedule(data[tabIdx]?.services);
+    // setRole(data[tabIdx]?.role);
+  }, [data, tabIdx]);
 
   async function onNewScheduleSubmit(
     scheduleTitle: string,

@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from './Table';
-import {
-  MappedScheduleInterface,
-  SchedulerProps,
-  WeeklyAssignmentInterface,
-} from '../../../shared/types';
+import { SchedulerProps, WeeklyAssignmentInterface } from '../../../shared/types';
+import { extractRoleIds } from '../../../shared/utilities';
 
 //receives one service and creates a table for it
-export const Scheduler = React.memo(({ service }: SchedulerProps) => {
+export const Scheduler = React.memo(({ service, role }: SchedulerProps) => {
   const { name, data, columns } = service;
   const [scheduleData, setScheduleData] = useState(data);
+
+  const accessLevel = extractRoleIds(localStorage.getItem('access_token'));
 
   useEffect(() => {
     setScheduleData(data);
@@ -21,13 +20,13 @@ export const Scheduler = React.memo(({ service }: SchedulerProps) => {
         index === rowIndex ? { ...old[rowIndex], [columnId]: value } : row,
       ),
     );
-
   return (
     <Table
       columns={columns}
       data={scheduleData}
       updateMyData={updateMyData}
       title={name}
+      access={accessLevel.includes(role.id) || accessLevel.includes(0) ? 'write' : 'read'}
     />
   );
 }, propsAreEqual);

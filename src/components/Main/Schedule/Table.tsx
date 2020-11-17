@@ -2,7 +2,7 @@ import React from 'react';
 import { useTable } from 'react-table';
 
 // Components
-import { DataCell } from './TableCell';
+import { UpdatableCell, DataCell } from './TableCell';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -22,17 +22,24 @@ import {
 } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
-// import { horizontalScrollIndicatorShadow } from '../../../shared/styles/scroll-indicator-shadow';
 
-export const Table = ({ columns, data, updateMyData, title }: TableProps) => {
+export const Table = ({ columns, data, updateMyData, title, access }: TableProps) => {
   const classes = useStyles();
+  const tableConfig =
+    access === 'write'
+      ? {
+          columns,
+          data,
+          defaultColumn: { Cell: UpdatableCell },
+          updateMyData,
+        }
+      : {
+          columns: columns,
+          data: data,
+          defaultColumn: { Cell: DataCell },
+        };
 
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-    columns,
-    data,
-    defaultColumn: { Cell: DataCell },
-    updateMyData,
-  });
+  const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
 
   return (
     <>
@@ -41,6 +48,7 @@ export const Table = ({ columns, data, updateMyData, title }: TableProps) => {
           <span className={classes.titleText}>{title}</span>
         </h3>
       )}
+      {access}
       <MaUTable {...getTableProps()} className={classes.table}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
