@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Select } from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { Tooltip } from './Tooltip';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import { ValidatedFieldState } from '../../shared/types/models';
 
 interface IValidatedSelectProps {
+  className?: string;
   input: ValidatedFieldState<number>;
   onChange: (arg: ValidatedFieldState<number>) => void;
   toolTip: { id: string; text: string };
@@ -18,18 +17,18 @@ interface IValidatedSelectProps {
 }
 
 export const ValidatedSelect = ({
+  className,
   input,
   onChange,
   toolTip,
   children,
   ...restProps
 }: IValidatedSelectProps) => {
-  const classes = useStyles();
   return (
-    <FormControl className={classes.selectContainer} error={!input.valid}>
+    <FormControl className={className} error={!input.valid}>
       <InputLabel>Team</InputLabel>
       <Select
-        className={classes.selectInput}
+        className={className}
         value={input.value}
         required={true}
         variant="outlined"
@@ -45,14 +44,3 @@ export const ValidatedSelect = ({
     </FormControl>
   );
 };
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    selectContainer: {
-      width: 400,
-    },
-    selectInput: {
-      width: 300,
-    },
-  }),
-);

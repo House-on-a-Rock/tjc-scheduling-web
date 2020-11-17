@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ValidatedTextField,
-  useValidatedTextField,
+  // useValidatedTextField,
   stringLengthCheck,
 } from '../../shared/ValidatedTextField';
 import { ValidatedSelect } from '../../shared/ValidatedSelect';
@@ -29,15 +29,15 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
   const classes = useStyles();
 
-  const [title, setTitle, setTitleError, resetTitleError] = useValidatedTextField(
+  const [title, setTitle, setTitleError, resetTitleError] = useValidatedField(
     '',
     'Title must not be blank and be under 32 characters long',
   );
-  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedTextField(
+  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedField(
     toDateString(new Date()),
     'Invalid date range',
   );
-  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedTextField(
+  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedField(
     toDateString(new Date(tomorrow)),
     'Invalid date range',
   );

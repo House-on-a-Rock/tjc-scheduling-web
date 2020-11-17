@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
-import { Tooltip } from '../../shared/Tooltip';
-import { Select } from '@material-ui/core';
+import React from 'react';
+
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import {
-  ValidatedTextField,
-  useValidatedTextField,
-  stringLengthCheck,
-} from '../../shared/ValidatedTextField';
+
+import { ValidatedTextField, stringLengthCheck } from '../../shared/ValidatedTextField';
+import { ValidatedSelect } from '../../shared/ValidatedSelect';
+import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { TextFieldState } from '../../../shared/types';
 
 interface NewServiceFormProps {
   order?: number;
@@ -37,16 +31,11 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
     setServiceName,
     setServiceNameError,
     resetServiceNameError,
-  ] = useValidatedTextField(
-    '',
-    'Title must be not be blank and be under 32 characters long',
+  ] = useValidatedField('', 'Title must be not be blank and be under 32 characters long');
+  const [dayOfWeek, setDayOfWeek, setDayWeekError, resetDayWeekError] = useValidatedField(
+    -1,
+    'Must select a day of the week',
   );
-  const [
-    dayOfWeek,
-    setDayOfWeek,
-    setDayWeekError,
-    resetDayWeekError,
-  ] = useValidatedTextField(-1, 'Must select a day of the week');
 
   const classes = useStyles();
   const serviceOrder = order + 1;
@@ -77,32 +66,20 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
           handleChange={setServiceName}
           autoFocus
         />
-        <FormControl>
-          <InputLabel>Day of the Week</InputLabel>
-          <Select
-            className={classes.selectInput}
-            required
-            value={dayOfWeek.value}
-            variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: number }>) =>
-              setDayOfWeek({ ...dayOfWeek, value: e.target.value })
-            }
-          >
-            <MenuItem value={-1}>
-              Select which day of the week this schedule is for
+        <ValidatedSelect
+          input={dayOfWeek}
+          onChange={setDayOfWeek}
+          toolTip={{ id: 'Day of Week', text: 'Select day' }}
+        >
+          <MenuItem value={-1}>
+            Select which day of the week this schedule is for
+          </MenuItem>
+          {daysOfWeek.map((day, index) => (
+            <MenuItem key={index.toString()} value={index}>
+              {day}
             </MenuItem>
-            {daysOfWeek.map((day, index) => (
-              <MenuItem key={index.toString()} value={index}>
-                {day}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText style={{ color: 'red' }}>{dayOfWeek.message}</FormHelperText>
-          <Tooltip
-            id="Day of week"
-            text="Select on which day of the week this service occurs"
-          />
-        </FormControl>
+          ))}
+        </ValidatedSelect>
       </form>
       <button onClick={onSubmitForm}>Create new service</button>
       <button onClick={onClose}>Cancel</button>

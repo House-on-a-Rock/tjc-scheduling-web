@@ -21,13 +21,14 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { ValidatedTextField, useValidatedTextField } from '../shared/ValidatedTextField';
+import { ValidatedTextField } from '../shared/ValidatedTextField';
+import { useValidatedField } from '../shared/Hooks/useValidatedField';
 import { VisiblePassword } from '../shared/VisiblePassword';
 // Actions
 import { checkCredentials } from '../../store/actions';
 
 // Types
-import { HttpError, PasswordState, TextFieldState } from '../../shared/types/models';
+import { HttpError, PasswordState, ValidatedFieldState } from '../../shared/types/models';
 import { PasswordForm } from '../shared';
 import {
   setLocalStorageState,
@@ -39,7 +40,7 @@ import {
 export const Login = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const rememberedEmailState: TextFieldState<string> = {
+  const rememberedEmailState: ValidatedFieldState<string> = {
     value: getLocalStorageState('auth')?.email,
     valid: true,
     message: '',
@@ -53,7 +54,7 @@ export const Login = () => {
     getLocalStorageState('auth') ? true : false,
   );
 
-  const [email, setEmail, setEmailError, resetEmailError] = useValidatedTextField<string>(
+  const [email, setEmail, setEmailError, resetEmailError] = useValidatedField<string>(
     rememberedEmailState.value ? rememberedEmailState.value : '',
     'Please enter a valid email',
   );
@@ -62,7 +63,7 @@ export const Login = () => {
   //   setPassword,
   //   setPasswordError,
   //   resetPasswordError,
-  // ] = useValidatedTextField<string>('', 'Please enter a password');
+  // ] = useValidatedField<string>('', 'Please enter a password');
 
   const [password, setPassword] = useState<PasswordState>({
     value: '',
@@ -124,7 +125,7 @@ export const Login = () => {
             password={password}
             handlePassword={setPassword}
           />
-          {/* <ValidatedTextField<PasswordState>
+          {/* <ValidatedTextField
             label="Password"
             input={password}
             handleChange={setPassword}

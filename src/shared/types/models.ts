@@ -8,7 +8,10 @@ export interface HttpErrorProps {
   message: string;
 }
 
-export interface PasswordState extends TextFieldState<string> {
+export interface PasswordState {
+  valid: boolean;
+  message: string;
+  value: string;
   visible: boolean;
 }
 
@@ -153,8 +156,6 @@ export interface ValidatedFieldState<T> {
   value: T;
 }
 
-export interface TextFieldState<T> {
-  valid: boolean;
-  message: string;
-  value: T;
-}
+// export interface PasswordState extends ValidatedFieldState<string>  {
+//   visible: boolean;
+// }
