@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { TextFieldState } from '../../shared/types/models';
+import { TextFieldState, ValidatedFieldState } from '../../shared/types/models';
 
 interface IValidatedTextFieldProps<T> {
   label: string;
@@ -43,7 +43,7 @@ const createTextFieldState: <T>(arg: T) => TextFieldState<T> = (value) => ({
 
 export const ValidatedTextField: (
   arg: IValidatedTextFieldProps<string>, //couldn't get this to work with type <T>
-) => JSX.Element = ({ label, input, handleChange, className, ...extraProps }) => (
+) => JSX.Element = ({ label, input, handleChange, className, ...restProps }) => (
   <TextField
     variant="outlined"
     margin="normal"
@@ -57,6 +57,6 @@ export const ValidatedTextField: (
     className={className}
     error={!input.valid}
     helperText={input.valid ? '' : input.message}
-    {...extraProps}
+    {...restProps}
   />
 );

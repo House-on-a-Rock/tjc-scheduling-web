@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ValidatedTextField,
   useValidatedTextField,
   stringLengthCheck,
 } from '../../shared/ValidatedTextField';
-import { TextFieldState } from '../../../shared/types/models';
-import { Select } from '@material-ui/core';
+import { ValidatedSelect } from '../../shared/ValidatedSelect';
+import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { Tooltip } from '../../shared/Tooltip';
 
@@ -44,7 +41,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     toDateString(new Date(tomorrow)),
     'Invalid date range',
   );
-  const [team, setTeam, setTeamError, resetTeamError] = useValidatedTextField(
+  const [team, setTeam, setTeamError, resetTeamError] = useValidatedField(
     0,
     'Please assign a team to this schedule',
   );
@@ -117,25 +114,15 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
             text="Select the begin date and end date for this schedule"
           />
         </div>
-
-        <FormControl className={classes.selectContainer} error={!team.valid}>
-          <InputLabel>Team</InputLabel>
-          <Select
-            className={classes.selectInput}
-            value={team.value}
-            required={true}
-            variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: number }>) =>
-              setTeam({ ...team, value: e.target.value })
-            }
-          >
-            <MenuItem value={0}>Assign this schedule to a team</MenuItem>
-            <MenuItem value={1}>Church Council</MenuItem>
-            <MenuItem value={2}>RE</MenuItem>
-          </Select>
-          <FormHelperText style={{ color: 'red' }}>{team.message}</FormHelperText>
-          <Tooltip id="Team" text="Select who is able to edit this schedule" />
-        </FormControl>
+        <ValidatedSelect
+          input={team}
+          onChange={setTeam}
+          toolTip={{ id: 'team', text: 'Select someone' }}
+        >
+          <MenuItem value={0}>Assign this schedule to a team</MenuItem>
+          <MenuItem value={1}>Church Council</MenuItem>
+          <MenuItem value={2}>RE</MenuItem>
+        </ValidatedSelect>
       </form>
       <button onClick={onSubmitForm}>Create a new schedule!</button>
       <button onClick={onClose}>Cancel</button>

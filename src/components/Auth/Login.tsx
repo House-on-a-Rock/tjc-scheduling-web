@@ -57,7 +57,12 @@ export const Login = () => {
     rememberedEmailState.value ? rememberedEmailState.value : '',
     'Please enter a valid email',
   );
-  // const [password, setPassword, setPasswordError, resetPasswordError] = useValidatedTextField<string>('', 'Please enter a password')
+  // const [
+  //   password,
+  //   setPassword,
+  //   setPasswordError,
+  //   resetPasswordError,
+  // ] = useValidatedTextField<string>('', 'Please enter a password');
 
   const [password, setPassword] = useState<PasswordState>({
     value: '',
@@ -119,7 +124,7 @@ export const Login = () => {
             password={password}
             handlePassword={setPassword}
           />
-          {/* <ValidatedTextField
+          {/* <ValidatedTextField<PasswordState>
             label="Password"
             input={password}
             handleChange={setPassword}

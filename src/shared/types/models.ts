@@ -147,6 +147,12 @@ export interface AddServiceProps {
   scheduleId: number;
 }
 
+export interface ValidatedFieldState<T> {
+  valid: boolean;
+  message: string;
+  value: T;
+}
+
 export interface TextFieldState<T> {
   valid: boolean;
   message: string;
