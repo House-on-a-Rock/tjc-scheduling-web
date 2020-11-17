@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTable } from 'react-table';
 
 // Components
 import { UpdatableCell, DataCell } from './TableCell';
+import { ContextMenu } from '../../shared/ContextMenu';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -24,22 +25,60 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
 export const Table = ({ columns, data, updateMyData, title, access }: TableProps) => {
+  console.log('rerender');
+  const outerRef = useRef(null);
   const classes = useStyles();
+  const [dataRows, setDataRows] = useState(data);
+  useEffect(() => {
+    setDataRows(data);
+  });
   const tableConfig =
     access === 'write'
-      ? {
-          columns,
-          data,
-          defaultColumn: { Cell: UpdatableCell },
-          updateMyData,
-        }
-      : {
-          columns: columns,
-          data: data,
-          defaultColumn: { Cell: DataCell },
-        };
+      ? React.useMemo(
+          () => ({
+            columns,
+            data: dataRows,
+            defaultColumn: { Cell: UpdatableCell },
+            updateMyData,
+          }),
+          [columns, dataRows, updateMyData],
+        )
+      : React.useMemo(
+          () => ({
+            columns: columns,
+            data: dataRows,
+            defaultColumn: { Cell: DataCell },
+          }),
+          [columns, dataRows],
+        );
 
   const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
+
+  const cleanRow = function (row: any) {
+    Object.keys(row).forEach(function (key) {
+      if (key !== 'duty')
+        row[key] = {
+          data: {
+            firstName: 'Mike',
+            lastName: 'Lebowski',
+            userId: 5,
+            role: { id: 2, name: 'Interpreter' },
+          },
+        };
+      else row[key] = { data: { display: '' } };
+    });
+    return row;
+  };
+  console.log('dataRows', dataRows);
+
+  const insertRow = () => {
+    const rowIndex = 0;
+    const newRow = { ...dataRows[rowIndex] };
+    cleanRow(newRow);
+    console.log('newRow', newRow);
+    const newData = dataRows.splice(rowIndex, 0, newRow);
+    setDataRows(newData);
+  };
 
   return (
     <>
@@ -49,7 +88,9 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
         </h3>
       )}
       {access}
-      <MaUTable {...getTableProps()} className={classes.table}>
+      <button onClick={insertRow}>Insert row below 4th row</button>
+      <ContextMenu outerRef={outerRef} />
+      <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>

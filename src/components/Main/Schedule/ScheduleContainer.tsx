@@ -12,6 +12,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import { Dialog } from '@material-ui/core/';
 import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
+import { ContextMenu } from '../../shared/ContextMenu';
 
 interface ScheduleContainerProps {
   scheduleId: number;
@@ -40,12 +41,13 @@ export const ScheduleContainer = React.memo(
     showLoadingSpinner(isLoading);
     return (
       <div
-        className={classes.schedulesContainer}
+        className={classes.scheduleContainer}
         style={{ display: !isViewed ? 'none' : 'block' }}
       >
         <button onClick={onAddServiceClick}>
           <AddIcon height={50} width={50} /> Add New Service
         </button>
+
         {data && (
           <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
             <NewServiceForm
@@ -85,7 +87,7 @@ export const ScheduleContainer = React.memo(
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    schedulesContainer: {
+    scheduleContainer: {
       position: 'absolute',
       paddingTop: 10,
     },
