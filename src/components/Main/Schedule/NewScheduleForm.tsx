@@ -12,20 +12,23 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import { Tooltip } from '../../shared/Tooltip';
 
+import { addSchedule } from '../../../store/apis/schedules';
+import { useQuery, useMutation, useQueryCache } from 'react-query';
 // TODO hook up teams with data from DB
 
 interface NewScheduleFormProps {
-  onSubmit: (
-    title: string,
-    startDate: string,
-    endDate: string,
-    view: string,
-    team: number,
-  ) => void;
+  // error: any;
+  // onSubmit: (
+  //   title: string,
+  //   startDate: string,
+  //   endDate: string,
+  //   view: string,
+  //   team: number,
+  // ) => void;
   onClose: () => void;
 }
 
-export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
+export const NewScheduleForm = ({ onClose }: NewScheduleFormProps) => {
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
   const classes = useStyles();
 
@@ -51,6 +54,35 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 
+  const cache = useQueryCache();
+  const [
+    mutateAddSchedule,
+    { status: addScheduleStatus, error: addScheduleError },
+  ] = useMutation(addSchedule, {
+    onSuccess: () => cache.invalidateQueries('scheduleTabs'),
+  });
+
+  async function onNewScheduleSubmit(
+    scheduleTitle: string,
+    startDate: string,
+    endDate: string,
+    view: string,
+    team: number,
+  ) {
+    const response = await mutateAddSchedule({
+      scheduleTitle,
+      startDate,
+      endDate,
+      view,
+      team,
+      churchId: 2,
+    });
+    // console.log('response', response);
+    // console.log('addScheduleError', addScheduleError);
+    // setIsNewScheduleVisible(false);
+    // setAlert({ message: response.data, status: 'success' }); //response.statusText = "OK", response.status == 200
+  }
+
   function onSubmitForm() {
     resetTitleError();
     resetStartError();
@@ -63,7 +95,13 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
       endDate.value > startDate.value &&
       team.value > 0
     )
-      onSubmit(title.value, startDate.value, endDate.value, 'weekly', team.value);
+      onNewScheduleSubmit(
+        title.value,
+        startDate.value,
+        endDate.value,
+        'weekly',
+        team.value,
+      );
 
     setTitleError(stringLengthCheck(title.value));
     setStartError(endDate.value < startDate.value);
@@ -75,6 +113,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     <div className={classes.root}>
       New Schedule Form
       <form className={classes.formStyle}>
+        {/* {error && <div> oops </div>} */}
         <div className={classes.tooltipContainer}>
           <ValidatedTextField
             className={classes.nameInput}

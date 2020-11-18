@@ -8,7 +8,7 @@ import { addSchedule } from '../../../store/apis/schedules';
 import { ScheduleTabs } from './ScheduleTabs';
 import { NewScheduleForm } from './NewScheduleForm';
 import { ScheduleContainer } from './ScheduleContainer';
-
+import { Alert } from '../../shared/Alert';
 import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
 
@@ -27,13 +27,18 @@ export const Home = () => {
     refetchOnWindowFocus: false,
     staleTime: 100000000000000,
   });
-  const [mutateAddSchedule] = useMutation(addSchedule, {
-    onSuccess: () => cache.invalidateQueries('scheduleTabs'),
-  });
+  // const [
+  //   mutateAddSchedule,
+  //   { status: addScheduleStatus, error: addScheduleError },
+  // ] = useMutation(addSchedule, {
+  //   onSuccess: () => cache.invalidateQueries('scheduleTabs'),
+  // });
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
   const [role, setRole] = useState({});
+
+  const [alert, setAlert] = useState<{ message: string; status: string }>();
 
   function onTabClick(e: React.ChangeEvent, value: number) {
     //if not the last tab, open that tab
@@ -54,24 +59,33 @@ export const Home = () => {
     // setRole(data[tabIdx]?.role);
   }, [data, tabIdx]);
 
-  async function onNewScheduleSubmit(
-    scheduleTitle: string,
-    startDate: string,
-    endDate: string,
-    view: string,
-    team: number,
-  ) {
-    setIsNewScheduleVisible(false);
-    const response = await mutateAddSchedule({
-      scheduleTitle,
-      startDate,
-      endDate,
-      view,
-      team,
-      churchId,
-    });
-    //display error messages if needed
-  }
+  // async function onNewScheduleSubmit(
+  //   scheduleTitle: string,
+  //   startDate: string,
+  //   endDate: string,
+  //   view: string,
+  //   team: number,
+  // ) {
+  //   const response = await mutateAddSchedule({
+  //     scheduleTitle,
+  //     startDate,
+  //     endDate,
+  //     view,
+  //     team,
+  //     churchId,
+  //   });
+
+  //   console.log('response', response);
+  //   console.log('addScheduleError', addScheduleError);
+  //   setIsNewScheduleVisible(false);
+  //   setAlert({ message: response.data, status: 'success' }); //response.statusText = "OK", response.status == 200
+  // }
+
+  // console.log('addScheduleError outer', addScheduleError);
+
+  const unMountAlert = () => {
+    setAlert(null);
+  };
 
   return (
     <>
@@ -85,8 +99,13 @@ export const Home = () => {
         Log Out
       </button>
       <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
-        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
+        <NewScheduleForm
+          // onSubmit={onNewScheduleSubmit}
+          onClose={closeDialogHandler}
+          // error={addScheduleError}
+        />
       </Dialog>
+      {alert && <Alert alert={alert} unMountMe={unMountAlert} />}
       {data && (
         <div>
           <ScheduleTabs

@@ -1,49 +1,50 @@
-import React from 'react';
-import Slide from '@material-ui/core/Slide';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
+import React, { useEffect } from 'react';
 
-function Transition(props: any) {
-    return <Slide direction="up" {...props} />;
+import { Alert as MuIAlert, Color } from '@material-ui/lab';
+import CheckIcon from '@material-ui/icons/Check';
+import ErrorIcon from '@material-ui/icons/Error';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+
+export interface AlertProps {
+  alert: { message: string; status: string };
+  unMountMe: () => void;
 }
 
-export default function Alert(
-    {
-        // handleClose,
-        // handleSubmit,
-        // isOpen,
-        // hasTwoButtons = false,
-        // submitButtonText,
-        // title,
-        // text,
+export const Alert = ({ alert, unMountMe }: AlertProps) => {
+  const classes = useStyles();
+  const displayTimer = 2000;
+  useEffect(() => {
+    setTimeout(unMountMe, displayTimer); //unmount after 3 seconds
+  });
+  const muiAlertProps: { icon: JSX.Element; severity: Color } =
+    alert.status === 'success'
+      ? { severity: 'success', icon: <CheckIcon fontSize="inherit" /> }
+      : { severity: 'error', icon: <ErrorIcon fontSize="inherit" /> };
+
+  return (
+    <MuIAlert
+      icon={muiAlertProps.icon}
+      severity={muiAlertProps.severity}
+      className={classes.root}
+      variant="filled"
+    >
+      {alert.message}
+    </MuIAlert>
+  );
+};
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    // would like some transition animations
+    root: {
+      position: 'fixed',
+      width: '95%',
+      height: 33,
+      top: 20,
+      left: 20,
+      right: 20,
+      zIndex: 100000, //too much?
+      padding: 2,
     },
-) {
-    const isOpen = false;
-    const title = 'Temporary Title';
-    const text = 'Temporary Title';
-    const hasTwoButtons = false;
-    const submitButtonText = 'submitButtonText';
-    return (
-        <Dialog
-            open={isOpen}
-            // transition={Transition}
-            keepMounted
-            // onClose={handleClose}
-            aria-labelledby="alert-dialog-slide-title"
-            aria-describedby="alert-dialog-slide-description"
-        >
-            <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{text}</DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                {hasTwoButtons && <Button color="primary">{'CANCEL'}</Button>}
-                <Button color="primary">{submitButtonText}</Button>
-            </DialogActions>
-        </Dialog>
-    );
-}
+  }),
+);
