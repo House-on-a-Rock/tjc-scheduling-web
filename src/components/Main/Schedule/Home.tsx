@@ -16,29 +16,41 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
+//custom hooks
+import { useAlert, useAlertProps } from '../../shared/Hooks/useAlert';
+
 export const Home = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const cache = useQueryCache();
+
+  //queries
   const { churchId, name: churchName } = useSelector((state) => state.profile);
   const { isLoading, error, data } = useQuery(['scheduleTabs', churchId], getTabData, {
     enabled: churchId,
     refetchOnWindowFocus: false,
     staleTime: 100000000000000,
   });
-  // const [
-  //   mutateAddSchedule,
-  //   { status: addScheduleStatus, error: addScheduleError },
-  // ] = useMutation(addSchedule, {
-  //   onSuccess: () => cache.invalidateQueries('scheduleTabs'),
-  // });
+
+  const [mutateAddSchedule, { error: mutateScheduleError }] = useMutation(addSchedule, {
+    onSuccess: (data) => {
+      cache.invalidateQueries('scheduleTabs');
+      closeDialogHandler(data);
+    },
+  });
+
+  //state
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
+  const [alert, setAlert, unMountAlert] = useAlert();
+
   const [role, setRole] = useState({});
 
-  const [alert, setAlert] = useState<{ message: string; status: string }>();
+  // not too sure how setRole is being used/passed through
+  React.useEffect(() => {
+    // setRole(data[tabIdx]?.role); //wat
+  }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
     //if not the last tab, open that tab
@@ -49,43 +61,28 @@ export const Home = () => {
     } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 
-  function closeDialogHandler() {
+  function closeDialogHandler(response: any) {
     setIsNewScheduleVisible(false);
+    if (response.data) setAlert({ message: response.data, status: 'success' }); //response.statusText = "OK", response.status == 200
   }
 
-  // not too sure how setRole is being used/passed through
-  React.useEffect(() => {
-    // setDisplayedSchedule(data[tabIdx]?.services);
-    // setRole(data[tabIdx]?.role);
-  }, [data, tabIdx]);
-
-  // async function onNewScheduleSubmit(
-  //   scheduleTitle: string,
-  //   startDate: string,
-  //   endDate: string,
-  //   view: string,
-  //   team: number,
-  // ) {
-  //   const response = await mutateAddSchedule({
-  //     scheduleTitle,
-  //     startDate,
-  //     endDate,
-  //     view,
-  //     team,
-  //     churchId,
-  //   });
-
-  //   console.log('response', response);
-  //   console.log('addScheduleError', addScheduleError);
-  //   setIsNewScheduleVisible(false);
-  //   setAlert({ message: response.data, status: 'success' }); //response.statusText = "OK", response.status == 200
-  // }
-
-  // console.log('addScheduleError outer', addScheduleError);
-
-  const unMountAlert = () => {
-    setAlert(null);
-  };
+  // honestly this and the useMutation stuff can go into the form, not sure where to put it
+  async function onNewScheduleSubmit(
+    scheduleTitle: string,
+    startDate: string,
+    endDate: string,
+    view: string,
+    team: number,
+  ) {
+    await mutateAddSchedule({
+      scheduleTitle,
+      startDate,
+      endDate,
+      view,
+      team,
+      churchId: 2,
+    });
+  }
 
   return (
     <>
@@ -100,12 +97,12 @@ export const Home = () => {
       </button>
       <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
         <NewScheduleForm
-          // onSubmit={onNewScheduleSubmit}
           onClose={closeDialogHandler}
-          // error={addScheduleError}
+          error={mutateScheduleError}
+          onSubmit={onNewScheduleSubmit}
         />
       </Dialog>
-      {alert && <Alert alert={alert} unMountMe={unMountAlert} />}
+      {alert && <Alert alert={alert} unMountAlert={unMountAlert} />}
       {data && (
         <div>
           <ScheduleTabs

@@ -7,14 +7,14 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 export interface AlertProps {
   alert: { message: string; status: string };
-  unMountMe: () => void;
+  unMountAlert: () => void;
 }
 
-export const Alert = ({ alert, unMountMe }: AlertProps) => {
+export const Alert = ({ alert, unMountAlert }: AlertProps) => {
   const classes = useStyles();
   const displayTimer = 2000;
   useEffect(() => {
-    setTimeout(unMountMe, displayTimer); //unmount after 3 seconds
+    setTimeout(unMountAlert, displayTimer); //unmount after 3 seconds
   });
   const muiAlertProps: { icon: JSX.Element; severity: Color } =
     alert.status === 'success'
