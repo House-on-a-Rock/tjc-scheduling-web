@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-//react query
+// react query
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { getTabData } from '../../../query/schedules';
 import { addSchedule } from '../../../store/apis/schedules';
@@ -16,7 +16,7 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
-//custom hooks
+// custom hooks
 import { useAlertProps } from '../../../shared/types/models';
 
 export const Home = () => {
@@ -24,7 +24,7 @@ export const Home = () => {
   const dispatch = useDispatch();
   const cache = useQueryCache();
 
-  //queries
+  // queries
   const { churchId, name: churchName } = useSelector((state) => state.profile);
   const { isLoading, error, data } = useQuery(['scheduleTabs', churchId], getTabData, {
     enabled: churchId,
@@ -66,7 +66,6 @@ export const Home = () => {
     if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
   }
 
-  // honestly this and the useMutation stuff can go into the form, not sure where to put it
   async function onNewScheduleSubmit(
     scheduleTitle: string,
     startDate: string,

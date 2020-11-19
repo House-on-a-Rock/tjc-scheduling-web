@@ -31,7 +31,7 @@ export const ScheduleContainer = React.memo(
       getScheduleData,
       {
         refetchOnWindowFocus: false,
-        staleTime: 100000000000000, // 1157407.4 days fyi lol
+        staleTime: 100000000000000,
       },
     );
     const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
@@ -79,7 +79,7 @@ export const ScheduleContainer = React.memo(
     }
 
     async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
-      const response = await mutateAddService({
+      await mutateAddService({
         name,
         order: order,
         dayOfWeek,

@@ -70,6 +70,7 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
   };
 
   // there's an extra render these row operations, not sure where its coming from. Probably causing a flicker where the table shrinks to zero content and then fills back up
+  // TODO figure out why theres a flicker
   const deleteRow = (rowIndex: any) => {
     const newData = dataRows.splice(rowIndex, 1);
     setDataRows(newData);

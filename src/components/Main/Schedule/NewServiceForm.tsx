@@ -15,7 +15,6 @@ interface NewServiceFormProps {
   error: any;
 }
 
-//are these used anywhere else?
 const daysOfWeek = [
   'Sunday',
   'Monday',
