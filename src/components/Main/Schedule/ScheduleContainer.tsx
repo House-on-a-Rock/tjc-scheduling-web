@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 
-//react query and data manipulation
+// react query and data manipulation
 import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { addService } from '../../../store/apis/schedules';
-//components
+// components
 import { Scheduler } from './Scheduler';
 import { NewServiceForm } from './NewServiceForm';
-//material ui and styling
+import { useAlertProps } from '../../../shared/types/models';
+// material ui and styling
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import { Dialog } from '@material-ui/core/';
 import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
-import { ContextMenu } from '../../shared/ContextMenu';
 
 interface ScheduleContainerProps {
   scheduleId: number;
   isViewed: boolean;
+  setAlert: (arg: useAlertProps) => void;
 }
 
-//makes api calls, distributes data to scheduler
+// makes api calls, distributes data to scheduler
 export const ScheduleContainer = React.memo(
-  ({ scheduleId, isViewed }: ScheduleContainerProps) => {
+  ({ scheduleId, isViewed, setAlert }: ScheduleContainerProps) => {
     const classes = useStyles();
     const cache = useQueryCache();
 
@@ -30,11 +31,14 @@ export const ScheduleContainer = React.memo(
       getScheduleData,
       {
         refetchOnWindowFocus: false,
-        staleTime: 100000000000000, //1157407.4 days fyi lol
+        staleTime: 100000000000000, // 1157407.4 days fyi lol
       },
     );
-    const [mutateAddService] = useMutation(addService, {
-      onSuccess: () => cache.invalidateQueries('scheduleData'),
+    const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
+      onSuccess: (data) => {
+        cache.invalidateQueries('scheduleData');
+        closeDialogHandler(data);
+      },
     });
     const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
 
@@ -51,6 +55,7 @@ export const ScheduleContainer = React.memo(
         {data && (
           <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
             <NewServiceForm
+              error={mutateScheduleError}
               order={data.services?.length || 0}
               onSubmit={onNewServiceSubmit}
               onClose={closeDialogHandler}
@@ -64,8 +69,9 @@ export const ScheduleContainer = React.memo(
       </div>
     );
 
-    function closeDialogHandler() {
+    function closeDialogHandler(response: any) {
       setIsAddServiceVisible(false);
+      if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
     }
 
     function onAddServiceClick() {
@@ -73,14 +79,12 @@ export const ScheduleContainer = React.memo(
     }
 
     async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
-      setIsAddServiceVisible(false);
       const response = await mutateAddService({
         name,
         order: order,
         dayOfWeek,
         scheduleId: scheduleId,
       });
-      //need an error/alert reporting system
     }
   },
 );

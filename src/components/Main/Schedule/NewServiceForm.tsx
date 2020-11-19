@@ -11,7 +11,8 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 interface NewServiceFormProps {
   order?: number;
   onSubmit: (name: string, order: number, dayOfWeek: number) => void;
-  onClose: () => void;
+  onClose: (arg: any) => void;
+  error: any;
 }
 
 //are these used anywhere else?
@@ -25,7 +26,12 @@ const daysOfWeek = [
   'Saturday',
 ];
 
-export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps) => {
+export const NewServiceForm = ({
+  order,
+  onSubmit,
+  onClose,
+  error,
+}: NewServiceFormProps) => {
   const [
     serviceName,
     setServiceName,
@@ -57,6 +63,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
   return (
     <div className={classes.root}>
       New Service Form
+      {error && <div style={{ color: 'red' }}>Service name already taken</div>}
       <form>
         <ValidatedTextField
           className={classes.formInput}

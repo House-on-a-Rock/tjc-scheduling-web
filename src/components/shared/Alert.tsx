@@ -13,9 +13,11 @@ export interface AlertProps {
 export const Alert = ({ alert, unMountAlert }: AlertProps) => {
   const classes = useStyles();
   const displayTimer = 2000;
+
   useEffect(() => {
-    setTimeout(unMountAlert, displayTimer); //unmount after 3 seconds
+    setTimeout(unMountAlert, displayTimer); //unmount after 2 seconds
   });
+  // only success has been implemented, since error is handled inside the form. But we'll pbly run into use cases for the error alert
   const muiAlertProps: { icon: JSX.Element; severity: Color } =
     alert.status === 'success'
       ? { severity: 'success', icon: <CheckIcon fontSize="inherit" /> }

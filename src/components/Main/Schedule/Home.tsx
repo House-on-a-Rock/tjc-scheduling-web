@@ -17,7 +17,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
 //custom hooks
-import { useAlert, useAlertProps } from '../../shared/Hooks/useAlert';
+import { useAlertProps } from '../../../shared/types/models';
 
 export const Home = () => {
   const classes = useStyles();
@@ -43,7 +43,7 @@ export const Home = () => {
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
-  const [alert, setAlert, unMountAlert] = useAlert();
+  const [alert, setAlert] = useState<useAlertProps>();
 
   const [role, setRole] = useState({});
 
@@ -53,7 +53,7 @@ export const Home = () => {
   }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
-    //if not the last tab, open that tab
+    // if not the last tab, open that tab
     if (value <= data.length - 1) {
       setTabIdx(value);
       const isOpened = openedTabs.indexOf(value);
@@ -63,7 +63,7 @@ export const Home = () => {
 
   function closeDialogHandler(response: any) {
     setIsNewScheduleVisible(false);
-    if (response.data) setAlert({ message: response.data, status: 'success' }); //response.statusText = "OK", response.status == 200
+    if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
   }
 
   // honestly this and the useMutation stuff can go into the form, not sure where to put it
@@ -102,7 +102,7 @@ export const Home = () => {
           onSubmit={onNewScheduleSubmit}
         />
       </Dialog>
-      {alert && <Alert alert={alert} unMountAlert={unMountAlert} />}
+      {alert && <Alert alert={alert} unMountAlert={() => setAlert(null)} />}
       {data && (
         <div>
           <ScheduleTabs
@@ -112,6 +112,7 @@ export const Home = () => {
           />
           {openedTabs.map((tab) => (
             <ScheduleContainer
+              setAlert={setAlert}
               scheduleId={data[tab].id}
               isViewed={tab === tabIdx}
               key={tab.toString()}

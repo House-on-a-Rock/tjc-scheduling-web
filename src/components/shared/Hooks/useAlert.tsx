@@ -5,11 +5,9 @@ export interface useAlertProps {
   status: string;
 }
 
+// this became unnecessary for now, but i'll leave it in case
 export const useAlert = () => {
   const [alert, setAlert] = useState<useAlertProps>();
-  const unMountAlert = () => {
-    setAlert(null);
-  };
 
-  return [alert, setAlert, unMountAlert] as const;
+  return [alert, setAlert] as const;
 };
