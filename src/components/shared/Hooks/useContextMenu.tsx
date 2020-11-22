@@ -12,8 +12,7 @@ const useContextMenu = (outerRef: any) => {
     (event) => {
       event.preventDefault();
       if (outerRef && outerRef.current.contains(event.target)) {
-        console.log('event', event);
-        setXPos(`${event.x}px`); //x and y seem to work, pageX and pageY were from example but did not handle scrolled pages
+        setXPos(`${event.x}px`); //x and y seem to work, pageX and pageY
         setYPos(`${event.y}px`);
         setCellValue(event.target.value);
         showMenu(true);
