@@ -53,6 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: 'black',
       borderStyle: 'solid',
       backgroundColor: 'white',
-    }, //would like hover and click styling, i don't remember how to do that stuff
+      '&:hover, &:focus, &:active': {
+        color: 'black',
+        background: 'blue',
+      },
+    },
   }),
 );

@@ -30,7 +30,7 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
   const [dataRows, setDataRows] = useState(data);
   useEffect(() => {
     setDataRows(data);
-  });
+  }, [data]);
   const tableConfig =
     access === 'write'
       ? React.useMemo(
