@@ -41,8 +41,8 @@ export const ScheduleContainer = React.memo(
     showLoadingSpinner(isLoading);
     return (
       <div
-        className={classes.scheduleContainer}
-        style={{ display: !isViewed ? 'none' : 'block' }}
+        className={classes.schedulesContainer}
+        style={{ display: isViewed ? 'block' : 'none' }}
       >
         <button onClick={onAddServiceClick}>
           <AddIcon height={50} width={50} /> Add New Service
