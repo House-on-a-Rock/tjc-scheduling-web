@@ -45,7 +45,7 @@ export const ScheduleContainer = React.memo(
     showLoadingSpinner(isLoading);
     return (
       <div
-        className={classes.schedulesContainer}
+        className={classes.scheduleContainer}
         style={{ display: isViewed ? 'block' : 'none' }}
       >
         <button onClick={onAddServiceClick}>
