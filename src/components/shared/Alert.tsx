@@ -13,6 +13,7 @@ export interface AlertProps {
 export const Alert = ({ alert, unMountAlert }: AlertProps) => {
   const classes = useStyles();
   const displayTimer = 2000;
+  console.log('alert', alert);
 
   useEffect(() => {
     setTimeout(unMountAlert, displayTimer); // unmount after 2 seconds
@@ -37,7 +38,7 @@ export const Alert = ({ alert, unMountAlert }: AlertProps) => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // would like some transition animations
+    // transition animations?
     root: {
       position: 'fixed',
       width: '95%',

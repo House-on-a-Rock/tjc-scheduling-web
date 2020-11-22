@@ -71,7 +71,7 @@ export const ScheduleContainer = React.memo(
 
     function closeDialogHandler(response: any) {
       setIsAddServiceVisible(false);
-      if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
+      if (response.data) setAlert({ message: response.data, status: 'success' });
     }
 
     function onAddServiceClick() {

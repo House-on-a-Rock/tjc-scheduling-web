@@ -16,7 +16,6 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
-// custom hooks
 import { useAlertProps } from '../../../shared/types/models';
 
 export const Home = () => {
@@ -45,12 +44,11 @@ export const Home = () => {
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
   const [alert, setAlert] = useState<useAlertProps>();
 
-  const [role, setRole] = useState({});
-
   // not too sure how setRole is being used/passed through
-  React.useEffect(() => {
-    // setRole(data[tabIdx]?.role); //wat
-  }, [data, tabIdx]);
+  // const [role, setRole] = useState({});
+  // React.useEffect(() => {
+  //   // setRole(data[tabIdx]?.role); //wat
+  // }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
     // if not the last tab, open that tab
@@ -79,7 +77,7 @@ export const Home = () => {
       endDate,
       view,
       team,
-      churchId: 2,
+      churchId,
     });
   }
 

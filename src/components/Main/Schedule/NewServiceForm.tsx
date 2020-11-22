@@ -62,7 +62,7 @@ export const NewServiceForm = ({
   return (
     <div className={classes.root}>
       New Service Form
-      {error && <div style={{ color: 'red' }}>Service name already taken</div>}
+      {error && <div style={{ color: 'red' }}>Service name already exists</div>}
       <form>
         <ValidatedTextField
           className={classes.formInput}
