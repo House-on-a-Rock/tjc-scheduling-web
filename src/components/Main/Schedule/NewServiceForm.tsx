@@ -36,7 +36,7 @@ export const NewServiceForm = ({
     setServiceName,
     setServiceNameError,
     resetServiceNameError,
-  ] = useValidatedField('', 'Title must be not be blank and be under 32 characters long');
+  ] = useValidatedField('', 'Must have a title that is less than 32 characters');
   const [dayOfWeek, setDayOfWeek, setDayWeekError, resetDayWeekError] = useValidatedField(
     -1,
     'Must select a day of the week',

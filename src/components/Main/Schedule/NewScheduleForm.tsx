@@ -27,7 +27,7 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
 
   const [title, setTitle, setTitleError, resetTitleError] = useValidatedField(
     '',
-    'Title must not be blank and be under 32 characters long',
+    'Must have a title that is less than 32 characters',
   );
   const [startDate, setStartDate, setStartError, resetStartError] = useValidatedField(
     toDateString(new Date()),
