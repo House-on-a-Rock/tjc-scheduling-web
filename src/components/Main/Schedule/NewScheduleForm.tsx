@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   ValidatedTextField,
-  createTextFieldState,
-  constructError,
+  // useValidatedTextField,
+  stringLengthCheck,
 } from '../../shared/ValidatedTextField';
-import { TextFieldState } from '../../../shared/types/models';
-import { Select } from '@material-ui/core';
+import { ValidatedSelect } from '../../shared/ValidatedSelect';
+import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import FormHelperText from '@material-ui/core/FormHelperText';
 
 import { Tooltip } from '../../shared/Tooltip';
 
@@ -19,7 +16,7 @@ import { Tooltip } from '../../shared/Tooltip';
 
 interface NewScheduleFormProps {
   onSubmit: (
-    scheduleTitle: string,
+    title: string,
     startDate: string,
     endDate: string,
     view: string,
@@ -29,20 +26,25 @@ interface NewScheduleFormProps {
 }
 
 export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
-  const today = new Date();
-  const tomorrow = new Date(today.setDate(today.getDate() + 1));
-  const [scheduleTitle, setScheduleTitle] = useState<TextFieldState>(
-    createTextFieldState(''),
-  );
-  const [startDate, setStartDate] = useState<TextFieldState>(
-    createTextFieldState(toDateString(new Date())),
-  );
-  const [endDate, setEndDate] = useState<TextFieldState>(
-    createTextFieldState(toDateString(new Date(tomorrow))),
-  );
-  const view = 'weekly';
-  const [team, setTeam] = useState<TextFieldState>(createTextFieldState('0'));
+  const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
   const classes = useStyles();
+
+  const [title, setTitle, setTitleError, resetTitleError] = useValidatedField(
+    '',
+    'Title must not be blank and be under 32 characters long',
+  );
+  const [startDate, setStartDate, setStartError, resetStartError] = useValidatedField(
+    toDateString(new Date()),
+    'Invalid date range',
+  );
+  const [endDate, setEndDate, setEndError, resetEndError] = useValidatedField(
+    toDateString(new Date(tomorrow)),
+    'Invalid date range',
+  );
+  const [team, setTeam, setTeamError, resetTeamError] = useValidatedField(
+    0,
+    'Please assign a team to this schedule',
+  );
 
   //needed to format date so that the date picker can display it properly
   function toDateString(date: Date): string {
@@ -50,38 +52,23 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
   }
 
   function onSubmitForm() {
-    setScheduleTitle({ ...scheduleTitle, valid: true, message: '' });
-    setStartDate({ ...startDate, valid: true, message: '' });
-    setEndDate({ ...endDate, valid: true, message: '' });
-    setTeam({ ...team, valid: true, message: '' });
-    let teamInt = parseInt(team.value);
-    if (
-      scheduleTitle.value.length > 0 &&
-      scheduleTitle.value.length < 32 &&
-      endDate.value > startDate.value &&
-      teamInt > 0
-    )
-      onSubmit(scheduleTitle.value, startDate.value, endDate.value, view, teamInt);
+    resetTitleError();
+    resetStartError();
+    resetEndError();
+    resetTeamError();
 
-    constructError(
-      scheduleTitle.value.length === 0 || scheduleTitle.value.length >= 32,
-      'Title must not be blank and be under 32 characters long',
-      scheduleTitle,
-      setScheduleTitle,
-    );
-    constructError(
-      endDate.value < startDate.value,
-      'Invalid date range',
-      endDate,
-      setEndDate,
-    );
-    constructError(
-      endDate.value < startDate.value,
-      'Invalid date range',
-      startDate,
-      setStartDate,
-    );
-    constructError(teamInt === 0, 'Please assign a team to this schedule', team, setTeam);
+    if (
+      title.value.length > 0 &&
+      title.value.length < 32 &&
+      endDate.value > startDate.value &&
+      team.value > 0
+    )
+      onSubmit(title.value, startDate.value, endDate.value, 'weekly', team.value);
+
+    setTitleError(stringLengthCheck(title.value));
+    setStartError(endDate.value < startDate.value);
+    setEndError(endDate.value < startDate.value);
+    setTeamError(team.value === 0);
   }
 
   return (
@@ -91,11 +78,10 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
         <div className={classes.tooltipContainer}>
           <ValidatedTextField
             className={classes.nameInput}
-            name="Schedule Title"
             label="Schedule Title"
-            input={scheduleTitle}
-            handleChange={setScheduleTitle}
-            autofocus
+            input={title}
+            handleChange={setTitle}
+            autoFocus
           />
           <Tooltip
             id="scheduleName"
@@ -128,25 +114,16 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
             text="Select the begin date and end date for this schedule"
           />
         </div>
-
-        <FormControl className={classes.selectContainer} error={!team.valid}>
-          <InputLabel>Team</InputLabel>
-          <Select
-            className={classes.selectInput}
-            value={team.value}
-            required={true}
-            variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
-              setTeam({ ...team, value: e.target.value })
-            }
-          >
-            <MenuItem value={0}>Assign this schedule to a team</MenuItem>
-            <MenuItem value={1}>Church Council</MenuItem>
-            <MenuItem value={2}>RE</MenuItem>
-          </Select>
-          <FormHelperText style={{ color: 'red' }}>{team.message}</FormHelperText>
-          <Tooltip id="Team" text="Select who is able to edit this schedule" />
-        </FormControl>
+        <ValidatedSelect
+          className={classes.selectContainer}
+          input={team}
+          onChange={setTeam}
+          toolTip={{ id: 'team', text: 'Select someone' }}
+        >
+          <MenuItem value={0}>Assign this schedule to a team</MenuItem>
+          <MenuItem value={1}>Church Council</MenuItem>
+          <MenuItem value={2}>RE</MenuItem>
+        </ValidatedSelect>
       </form>
       <button onClick={onSubmitForm}>Create a new schedule!</button>
       <button onClick={onClose}>Cancel</button>

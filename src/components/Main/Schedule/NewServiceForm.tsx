@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
-import { Tooltip } from '../../shared/Tooltip';
-import { Select } from '@material-ui/core';
+import React from 'react';
+
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputLabel from '@material-ui/core/InputLabel';
-import {
-  ValidatedTextField,
-  createTextFieldState,
-  constructError,
-} from '../../shared/ValidatedTextField';
+
+import { ValidatedTextField, stringLengthCheck } from '../../shared/ValidatedTextField';
+import { ValidatedSelect } from '../../shared/ValidatedSelect';
+import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { TextFieldState } from '../../../shared/types';
 
 interface NewServiceFormProps {
   order?: number;
@@ -32,30 +26,32 @@ const daysOfWeek = [
 ];
 
 export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps) => {
-  const [serviceName, setServiceName] = useState<TextFieldState>(
-    createTextFieldState(''),
+  const [
+    serviceName,
+    setServiceName,
+    setServiceNameError,
+    resetServiceNameError,
+  ] = useValidatedField('', 'Title must be not be blank and be under 32 characters long');
+  const [dayOfWeek, setDayOfWeek, setDayWeekError, resetDayWeekError] = useValidatedField(
+    -1,
+    'Must select a day of the week',
   );
-  const [dayOfWeek, setDayOfWeek] = useState<TextFieldState>(createTextFieldState('-1'));
 
   const classes = useStyles();
   const serviceOrder = order + 1;
 
   function onSubmitForm() {
-    setServiceName({ ...serviceName, valid: true, message: '' });
-    setDayOfWeek({ ...dayOfWeek, valid: true, message: '' });
+    resetServiceNameError();
+    resetDayWeekError();
 
-    const dayInt = parseInt(dayOfWeek.value);
-
-    if (serviceName.value.length > 0 && serviceName.value.length < 32 && dayInt >= 0)
-      onSubmit(serviceName.value, serviceOrder, dayInt);
-
-    constructError(
-      serviceName.value.length === 0 || serviceName.value.length >= 32,
-      'Title must be not be blank and be under 32 characters long',
-      serviceName,
-      setServiceName,
-    );
-    constructError(dayInt < 0, 'Must select a day of the week', dayOfWeek, setDayOfWeek);
+    if (
+      serviceName.value.length > 0 &&
+      serviceName.value.length < 32 &&
+      dayOfWeek.value >= 0
+    )
+      onSubmit(serviceName.value, serviceOrder, dayOfWeek.value);
+    setServiceNameError(stringLengthCheck(serviceName.value));
+    setDayWeekError(dayOfWeek.value < 0);
   }
 
   return (
@@ -68,34 +64,23 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
           label="Service Name"
           input={serviceName}
           handleChange={setServiceName}
-          autofocus
+          autoFocus
         />
-        <FormControl>
-          <InputLabel>Day of the Week</InputLabel>
-          <Select
-            className={classes.selectInput}
-            required
-            value={dayOfWeek.value}
-            variant="outlined"
-            onChange={(e: React.ChangeEvent<{ name: string; value: string }>) =>
-              setDayOfWeek({ ...dayOfWeek, value: e.target.value })
-            }
-          >
-            <MenuItem value={-1}>
-              Select which day of the week this schedule is for
+        <ValidatedSelect
+          className={classes.selectInput}
+          input={dayOfWeek}
+          onChange={setDayOfWeek}
+          toolTip={{ id: 'Day of Week', text: 'Select day' }}
+        >
+          <MenuItem value={-1}>
+            Select which day of the week this schedule is for
+          </MenuItem>
+          {daysOfWeek.map((day, index) => (
+            <MenuItem key={index.toString()} value={index}>
+              {day}
             </MenuItem>
-            {daysOfWeek.map((day, index) => (
-              <MenuItem key={index.toString()} value={index}>
-                {day}
-              </MenuItem>
-            ))}
-          </Select>
-          <FormHelperText style={{ color: 'red' }}>{dayOfWeek.message}</FormHelperText>
-          <Tooltip
-            id="Day of week"
-            text="Select on which day of the week this service occurs"
-          />
-        </FormControl>
+          ))}
+        </ValidatedSelect>
       </form>
       <button onClick={onSubmitForm}>Create new service</button>
       <button onClick={onClose}>Cancel</button>

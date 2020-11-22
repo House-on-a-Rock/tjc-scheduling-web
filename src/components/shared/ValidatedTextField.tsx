@@ -1,44 +1,26 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { TextFieldState } from '../../shared/types/models';
+import { ValidatedFieldState } from '../../shared/types/models';
 
-interface ValidatedTextField {
-  // name: string;
+interface IValidatedTextFieldProps {
   label: string;
-  input: TextFieldState;
+  input: ValidatedFieldState<string>;
   className?: string;
-  handleChange: (input: TextFieldState) => void;
+  handleChange: (input: ValidatedFieldState<string>) => void;
   [x: string]: any;
 }
 
-export const createTextFieldState = (value: string): TextFieldState => ({
-  value: value,
-  message: '',
-  valid: true,
-});
+//commonly used error checks
+export const stringLengthCheck: (arg: string) => boolean = (title: string) =>
+  title.length === 0 || title.length >= 32;
 
-export const constructError = (
-  condition: boolean,
-  message: string,
-  state: TextFieldState,
-  setStateCallback: React.Dispatch<React.SetStateAction<TextFieldState>>,
-) => {
-  if (condition)
-    setStateCallback({
-      ...state,
-      valid: false,
-      message: message,
-    });
-};
-
-export const ValidatedTextField = ({
-  name,
+export const ValidatedTextField: (arg: IValidatedTextFieldProps) => JSX.Element = ({
   label,
   input,
   handleChange,
   className,
-  ...extraProps
-}: ValidatedTextField) => (
+  ...restProps
+}) => (
   <TextField
     variant="outlined"
     margin="normal"
@@ -48,10 +30,12 @@ export const ValidatedTextField = ({
     label={label}
     name={label}
     value={input.value}
-    onChange={(event) => handleChange({ ...input, value: event.target.value })}
+    onChange={({ target }) =>
+      handleChange({ valid: true, message: '', value: target.value })
+    }
     className={className}
     error={!input.valid}
     helperText={input.valid ? '' : input.message}
-    {...extraProps}
+    {...restProps}
   />
 );

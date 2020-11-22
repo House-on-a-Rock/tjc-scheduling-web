@@ -9,10 +9,10 @@ export interface HttpErrorProps {
 }
 
 export interface PasswordState {
-  value: string;
-  visible: boolean;
   valid: boolean;
   message: string;
+  value: string;
+  visible: boolean;
 }
 
 export interface EmailState {
@@ -126,7 +126,7 @@ export interface TableProps {
 }
 
 export interface SchedulerProps {
-  schedule: MappedScheduleInterface;
+  service: MappedScheduleInterface;
   role: any;
 }
 
@@ -160,8 +160,12 @@ export interface AddServiceProps {
   scheduleId: number;
 }
 
-export interface TextFieldState {
+export interface ValidatedFieldState<T> {
   valid: boolean;
   message: string;
-  value: string;
+  value: T;
 }
+
+// export interface PasswordState extends ValidatedFieldState<string>  {
+//   visible: boolean;
+// }

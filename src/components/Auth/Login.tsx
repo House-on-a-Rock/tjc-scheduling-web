@@ -21,11 +21,14 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import { ValidatedTextField } from '../shared/ValidatedTextField';
+import { useValidatedField } from '../shared/Hooks/useValidatedField';
+import { VisiblePassword } from '../shared/VisiblePassword';
 // Actions
 import { checkCredentials } from '../../store/actions';
 
 // Types
-import { HttpError, PasswordState, EmailState } from '../../shared/types/models';
+import { HttpError, PasswordState, ValidatedFieldState } from '../../shared/types/models';
 import { PasswordForm } from '../shared';
 import {
   setLocalStorageState,
@@ -33,12 +36,11 @@ import {
   getLocalStorageState,
   isValidEmail,
 } from '../../shared/utilities';
-import { EmailForm } from '../shared/EmailForm';
 
 export const Login = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const rememberedEmailState: EmailState = {
+  const rememberedEmailState: ValidatedFieldState<string> = {
     value: getLocalStorageState('auth')?.email,
     valid: true,
     message: '',
@@ -52,11 +54,17 @@ export const Login = () => {
     getLocalStorageState('auth') ? true : false,
   );
 
-  const [email, setEmail] = useState<EmailState>(
-    rememberedEmailState.value
-      ? rememberedEmailState
-      : { value: '', valid: true, message: null },
+  const [email, setEmail, setEmailError, resetEmailError] = useValidatedField<string>(
+    rememberedEmailState.value ? rememberedEmailState.value : '',
+    'Please enter a valid email',
   );
+  // const [
+  //   password,
+  //   setPassword,
+  //   setPasswordError,
+  //   resetPasswordError,
+  // ] = useValidatedField<string>('', 'Please enter a password');
+
   const [password, setPassword] = useState<PasswordState>({
     value: '',
     valid: true,
@@ -66,8 +74,9 @@ export const Login = () => {
 
   function handleLogin(event?: FormEvent<HTMLFormElement>): void {
     event?.preventDefault();
-    setEmail({ ...email, valid: true, message: '' });
     setPassword({ ...password, valid: true, message: '' });
+    resetEmailError();
+    // resetPasswordError();
     if (isValidEmail(email.value) && password.value.length > 0) {
       dispatch(checkCredentials(email.value, password.value));
     } else {
@@ -77,19 +86,8 @@ export const Login = () => {
           valid: false,
           message: 'Please enter a password',
         });
-      if (!isValidEmail(email.value)) {
-        setEmail({
-          ...email,
-          valid: false,
-          message: 'Enter a valid email address.',
-        });
-      }
-      if (email.value.length === 0)
-        setEmail({
-          ...email,
-          valid: false,
-          message: 'Please enter an email address.',
-        });
+      // setPasswordError(password.value.length === 0)
+      setEmailError(!isValidEmail(email.value) || email.value.length === 0);
     }
   }
 
@@ -115,11 +113,11 @@ export const Login = () => {
         )}
 
         <form className={classes.form} noValidate onSubmit={handleLogin}>
-          <EmailForm
-            name={'email'}
-            label={'Email Address'}
-            email={email}
-            handleEmail={setEmail}
+          <ValidatedTextField
+            label="Email Address"
+            input={email}
+            handleChange={setEmail}
+            autoFocus
           />
           <PasswordForm
             name={'Password'}
@@ -127,6 +125,25 @@ export const Login = () => {
             password={password}
             handlePassword={setPassword}
           />
+          {/* <ValidatedTextField
+            label="Password"
+            input={password}
+            handleChange={setPassword}
+            type={password.visible ? 'text' : 'password'}
+            InputProps={{
+              endAdornment: (
+                <VisiblePassword
+                  data={password}
+                  handleVisible={(event) =>
+                    handlePassword({
+                      ...password,
+                      visible: event,
+                    })
+                  }
+                />
+              ),
+            }}
+          /> */}
 
           <FormControlLabel
             control={<Checkbox value={remembered} color="primary" checked={remembered} />}

@@ -42,16 +42,16 @@ export const UpdatableCell = ({
   }, [initialValue]);
 
   return initialValue ? (
-    <ContextMenu menuId={`${index}-${id}-${display}`} value={display}>
-      <Input
-        className={classes.input}
-        value={display}
-        onChange={onChange}
-        onBlur={onBlur}
-        onKeyUp={(e) => handleEnter(e)}
-      />
-    </ContextMenu>
+    // <ContextMenu menuId={`${index}-${id}-${display}`} value={display}>
+    <Input
+      className={classes.input}
+      value={display}
+      onChange={onChange}
+      onBlur={onBlur}
+      onKeyUp={(e) => handleEnter(e)}
+    />
   ) : (
+    // </ContextMenu>
     ''
   );
 };
