@@ -36,7 +36,7 @@ export const NewServiceForm = ({
     setServiceName,
     setServiceNameError,
     resetServiceNameError,
-  ] = useValidatedField('', 'Must have a title that is less than 32 characters');
+  ] = useValidatedField('', 'Must have a name that is less than 32 characters');
   const [dayOfWeek, setDayOfWeek, setDayWeekError, resetDayWeekError] = useValidatedField(
     -1,
     'Must select a day of the week',
@@ -76,7 +76,10 @@ export const NewServiceForm = ({
           className={classes.selectInput}
           input={dayOfWeek}
           onChange={setDayOfWeek}
-          toolTip={{ id: 'Day of Week', text: 'Select day' }}
+          toolTip={{
+            id: 'Day of Week',
+            text: 'Select the day of the week this schedule is for',
+          }}
         >
           <MenuItem value={-1}>
             Select which day of the week this schedule is for

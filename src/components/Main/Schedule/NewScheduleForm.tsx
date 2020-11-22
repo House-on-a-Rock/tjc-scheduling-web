@@ -115,7 +115,7 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
           className={classes.selectContainer}
           input={team}
           onChange={setTeam}
-          toolTip={{ id: 'team', text: 'Select someone' }}
+          toolTip={{ id: 'team', text: 'Assign a team to this schedule' }}
         >
           <MenuItem value={0}>Assign this schedule to a team</MenuItem>
           <MenuItem value={1}>Church Council</MenuItem>
