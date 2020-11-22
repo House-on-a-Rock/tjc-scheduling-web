@@ -3,7 +3,7 @@ import Input from '@material-ui/core/Input';
 import { DataCellProps, UpdatableCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { ContextMenu } from '../../shared/ContextMenu';
+// import { ContextMenu } from '../../shared/ContextMenu';
 
 export const UpdatableCell = ({
   value: initialValue,
@@ -31,7 +31,7 @@ export const UpdatableCell = ({
     e.key === 'Enter' && updateMyData(index, id, value);
   };
 
-  // If the initialValue is changed external, sync it up with our state
+  // If the initialValue is changed externally, sync it up with our state
   useEffect(() => {
     const initialData = initialValue?.data;
     setValue(initialValue?.data);
@@ -41,19 +41,16 @@ export const UpdatableCell = ({
         : setDisplay(`${initialData.firstName} ${initialData.lastName}`);
   }, [initialValue]);
 
-  return initialValue ? (
-    // <ContextMenu menuId={`${index}-${id}-${display}`} value={display}>
-    <Input
-      className={classes.input}
-      value={display}
-      onChange={onChange}
-      onBlur={onBlur}
-      onKeyUp={(e) => handleEnter(e)}
-    />
-  ) : (
-    // </ContextMenu>
-    ''
-  );
+  if (initialValue)
+    return (
+      <Input
+        className={classes.input}
+        value={display}
+        onChange={onChange}
+        onBlur={onBlur}
+        onKeyUp={(e) => handleEnter(e)}
+      />
+    );
 };
 
 export const DataCell = ({ value: initialValue }: DataCellProps) => {

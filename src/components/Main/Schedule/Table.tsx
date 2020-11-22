@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTable } from 'react-table';
 
 // Components
 import { UpdatableCell, DataCell } from './TableCell';
+import { ContextMenu } from '../../shared/ContextMenu';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -24,22 +25,62 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
 export const Table = ({ columns, data, updateMyData, title, access }: TableProps) => {
+  const outerRef = useRef(null);
   const classes = useStyles();
+  const [dataRows, setDataRows] = useState(data);
+  useEffect(() => {
+    setDataRows(data);
+  }, [data]);
   const tableConfig =
     access === 'write'
-      ? {
-          columns,
-          data,
-          defaultColumn: { Cell: UpdatableCell },
-          updateMyData,
-        }
-      : {
-          columns: columns,
-          data: data,
-          defaultColumn: { Cell: DataCell },
-        };
+      ? React.useMemo(
+          () => ({
+            columns,
+            data: dataRows,
+            defaultColumn: { Cell: UpdatableCell },
+            updateMyData,
+          }),
+          [columns, dataRows, updateMyData],
+        )
+      : React.useMemo(
+          () => ({
+            columns: columns,
+            data: dataRows,
+            defaultColumn: { Cell: DataCell },
+          }),
+          [columns, dataRows],
+        );
 
   const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
+
+  const cleanRow = function (row: any) {
+    Object.keys(row).forEach(function (key) {
+      if (key !== 'duty' && key !== 'time')
+        row[key] = {
+          data: {
+            firstName: 'Mike',
+            lastName: 'Wazowski',
+            userId: 5,
+            role: { id: 2, name: 'Interpreter' },
+          },
+        };
+      else row[key] = { data: { display: '' } };
+    });
+    return row;
+  };
+
+  // there's an extra render these row operations, not sure where its coming from. Probably causing a flicker where the table shrinks to zero content and then fills back up
+  const deleteRow = (rowIndex: any) => {
+    const newData = dataRows.splice(rowIndex, 1);
+    setDataRows(newData);
+  };
+
+  const insertRow = (rowIndex: any) => {
+    const newRow = { ...dataRows[rowIndex] };
+    cleanRow(newRow);
+    const newData = dataRows.splice(rowIndex, 0, newRow);
+    setDataRows(newData);
+  };
 
   return (
     <>
@@ -49,7 +90,12 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
         </h3>
       )}
       {access}
-      <MaUTable {...getTableProps()} className={classes.table}>
+      <ContextMenu
+        outerRef={outerRef}
+        addRowHandler={insertRow}
+        deleteRowHandler={deleteRow}
+      />
+      <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
         <TableHead>
           {headerGroups.map((headerGroup) => (
             <TableRow {...headerGroup.getHeaderGroupProps()}>
@@ -65,7 +111,7 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
           {rows.map((row, i) => {
             prepareRow(row);
             return (
-              <TableRow {...row.getRowProps()}>
+              <TableRow {...row.getRowProps()} id={i.toString()}>
                 {row.cells.map((cell) => (
                   <TableCell className={classes.cell} {...cell.getCellProps()}>
                     {cell.render('Cell')}
