@@ -11,10 +11,10 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 interface NewServiceFormProps {
   order?: number;
   onSubmit: (name: string, order: number, dayOfWeek: number) => void;
-  onClose: () => void;
+  onClose: (arg: any) => void;
+  error: any;
 }
 
-//are these used anywhere else?
 const daysOfWeek = [
   'Sunday',
   'Monday',
@@ -25,13 +25,18 @@ const daysOfWeek = [
   'Saturday',
 ];
 
-export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps) => {
+export const NewServiceForm = ({
+  order,
+  onSubmit,
+  onClose,
+  error,
+}: NewServiceFormProps) => {
   const [
     serviceName,
     setServiceName,
     setServiceNameError,
     resetServiceNameError,
-  ] = useValidatedField('', 'Title must be not be blank and be under 32 characters long');
+  ] = useValidatedField('', 'Must have a name that is less than 32 characters');
   const [dayOfWeek, setDayOfWeek, setDayWeekError, resetDayWeekError] = useValidatedField(
     -1,
     'Must select a day of the week',
@@ -57,6 +62,7 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
   return (
     <div className={classes.root}>
       New Service Form
+      {error && <div style={{ color: 'red' }}>Service name already exists</div>}
       <form>
         <ValidatedTextField
           className={classes.formInput}
@@ -70,7 +76,10 @@ export const NewServiceForm = ({ order, onSubmit, onClose }: NewServiceFormProps
           className={classes.selectInput}
           input={dayOfWeek}
           onChange={setDayOfWeek}
-          toolTip={{ id: 'Day of Week', text: 'Select day' }}
+          toolTip={{
+            id: 'Day of Week',
+            text: 'Select the day of the week this schedule is for',
+          }}
         >
           <MenuItem value={-1}>
             Select which day of the week this schedule is for

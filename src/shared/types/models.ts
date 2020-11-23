@@ -169,3 +169,8 @@ export interface ValidatedFieldState<T> {
 // export interface PasswordState extends ValidatedFieldState<string>  {
 //   visible: boolean;
 // }
+
+export interface useAlertProps {
+  message: string;
+  status: string;
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-//react query
+// react query
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { getTabData } from '../../../query/schedules';
 import { addSchedule } from '../../../store/apis/schedules';
@@ -8,7 +8,7 @@ import { addSchedule } from '../../../store/apis/schedules';
 import { ScheduleTabs } from './ScheduleTabs';
 import { NewScheduleForm } from './NewScheduleForm';
 import { ScheduleContainer } from './ScheduleContainer';
-
+import { Alert } from '../../shared/Alert';
 import { logout } from '../../../store/actions';
 import { useSelector } from '../../../shared/utilities';
 
@@ -16,27 +16,42 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
+import { useAlertProps } from '../../../shared/types/models';
+
 export const Home = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
   const cache = useQueryCache();
+
+  // queries
   const { churchId, name: churchName } = useSelector((state) => state.profile);
   const { isLoading, error, data } = useQuery(['scheduleTabs', churchId], getTabData, {
     enabled: churchId,
     refetchOnWindowFocus: false,
     staleTime: 100000000000000,
   });
-  const [mutateAddSchedule] = useMutation(addSchedule, {
-    onSuccess: () => cache.invalidateQueries('scheduleTabs'),
+
+  const [mutateAddSchedule, { error: mutateScheduleError }] = useMutation(addSchedule, {
+    onSuccess: (data) => {
+      cache.invalidateQueries('scheduleTabs');
+      closeDialogHandler(data);
+    },
   });
+
+  //state
   const [tabIdx, setTabIdx] = useState(0);
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
-  const [role, setRole] = useState({});
+  const [alert, setAlert] = useState<useAlertProps>();
+
+  // not too sure how setRole is being used/passed through
+  // const [role, setRole] = useState({});
+  // React.useEffect(() => {
+  //   // setRole(data[tabIdx]?.role); //wat
+  // }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
-    //if not the last tab, open that tab
+    // if not the last tab, open that tab
     if (value <= data.length - 1) {
       setTabIdx(value);
       const isOpened = openedTabs.indexOf(value);
@@ -44,15 +59,10 @@ export const Home = () => {
     } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 
-  function closeDialogHandler() {
+  function closeDialogHandler(response: any) {
     setIsNewScheduleVisible(false);
+    if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
   }
-
-  // not too sure how setRole is being used/passed through
-  React.useEffect(() => {
-    // setDisplayedSchedule(data[tabIdx]?.services);
-    // setRole(data[tabIdx]?.role);
-  }, [data, tabIdx]);
 
   async function onNewScheduleSubmit(
     scheduleTitle: string,
@@ -61,8 +71,7 @@ export const Home = () => {
     view: string,
     team: number,
   ) {
-    setIsNewScheduleVisible(false);
-    const response = await mutateAddSchedule({
+    await mutateAddSchedule({
       scheduleTitle,
       startDate,
       endDate,
@@ -70,7 +79,6 @@ export const Home = () => {
       team,
       churchId,
     });
-    //display error messages if needed
   }
 
   return (
@@ -85,8 +93,13 @@ export const Home = () => {
         Log Out
       </button>
       <Dialog open={isNewScheduleVisible} onClose={closeDialogHandler}>
-        <NewScheduleForm onSubmit={onNewScheduleSubmit} onClose={closeDialogHandler} />
+        <NewScheduleForm
+          onClose={closeDialogHandler}
+          error={mutateScheduleError}
+          onSubmit={onNewScheduleSubmit}
+        />
       </Dialog>
+      {alert && <Alert alert={alert} unMountAlert={() => setAlert(null)} />}
       {data && (
         <div>
           <ScheduleTabs
@@ -96,6 +109,7 @@ export const Home = () => {
           />
           {openedTabs.map((tab) => (
             <ScheduleContainer
+              setAlert={setAlert}
               scheduleId={data[tab].id}
               isViewed={tab === tabIdx}
               key={tab.toString()}

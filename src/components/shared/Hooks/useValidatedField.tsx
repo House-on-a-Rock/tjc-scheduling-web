@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ValidatedFieldState } from '../../../shared/types/models';
 
 const createFieldState: <T>(arg: T) => ValidatedFieldState<T> = (value) => ({

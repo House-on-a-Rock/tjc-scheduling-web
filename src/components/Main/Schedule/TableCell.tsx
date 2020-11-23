@@ -3,7 +3,6 @@ import Input from '@material-ui/core/Input';
 import { DataCellProps, UpdatableCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-// import { ContextMenu } from '../../shared/ContextMenu';
 
 export const UpdatableCell = ({
   value: initialValue,

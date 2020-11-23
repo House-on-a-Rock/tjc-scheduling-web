@@ -30,7 +30,7 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
   const [dataRows, setDataRows] = useState(data);
   useEffect(() => {
     setDataRows(data);
-  }, [data]);
+  });
   const tableConfig =
     access === 'write'
       ? React.useMemo(
@@ -70,6 +70,7 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
   };
 
   // there's an extra render these row operations, not sure where its coming from. Probably causing a flicker where the table shrinks to zero content and then fills back up
+  // TODO figure out why theres a flicker
   const deleteRow = (rowIndex: any) => {
     const newData = dataRows.splice(rowIndex, 1);
     setDataRows(newData);
@@ -157,15 +158,15 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:not(:first-child)': {
         minWidth: '12ch',
       },
-      '& div:before': {
-        borderBottom: 'none',
-      },
-      '&:hover': {
-        background: `${buttonTheme.filled.hover.backgroundColor} !important`,
-        '& input': {
-          color: 'white',
-        },
-      },
+      // '& div:before': {
+      //   borderBottom: 'none',
+      // },
+      // '&:hover': {
+      //   background: `${buttonTheme.filled.hover.backgroundColor} !important`,
+      //   '& input': {
+      //     color: 'white',
+      //   },
+      // },
       '& input': {
         width: '20ch',
         padding: '10px 15px 3px',

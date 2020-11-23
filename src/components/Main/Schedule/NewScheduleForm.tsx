@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  ValidatedTextField,
-  // useValidatedTextField,
-  stringLengthCheck,
-} from '../../shared/ValidatedTextField';
+import { ValidatedTextField, stringLengthCheck } from '../../shared/ValidatedTextField';
 import { ValidatedSelect } from '../../shared/ValidatedSelect';
 import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -11,10 +7,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import { Tooltip } from '../../shared/Tooltip';
-
 // TODO hook up teams with data from DB
 
 interface NewScheduleFormProps {
+  onClose: (data: any) => void;
+  error: any;
   onSubmit: (
     title: string,
     startDate: string,
@@ -22,16 +19,15 @@ interface NewScheduleFormProps {
     view: string,
     team: number,
   ) => void;
-  onClose: () => void;
 }
 
-export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => {
+export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormProps) => {
   const tomorrow = new Date(new Date().setDate(new Date().getDate() + 1));
   const classes = useStyles();
 
   const [title, setTitle, setTitleError, resetTitleError] = useValidatedField(
     '',
-    'Title must not be blank and be under 32 characters long',
+    'Must have a title that is less than 32 characters',
   );
   const [startDate, setStartDate, setStartError, resetStartError] = useValidatedField(
     toDateString(new Date()),
@@ -75,6 +71,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
     <div className={classes.root}>
       New Schedule Form
       <form className={classes.formStyle}>
+        {error && <div style={{ color: 'red' }}>Schedule title is not unique</div>}
         <div className={classes.tooltipContainer}>
           <ValidatedTextField
             className={classes.nameInput}
@@ -118,7 +115,7 @@ export const NewScheduleForm = ({ onSubmit, onClose }: NewScheduleFormProps) => 
           className={classes.selectContainer}
           input={team}
           onChange={setTeam}
-          toolTip={{ id: 'team', text: 'Select someone' }}
+          toolTip={{ id: 'team', text: 'Assign a team to this schedule' }}
         >
           <MenuItem value={0}>Assign this schedule to a team</MenuItem>
           <MenuItem value={1}>Church Council</MenuItem>
