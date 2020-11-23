@@ -158,15 +158,15 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:not(:first-child)': {
         minWidth: '12ch',
       },
-      '& div:before': {
-        borderBottom: 'none',
-      },
-      '&:hover': {
-        background: `${buttonTheme.filled.hover.backgroundColor} !important`,
-        '& input': {
-          color: 'white',
-        },
-      },
+      // '& div:before': {
+      //   borderBottom: 'none',
+      // },
+      // '&:hover': {
+      //   background: `${buttonTheme.filled.hover.backgroundColor} !important`,
+      //   '& input': {
+      //     color: 'white',
+      //   },
+      // },
       '& input': {
         width: '20ch',
         padding: '10px 15px 3px',

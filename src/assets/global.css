@@ -98,3 +98,21 @@ body.loading.message.message-3:after {
     filter: blur(3px);
   }
 }
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-from-top {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100vh);
+  }
+}

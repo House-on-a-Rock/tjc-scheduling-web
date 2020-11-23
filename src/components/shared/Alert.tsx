@@ -48,6 +48,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 20,
       zIndex: 100000, // too much?
       padding: 2,
+      transform: 'translateY(-100vh)',
+      animation: `slide-in-from-top 0.5s forwards`,
     },
   }),
 );
