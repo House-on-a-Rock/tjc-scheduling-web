@@ -24,36 +24,41 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
-export const Table = ({ columns, data, updateMyData, title, access }: TableProps) => {
+export const Table = ({ columns, data, title, access }: TableProps) => {
   const outerRef = useRef(null);
   const classes = useStyles();
-  const [dataRows, setDataRows] = useState(data);
-  useEffect(() => {
-    setDataRows(data);
+  const [dataRows, setDataRows] = useState([...data]);
+
+  console.log('data', data);
+  columns.forEach((entry) => {
+    entry.Cell = (props: any) => {
+      return <DataCell value={props.value} msg={props.hello} onClick={props.onClick} />;
+    };
   });
+  console.log('columns', columns);
   const tableConfig =
     access === 'write'
       ? React.useMemo(
           () => ({
             columns,
             data: dataRows,
-            defaultColumn: { Cell: UpdatableCell },
-            updateMyData,
+            // defaultColumn: { Cell: DataCell },
           }),
-          [columns, dataRows, updateMyData],
+          [columns, dataRows],
         )
       : React.useMemo(
           () => ({
             columns: columns,
             data: dataRows,
-            defaultColumn: { Cell: DataCell },
+            // defaultColumn: { Cell: DataCell },
           }),
           [columns, dataRows],
         );
 
   const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
 
-  const cleanRow = function (row: any) {
+  // make these blank later
+  function cleanRow(row: any) {
     Object.keys(row).forEach(function (key) {
       if (key !== 'duty' && key !== 'time')
         row[key] = {
@@ -67,20 +72,19 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
       else row[key] = { data: { display: '' } };
     });
     return row;
-  };
+  }
 
-  // there's an extra render these row operations, not sure where its coming from. Probably causing a flicker where the table shrinks to zero content and then fills back up
-  // TODO figure out why theres a flicker
-  const deleteRow = (rowIndex: any) => {
-    const newData = dataRows.splice(rowIndex, 1);
+  const deleteRow = (rowIndex: number) => {
+    const newData = [...dataRows];
+    newData.splice(rowIndex, 1);
     setDataRows(newData);
   };
 
-  const insertRow = (rowIndex: any) => {
-    const newRow = { ...dataRows[rowIndex] };
-    cleanRow(newRow);
-    const newData = dataRows.splice(rowIndex, 0, newRow);
-    setDataRows(newData);
+  const insertRow = (rowIndex: number) => {
+    const newRow = cleanRow({ ...dataRows[rowIndex] });
+    const tempData = [...dataRows];
+    tempData.splice(rowIndex, 0, newRow);
+    setDataRows(tempData);
   };
 
   return (
@@ -113,11 +117,16 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
             prepareRow(row);
             return (
               <TableRow {...row.getRowProps()} id={i.toString()}>
-                {row.cells.map((cell) => (
-                  <TableCell className={classes.cell} {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                ))}
+                {row.cells.map((cell) => {
+                  // console.log('cell', cell);
+                  return (
+                    <TableCell className={classes.cell} {...cell.getCellProps()}>
+                      {cell.render('Cell', {
+                        hello: 'hi',
+                      })}
+                    </TableCell>
+                  );
+                })}
               </TableRow>
             );
           })}

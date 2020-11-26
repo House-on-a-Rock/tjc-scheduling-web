@@ -55,7 +55,7 @@ export const Home = () => {
     if (value <= data.length - 1) {
       setTabIdx(value);
       const isOpened = openedTabs.indexOf(value);
-      if (isOpened < 0) setOpenedTabs([...openedTabs, value]);
+      if (isOpened < 0) setOpenedTabs([...openedTabs, value]); //adds unopened tabs to array. currently, no way to close tabs. not sure if its necessary
     } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
   }
 

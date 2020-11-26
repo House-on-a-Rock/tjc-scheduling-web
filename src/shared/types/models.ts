@@ -32,6 +32,8 @@ export interface JWTDataType {
 export interface ColumnFields {
   Header: string;
   accessor: string;
+  onClick?: () => void;
+  Cell?: any;
 }
 
 export type DayIndexOptions = {
@@ -111,8 +113,10 @@ export interface UpdatableCellProps {
 }
 export interface DataCellProps {
   value: any;
-  row: CellIndexType;
-  column: CellColumnType;
+  row?: CellIndexType;
+  column?: CellColumnType;
+  msg: any;
+  onClick: any;
 }
 
 type AccessTypes = 'read' | 'write';
@@ -120,7 +124,7 @@ type AccessTypes = 'read' | 'write';
 export interface TableProps {
   columns: ColumnFields[];
   data: WeeklyAssignmentInterface[];
-  updateMyData: (rowIndex: number, columnId: string, value: string) => void;
+  updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
   title: string;
   access: AccessTypes;
 }

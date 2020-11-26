@@ -52,10 +52,12 @@ export const UpdatableCell = ({
     );
 };
 
-export const DataCell = ({ value: initialValue }: DataCellProps) => {
+export const DataCell = ({ value: initialValue, msg, onClick }: DataCellProps) => {
   const classes = useStyles();
-  const [value, setValue] = useState(initialValue?.data);
+  const [value, setValue] = useState({ ...initialValue?.data });
   const [display, setDisplay] = useState('');
+
+  console.log('initialValue', initialValue);
 
   useEffect(() => {
     const initialData = initialValue?.data;
@@ -66,7 +68,11 @@ export const DataCell = ({ value: initialValue }: DataCellProps) => {
         : setDisplay(`${initialData.firstName} ${initialData.lastName}`);
   }, [initialValue]);
 
-  return initialValue ? <Input className={classes.input} value={display} /> : '';
+  return initialValue ? (
+    <Input onClick={onClick} className={classes.input} value={display} />
+  ) : (
+    <></>
+  );
 };
 
 const useStyles = makeStyles((theme: Theme) =>

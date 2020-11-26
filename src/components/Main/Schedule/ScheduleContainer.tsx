@@ -14,6 +14,11 @@ import AddIcon from '@material-ui/icons/Add';
 import { Dialog } from '@material-ui/core/';
 import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 
+//
+import { extractRoleIds } from '../../../shared/utilities';
+import { Table } from './Table';
+import { days } from '../../../shared/utilities/dateHelper';
+
 interface ScheduleContainerProps {
   scheduleId: number;
   isViewed: boolean;
@@ -26,6 +31,7 @@ export const ScheduleContainer = React.memo(
     const classes = useStyles();
     const cache = useQueryCache();
 
+    // queries
     const { isLoading, error, data } = useQuery(
       ['scheduleData', scheduleId],
       getScheduleData,
@@ -40,9 +46,17 @@ export const ScheduleContainer = React.memo(
         closeDialogHandler(data);
       },
     });
+
+    // state
     const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
+    const [selectedCell, setSelectedCell] = useState<string>('');
 
     showLoadingSpinner(isLoading);
+
+    //from scheduler.tsx but unused
+    const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
+    const role = { id: 1 };
+
     return (
       <div
         className={classes.scheduleContainer}
@@ -63,8 +77,21 @@ export const ScheduleContainer = React.memo(
           </Dialog>
         )}
         {data &&
-          data.services.map((service: any, idx: any) => (
-            <Scheduler role={1} service={service} key={idx} />
+          data.services.map(({ columns, data, name, day }: any, idx: any) => (
+            <div>
+              {days[day]}
+              <Table
+                columns={columns}
+                data={data}
+                title={name}
+                access={
+                  // accessLevel.includes(role.id) || accessLevel.includes(0)
+                  //   ? 'write'
+                  //   : 'read'
+                  'write'
+                }
+              />
+            </div>
           ))}
       </div>
     );

@@ -9,13 +9,17 @@ export const Scheduler = React.memo(({ service, role }: SchedulerProps) => {
 
   // not sure if this should be here or in Table, as im manipulating the data in Table as well. however, this component isn't really using
   // updateMyData right now so i'll just leave it as is, and figure it out once the table cells can update data too
-  const [scheduleData, setScheduleData] = useState(data);
+
+  // why do we need this component???
+  // bypassing this for now, it seems a bit unnecessary
+
+  const [scheduleData, setScheduleData] = useState([...data]);
 
   const accessLevel = extractRoleIds(localStorage.getItem('access_token'));
 
-  useEffect(() => {
-    setScheduleData(data);
-  }, [data]);
+  // useEffect(() => {
+  //   setScheduleData(data);
+  // }, [data]);
 
   const updateMyData = (rowIndex: number, columnId: string, value: string) =>
     setScheduleData((old: WeeklyAssignmentInterface[]) =>
@@ -27,7 +31,7 @@ export const Scheduler = React.memo(({ service, role }: SchedulerProps) => {
     <Table
       columns={columns}
       data={scheduleData}
-      updateMyData={updateMyData}
+      // updateMyData={updateMyData}
       title={name}
       access={accessLevel.includes(role.id) || accessLevel.includes(0) ? 'write' : 'read'}
     />
