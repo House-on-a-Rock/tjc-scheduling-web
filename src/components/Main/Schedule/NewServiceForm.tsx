@@ -7,6 +7,8 @@ import { ValidatedSelect } from '../../shared/ValidatedSelect';
 import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { TextFieldState } from '../../../shared/types';
+import { buttonTheme } from '../../../shared/styles/theme.js';
 
 interface NewServiceFormProps {
   order?: number;
@@ -61,11 +63,10 @@ export const NewServiceForm = ({
 
   return (
     <div className={classes.root}>
-      New Service Form
+      <h2>New Service Form</h2>
       {error && <div style={{ color: 'red' }}>Service name already exists</div>}
       <form>
         <ValidatedTextField
-          className={classes.formInput}
           name="Service Name"
           label="Service Name"
           input={serviceName}
@@ -73,13 +74,13 @@ export const NewServiceForm = ({
           autoFocus
         />
         <ValidatedSelect
-          className={classes.selectInput}
           input={dayOfWeek}
           onChange={setDayOfWeek}
           toolTip={{
             id: 'Day of Week',
             text: 'Select the day of the week this schedule is for',
           }}
+          className={classes.selectContainer}
         >
           <MenuItem value={-1}>
             Select which day of the week this schedule is for
@@ -91,8 +92,12 @@ export const NewServiceForm = ({
           ))}
         </ValidatedSelect>
       </form>
-      <button onClick={onSubmitForm}>Create new service</button>
-      <button onClick={onClose}>Cancel</button>
+      <button onClick={onSubmitForm} className={classes.button}>
+        Create new service
+      </button>
+      <button onClick={onClose} className={classes.button}>
+        Cancel
+      </button>
     </div>
   );
 };
@@ -100,17 +105,29 @@ export const NewServiceForm = ({
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      height: 400,
-      width: 400,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      width: 'max-content',
+      margin: 'auto',
+      textAlign: 'center',
       padding: 10,
     },
-    formInput: { width: 300 },
-    selectInput: {
-      width: 300,
+    selectContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      minWidth: 400,
+    },
+    button: {
+      padding: '10px',
+      borderRadius: '5px',
+      border: 'none',
+      margin: '5px',
+      '&:hover, &:focus': {
+        ...buttonTheme.filled,
+      },
     },
   }),
 );

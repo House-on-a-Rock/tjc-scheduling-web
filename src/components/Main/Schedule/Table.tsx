@@ -158,9 +158,9 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:not(:first-child)': {
         minWidth: '12ch',
       },
-      // '& div:before': {
-      //   borderBottom: 'none',
-      // },
+      '& div:before': {
+        borderBottom: 'none',
+      },
       // '&:hover': {
       //   background: `${buttonTheme.filled.hover.backgroundColor} !important`,
       //   '& input': {
