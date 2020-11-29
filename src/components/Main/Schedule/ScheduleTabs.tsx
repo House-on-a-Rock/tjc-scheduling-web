@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '4rem',
       paddingTop: '1rem',
       background: 'white',
-      zIndex: 9001,
+      zIndex: 100,
     },
     tab: {
       ...tabTheme,

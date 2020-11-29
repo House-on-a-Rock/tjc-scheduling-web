@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     logoutButton: {
       position: 'fixed',
-      zIndex: 9002,
+      zIndex: 200,
       padding: '10px',
       borderRadius: '5px',
       border: 'none',
