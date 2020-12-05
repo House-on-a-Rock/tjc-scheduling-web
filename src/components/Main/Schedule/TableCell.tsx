@@ -43,7 +43,7 @@ export const UpdatableCell = ({
   if (initialValue)
     return (
       <Input
-        className={classes.input}
+        className={classes.cell}
         value={display}
         onChange={onChange}
         onBlur={onBlur}
@@ -52,34 +52,89 @@ export const UpdatableCell = ({
     );
 };
 
-export const DataCell = ({ value: initialValue, msg, onClick }: DataCellProps) => {
-  const classes = useStyles();
-  const [value, setValue] = useState({ ...initialValue?.data });
-  const [display, setDisplay] = useState('');
+const Display = (text: string) => <div>{text}</div>;
 
-  console.log('initialValue', initialValue);
+export const DataCell = React.memo(
+  ({ value: initialValue, onCellClick, isSelected }: DataCellProps) => {
+    const classes = useStyles();
+    if (!initialValue) return <></>;
 
-  useEffect(() => {
-    const initialData = initialValue?.data;
-    setValue(initialValue?.data);
-    if (initialData)
-      initialData?.display
-        ? setDisplay(initialData.display)
-        : setDisplay(`${initialData.firstName} ${initialData.lastName}`);
-  }, [initialValue]);
+    const [value, setValue] = useState(() => {
+      return initialValue.data.display
+        ? initialValue.data.display
+        : `${initialValue.data.firstName} ${initialValue.data.lastName}`;
+    });
+    const [readOnly, setReadOnly] = useState<boolean>(true);
 
-  return initialValue ? (
-    <Input onClick={onClick} className={classes.input} value={display} />
-  ) : (
-    <></>
+    function onDoubleClick(e: any) {
+      e.preventDefault();
+      setReadOnly(false);
+    }
+
+    function onBlur() {
+      console.log('calling onBlur');
+      setReadOnly(true);
+    }
+
+    const inputStyle = isSelected ? classes.selected : classes.cell;
+
+    function Display() {
+      return readOnly ? (
+        <div onClick={onCellClick} onDoubleClick={onDoubleClick} className={inputStyle}>
+          {value}
+        </div>
+      ) : (
+        <Input
+          onClick={onCellClick}
+          className={classes.editable}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onDoubleClick={onDoubleClick}
+          onBlur={onBlur}
+          autoFocus
+        />
+      );
+    }
+
+    return initialValue ? <Display /> : <></>;
+  },
+  arePropsEqual,
+);
+
+function arePropsEqual(prevProps: DataCellProps, nextProps: DataCellProps) {
+  return (
+    prevProps.value === nextProps.value && prevProps.isSelected === nextProps.isSelected
   );
-};
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    input: {
+    cell: {
       color: typographyTheme.common.color,
       textAlign: 'center',
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+    selected: {
+      color: typographyTheme.common.color,
+      textAlign: 'center',
+      border: '16px solid rgb(93, 93, 177)',
+      borderWidth: 1,
+      '&:focus': {
+        outline: 'none',
+      },
+      'user-select': 'none',
+    },
+    editable: {
+      color: typographyTheme.common.color,
+      textAlign: 'center',
+      border: '16px solid rgb(93, 93, 177)',
+      borderWidth: 1,
+      'user-select': 'none',
+      padding: '0px 0px 1px',
+      height: 20,
+      width: 100,
     },
   }),
 );

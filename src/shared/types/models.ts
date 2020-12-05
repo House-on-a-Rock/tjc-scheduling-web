@@ -115,8 +115,10 @@ export interface DataCellProps {
   value: any;
   row?: CellIndexType;
   column?: CellColumnType;
-  msg: any;
-  onClick: any;
+  // msg: any;
+  onCellClick: any;
+  isSelected: boolean;
+  isEditable: boolean;
 }
 
 type AccessTypes = 'read' | 'write';
@@ -127,6 +129,9 @@ export interface TableProps {
   updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
   title: string;
   access: AccessTypes;
+  day: any;
+  selectedCell: any;
+  onCellClick: (cellKey: any) => void;
 }
 
 export interface SchedulerProps {
@@ -177,4 +182,10 @@ export interface ValidatedFieldState<T> {
 export interface useAlertProps {
   message: string;
   status: string;
+}
+
+export interface cellManagementProps {
+  isSelected: boolean;
+  isEditable: boolean;
+  onCellClick: (cellKey: any) => void;
 }

@@ -5,7 +5,7 @@ import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 import { addService } from '../../../store/apis/schedules';
 // components
-import { Scheduler } from './Scheduler';
+// import { Scheduler } from './Scheduler';
 import { NewServiceForm } from './NewServiceForm';
 import { useAlertProps } from '../../../shared/types/models';
 // material ui and styling
@@ -17,7 +17,6 @@ import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 //
 import { extractRoleIds } from '../../../shared/utilities';
 import { Table } from './Table';
-import { days } from '../../../shared/utilities/dateHelper';
 
 interface ScheduleContainerProps {
   scheduleId: number;
@@ -79,17 +78,20 @@ export const ScheduleContainer = React.memo(
         {data &&
           data.services.map(({ columns, data, name, day }: any, idx: any) => (
             <div>
-              {days[day]}
               <Table
                 columns={columns}
                 data={data}
                 title={name}
+                day={day}
                 access={
                   // accessLevel.includes(role.id) || accessLevel.includes(0)
                   //   ? 'write'
                   //   : 'read'
                   'write'
                 }
+                selectedCell={selectedCell}
+                onCellClick={setSelectedCell}
+                key={`${name}_${day}_${idx}`}
               />
             </div>
           ))}

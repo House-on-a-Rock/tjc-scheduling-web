@@ -4,6 +4,7 @@ import { useTable } from 'react-table';
 // Components
 import { UpdatableCell, DataCell } from './TableCell';
 import { ContextMenu } from '../../shared/ContextMenu';
+import { days } from '../../../shared/utilities/dateHelper';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -24,117 +25,132 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
-export const Table = ({ columns, data, title, access }: TableProps) => {
-  const outerRef = useRef(null);
-  const classes = useStyles();
-  const [dataRows, setDataRows] = useState([...data]);
+export const Table = React.memo(
+  ({ columns, data, title, access, day, selectedCell, onCellClick }: TableProps) => {
+    const outerRef = useRef(null);
+    const classes = useStyles();
+    const [dataRows, setDataRows] = useState([...data]);
 
-  console.log('data', data);
-  columns.forEach((entry) => {
-    entry.Cell = (props: any) => {
-      return <DataCell value={props.value} msg={props.hello} onClick={props.onClick} />;
-    };
-  });
-  console.log('columns', columns);
-  const tableConfig =
-    access === 'write'
-      ? React.useMemo(
-          () => ({
-            columns,
-            data: dataRows,
-            // defaultColumn: { Cell: DataCell },
-          }),
-          [columns, dataRows],
-        )
-      : React.useMemo(
-          () => ({
-            columns: columns,
-            data: dataRows,
-            // defaultColumn: { Cell: DataCell },
-          }),
-          [columns, dataRows],
-        );
-
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
-
-  // make these blank later
-  function cleanRow(row: any) {
-    Object.keys(row).forEach(function (key) {
-      if (key !== 'duty' && key !== 'time')
-        row[key] = {
-          data: {
-            firstName: 'Mike',
-            lastName: 'Wazowski',
-            userId: 5,
-            role: { id: 2, name: 'Interpreter' },
-          },
-        };
-      else row[key] = { data: { display: '' } };
+    columns.forEach((entry) => {
+      //add Cell property to each entry, which is used to pass props to the component
+      entry.Cell = (props: any) => {
+        return <DataCell {...props} />;
+      };
     });
-    return row;
-  }
 
-  const deleteRow = (rowIndex: number) => {
-    const newData = [...dataRows];
-    newData.splice(rowIndex, 1);
-    setDataRows(newData);
-  };
+    const tableConfig =
+      access === 'write'
+        ? React.useMemo(
+            () => ({
+              columns,
+              data: dataRows,
+              // defaultColumn: { Cell: DataCell },
+            }),
+            [columns, dataRows],
+          )
+        : React.useMemo(
+            () => ({
+              columns: columns,
+              data: dataRows,
+              // defaultColumn: { Cell: DataCell },
+            }),
+            [columns, dataRows],
+          );
 
-  const insertRow = (rowIndex: number) => {
-    const newRow = cleanRow({ ...dataRows[rowIndex] });
-    const tempData = [...dataRows];
-    tempData.splice(rowIndex, 0, newRow);
-    setDataRows(tempData);
-  };
+    const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
 
-  return (
-    <>
-      {title && (
-        <h3 className={classes.titleContainer}>
-          <span className={classes.titleText}>{title}</span>
-        </h3>
-      )}
-      {access}
-      <ContextMenu
-        outerRef={outerRef}
-        addRowHandler={insertRow}
-        deleteRowHandler={deleteRow}
-      />
-      <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
-        <TableHead>
-          {headerGroups.map((headerGroup) => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <TableCell className={classes.headerCell} {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()} id={i.toString()}>
-                {row.cells.map((cell) => {
-                  // console.log('cell', cell);
-                  return (
-                    <TableCell className={classes.cell} {...cell.getCellProps()}>
-                      {cell.render('Cell', {
-                        hello: 'hi',
-                      })}
-                    </TableCell>
-                  );
-                })}
+    return (
+      <>
+        {access}
+        {title && (
+          <h3 className={classes.titleContainer}>
+            <span className={classes.titleText}>
+              {days[day]} {title}
+            </span>
+          </h3>
+        )}
+
+        <ContextMenu
+          outerRef={outerRef}
+          addRowHandler={insertRow}
+          deleteRowHandler={deleteRow}
+        />
+        <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
+          <TableHead>
+            {headerGroups.map((headerGroup) => (
+              <TableRow {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column, index) => (
+                  <TableCell
+                    className={classes.headerCell}
+                    {...column.getHeaderProps()}
+                    key={index}
+                  >
+                    {column.render('Header')}
+                  </TableCell>
+                ))}
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </MaUTable>
-    </>
-  );
-};
+            ))}
+          </TableHead>
+          <TableBody>
+            {rows.map((row, i) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()} id={i.toString()}>
+                  {row.cells.map((cell, index) => {
+                    const cellKey = `${title}_${cell.column.Header}_${cell.row.id}`;
+
+                    return (
+                      <TableCell
+                        className={classes.cell}
+                        {...cell.getCellProps()}
+                        key={index}
+                      >
+                        {cell.render('Cell', {
+                          onCellClick: () => onCellClick(cellKey),
+                          isSelected: cellKey === selectedCell,
+                        })}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </MaUTable>
+      </>
+    );
+
+    // make these blank later
+    function cleanRow(row: any) {
+      Object.keys(row).forEach(function (key) {
+        if (key !== 'duty' && key !== 'time')
+          row[key] = {
+            data: {
+              firstName: 'Mike',
+              lastName: 'Wazowski',
+              userId: 5,
+              role: { id: 2, name: 'Interpreter' },
+            },
+          };
+        else row[key] = { data: { display: '' } };
+      });
+      return row;
+    }
+
+    function deleteRow(rowIndex: number) {
+      const newData = [...dataRows];
+      newData.splice(rowIndex, 1);
+      setDataRows(newData);
+    }
+
+    function insertRow(rowIndex: number) {
+      const newRow = cleanRow({ ...dataRows[rowIndex] });
+      const tempData = [...dataRows];
+      tempData.splice(rowIndex, 0, newRow);
+      setDataRows(tempData);
+    }
+  },
+);
 
 const normalCellBorderColor = 'rgba(234, 234, 234, 1)';
 const normalCellBorder = `1px solid ${normalCellBorderColor}`;
@@ -156,7 +172,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     headerCell: {
       textAlign: 'center',
-      padding: '1px 5px',
+      padding: '1px 2px',
       color: typographyTheme.common.color,
       border: normalCellBorder,
       fontWeight: 'bold',
@@ -165,20 +181,11 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0px 0px 1px',
       border: normalCellBorder,
       '&:not(:first-child)': {
-        minWidth: '12ch',
+        minWidth: '2ch',
       },
-      // '& div:before': {
-      //   borderBottom: 'none',
-      // },
-      // '&:hover': {
-      //   background: `${buttonTheme.filled.hover.backgroundColor} !important`,
-      //   '& input': {
-      //     color: 'white',
-      //   },
-      // },
       '& input': {
-        width: '20ch',
-        padding: '10px 15px 3px',
+        // width: '20ch',
+        // padding: '10px 15px 3px',
         // ...horizontalScrollIndicatorShadow('transparent'),
       },
     },
