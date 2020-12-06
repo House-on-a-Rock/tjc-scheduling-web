@@ -180,12 +180,20 @@ const useStyles = makeStyles((theme: Theme) =>
     cell: {
       padding: '0px 0px 1px',
       border: normalCellBorder,
+      width: '20ch',
       '&:not(:first-child)': {
         minWidth: '2ch',
       },
+      '& > div': {
+        width: '100%',
+        padding: 0,
+        margin: 0,
+      },
       '& input': {
-        // width: '20ch',
-        // padding: '10px 15px 3px',
+        width: '100%',
+        padding: 0,
+        margin: 0,
+        textAlign: 'center',
         // ...horizontalScrollIndicatorShadow('transparent'),
       },
     },
