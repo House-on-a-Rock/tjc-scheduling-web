@@ -13,6 +13,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import AddIcon from '@material-ui/icons/Add';
 import { Dialog } from '@material-ui/core/';
 import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
+import { buttonTheme } from '../../../shared/styles/theme.js';
 
 //
 import { extractRoleIds } from '../../../shared/utilities';
@@ -61,10 +62,6 @@ export const ScheduleContainer = React.memo(
         className={classes.scheduleContainer}
         style={{ display: isViewed ? 'block' : 'none' }}
       >
-        <button onClick={onAddServiceClick}>
-          <AddIcon height={50} width={50} /> Add New Service
-        </button>
-
         {data && (
           <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
             <NewServiceForm
@@ -95,6 +92,12 @@ export const ScheduleContainer = React.memo(
               />
             </div>
           ))}
+        <div className={classes.bottomButtonContainer}>
+          <button onClick={onAddServiceClick} className={classes.addNewServiceButton}>
+            <AddIcon height={50} width={50} />
+            <span>Add New Service</span>
+          </button>
+        </div>
       </div>
     );
 
@@ -123,6 +126,27 @@ const useStyles = makeStyles((theme: Theme) =>
     scheduleContainer: {
       position: 'absolute',
       paddingTop: 10,
+    },
+    bottomButtonContainer: {
+      position: 'sticky',
+      left: 0,
+      display: 'flex',
+      width: '100vw',
+      justifyContent: 'center',
+      paddingBottom: '2rem',
+    },
+    addNewServiceButton: {
+      position: 'sticky',
+      padding: '10px',
+      borderRadius: '5px',
+      border: 'none',
+      '&:hover, &:focus': {
+        ...buttonTheme.filled,
+      },
+      display: 'flex',
+      '& *': {
+        margin: 'auto',
+      },
     },
   }),
 );

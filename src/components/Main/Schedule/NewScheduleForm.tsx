@@ -5,6 +5,8 @@ import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import { buttonTheme } from '../../../shared/styles/theme.js';
 
 import { Tooltip } from '../../shared/Tooltip';
 // TODO hook up teams with data from DB
@@ -69,7 +71,7 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
 
   return (
     <div className={classes.root}>
-      New Schedule Form
+      <h2>New Schedule Form</h2>
       <form className={classes.formStyle}>
         {error && <div style={{ color: 'red' }}>Schedule title is not unique</div>}
         <div className={classes.tooltipContainer}>
@@ -85,7 +87,7 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
             text="Example name: Jan-Mar Schedule. Must be unique"
           />
         </div>
-        <div className={classes.tooltipContainer}>
+        <div className={`${classes.tooltipContainer} ${classes.dateAdjustment}`}>
           <ValidatedTextField
             className={classes.datePicker}
             label="Start Date"
@@ -122,23 +124,25 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
           <MenuItem value={2}>RE</MenuItem>
         </ValidatedSelect>
       </form>
-      <button onClick={onSubmitForm}>Create a new schedule!</button>
-      <button onClick={onClose}>Cancel</button>
+      <button onClick={onSubmitForm} className={classes.button}>
+        Create a new schedule!
+      </button>
+      <button onClick={onClose} className={classes.button}>
+        Cancel
+      </button>
     </div>
   );
 };
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'fixed',
-      top: '25%',
-      left: '25%',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-around',
       alignItems: 'center',
-      height: '50%',
-      width: '50%',
+      width: 'max-content',
+      margin: 'auto',
+      textAlign: 'center',
       backgroundColor: 'white',
       padding: 20,
       zIndex: 10,
@@ -155,15 +159,35 @@ const useStyles = makeStyles((theme: Theme) =>
     tooltipContainer: {
       display: 'flex',
       flexDirection: 'row',
+      width: '100%',
     },
     nameInput: {
-      width: 300,
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
     },
     selectContainer: {
-      width: 400,
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
     },
     selectInput: {
-      width: 300,
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+    },
+    dateAdjustment: {
+      marginLeft: '-0.6rem',
+      marginBottom: '0.5rem',
+    },
+    button: {
+      padding: '10px',
+      borderRadius: '5px',
+      border: 'none',
+      margin: '5px',
+      '&:hover, &:focus': {
+        ...buttonTheme.filled,
+      },
     },
   }),
 );
