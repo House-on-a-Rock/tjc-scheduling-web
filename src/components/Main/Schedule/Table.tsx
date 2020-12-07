@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useTable } from 'react-table';
 
 // Components
-import { UpdatableCell, DataCell } from './TableCell';
+import { DataCell } from './TableCell';
 import { ContextMenu } from '../../shared/ContextMenu';
 import { days } from '../../../shared/utilities/dateHelper';
 
@@ -33,35 +33,20 @@ export const Table = React.memo(
 
     columns.forEach((entry) => {
       //add Cell property to each entry, which is used to pass props to the component
+
+      // if (entry.accessor !== 'time' && entry.accessor !== 'duty') // pass in different cell tsx based on cell type
       entry.Cell = (props: any) => {
         return <DataCell {...props} />;
       };
     });
 
-    const tableConfig =
-      access === 'write'
-        ? React.useMemo(
-            () => ({
-              columns,
-              data: dataRows,
-              // defaultColumn: { Cell: DataCell },
-            }),
-            [columns, dataRows],
-          )
-        : React.useMemo(
-            () => ({
-              columns: columns,
-              data: dataRows,
-              // defaultColumn: { Cell: DataCell },
-            }),
-            [columns, dataRows],
-          );
-
-    const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
+    const { getTableProps, headerGroups, rows, prepareRow } = useTable({
+      columns,
+      data: dataRows,
+    });
 
     return (
       <>
-        {access}
         {title && (
           <h3 className={classes.titleContainer}>
             <span className={classes.titleText}>

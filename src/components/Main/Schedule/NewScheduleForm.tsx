@@ -44,9 +44,15 @@ export const NewScheduleForm = ({ onClose, error, onSubmit }: NewScheduleFormPro
     'Please assign a team to this schedule',
   );
 
-  //needed to format date so that the date picker can display it properly
+  // needed to format date so that the date picker can display it properly
   function toDateString(date: Date): string {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    // need to pad months/dates with 0s if single digit
+    let month = (date.getMonth() + 1).toString();
+    let day = date.getDate().toString();
+    month = month.length > 1 ? month : `0${month}`;
+    day = day.length > 1 ? day : `0${day}`;
+
+    return `${date.getFullYear()}-${month}-${day}`;
   }
 
   function onSubmitForm() {
