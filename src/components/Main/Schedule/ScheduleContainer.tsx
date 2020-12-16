@@ -57,6 +57,8 @@ export const ScheduleContainer = React.memo(
     const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
     const role = { id: 1 };
 
+    console.log('data', data);
+
     return (
       <div
         className={classes.scheduleContainer}
@@ -72,26 +74,19 @@ export const ScheduleContainer = React.memo(
             />
           </Dialog>
         )}
-        {data &&
-          data.services.map(({ columns, data, name, day }: any, idx: any) => (
+        {
+          data && (
             <div>
               <Table
-                columns={columns}
                 data={data}
-                title={name}
-                day={day}
-                access={
-                  // accessLevel.includes(role.id) || accessLevel.includes(0)
-                  //   ? 'write'
-                  //   : 'read'
-                  'write'
-                }
+                access="write"
                 selectedCell={selectedCell}
                 onCellClick={setSelectedCell}
-                key={`${name}_${day}_${idx}`}
               />
             </div>
-          ))}
+          )
+          // ))
+        }
         <div className={classes.bottomButtonContainer}>
           <button onClick={onAddServiceClick} className={classes.addNewServiceButton}>
             <AddIcon height={50} width={50} />

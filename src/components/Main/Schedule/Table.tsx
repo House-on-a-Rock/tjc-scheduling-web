@@ -8,10 +8,13 @@ import { days } from '../../../shared/utilities/dateHelper';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+
+//custom components
+import { ServiceContainer } from './ServiceContainer';
 
 // Types
 import { TableProps } from '../../../shared/types';
@@ -26,80 +29,33 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
 export const Table = React.memo(
-  ({ columns, data, title, access, day, selectedCell, onCellClick }: TableProps) => {
+  ({ data, access, selectedCell, onCellClick }: TableProps) => {
     const outerRef = useRef(null);
     const classes = useStyles();
-    const [dataRows, setDataRows] = useState([...data]);
+    // const [dataRows, setDataRows] = useState([...data]);
 
-    columns.forEach((entry) => {
-      //add Cell property to each entry, which is used to pass props to the component
-
-      // if (entry.accessor !== 'time' && entry.accessor !== 'duty') // pass in different cell tsx based on cell type
-      entry.Cell = (props: any) => {
-        return <DataCell {...props} />;
-      };
-    });
-
-    const { getTableProps, headerGroups, rows, prepareRow } = useTable({
-      columns,
-      data: dataRows,
-    });
+    // console.log('data', data);
+    const { columns, services, role, title, view } = data;
 
     return (
       <>
-        {title && (
-          <h3 className={classes.titleContainer}>
-            <span className={classes.titleText}>
-              {days[day]} {title}
-            </span>
-          </h3>
-        )}
-
         <ContextMenu
           outerRef={outerRef}
           addRowHandler={insertRow}
           deleteRowHandler={deleteRow}
         />
-        <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
+        <MaUTable className={classes.table} ref={outerRef}>
           <TableHead>
-            {headerGroups.map((headerGroup) => (
-              <TableRow {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, index) => (
-                  <TableCell
-                    className={classes.headerCell}
-                    {...column.getHeaderProps()}
-                    key={index}
-                  >
-                    {column.render('Header')}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              {columns.map((column: any) => (
+                <TableCell className={classes.headerCell}>{column.Header}</TableCell>
+              ))}
+            </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row, i) => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()} id={i.toString()}>
-                  {row.cells.map((cell, index) => {
-                    const cellKey = `${title}_${cell.column.Header}_${cell.row.id}`;
-
-                    return (
-                      <TableCell
-                        className={classes.cell}
-                        {...cell.getCellProps()}
-                        key={index}
-                      >
-                        {cell.render('Cell', {
-                          onCellClick: () => onCellClick(cellKey),
-                          isSelected: cellKey === selectedCell,
-                        })}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+            {services.map((service: any) => (
+              <ServiceContainer service={service} />
+            ))}
           </TableBody>
         </MaUTable>
       </>
@@ -123,16 +79,16 @@ export const Table = React.memo(
     }
 
     function deleteRow(rowIndex: number) {
-      const newData = [...dataRows];
-      newData.splice(rowIndex, 1);
-      setDataRows(newData);
+      // const newData = [...dataRows];
+      // newData.splice(rowIndex, 1);
+      // setDataRows(newData);
     }
 
     function insertRow(rowIndex: number) {
-      const newRow = cleanRow({ ...dataRows[rowIndex] });
-      const tempData = [...dataRows];
-      tempData.splice(rowIndex, 0, newRow);
-      setDataRows(tempData);
+      // const newRow = cleanRow({ ...dataRows[rowIndex] });
+      // const tempData = [...dataRows];
+      // tempData.splice(rowIndex, 0, newRow);
+      // setDataRows(tempData);
     }
   },
 );
@@ -189,13 +145,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '1rem',
 
       // first two columns:
-      '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
-        background: 'white',
-        position: 'sticky',
-        zIndex: 1,
-        border: normalCellBorder,
-        boxSizing: 'border-box',
-      },
+      // '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
+      //   background: 'white',
+      //   position: 'sticky',
+      //   zIndex: 1,
+      //   border: normalCellBorder,
+      //   boxSizing: 'border-box',
+      // },
 
       // first column:
       '& td:first-child, th:first-child': {
