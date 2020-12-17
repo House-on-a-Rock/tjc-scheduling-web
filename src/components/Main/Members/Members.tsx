@@ -37,6 +37,7 @@ export const Members = () => {
       cacheTime: 3000000,
       refetchOnWindowFocus: false, //these dont work properly eugh
       refetchOnMount: false,
+      enabled: !!churchId,
     },
   );
   const [mutateAddUser] = useMutation(addUser, {

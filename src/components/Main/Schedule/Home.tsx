@@ -51,8 +51,8 @@ export const Home = () => {
   // }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
-    // if not the last tab, open that tab
     if (value <= data.length - 1) {
+      // if not the last tab, open that tab
       setTabIdx(value);
       const isOpened = openedTabs.indexOf(value);
       if (isOpened < 0) setOpenedTabs([...openedTabs, value]); //adds unopened tabs to array. currently, no way to close tabs. not sure if its necessary
@@ -109,6 +109,7 @@ export const Home = () => {
           />
           {openedTabs.map((tab) => (
             <ScheduleContainer
+              churchId={churchId}
               setAlert={setAlert}
               scheduleId={data[tab].id}
               isViewed={tab === tabIdx}

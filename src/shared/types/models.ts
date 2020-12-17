@@ -40,11 +40,6 @@ export type DayIndexOptions = {
   [key: string]: number;
 };
 
-// export interface WeeklyAssignmentInterface {
-//   time?: string;
-//   duty: string;
-//   [key: string]: string;
-// }
 export interface WeeklyAssignmentInterface {
   title: string;
   view: string;
@@ -119,26 +114,24 @@ export interface UpdatableCellProps {
   updateMyData: (rowIndex: number, columnId: string, value: string) => void;
 }
 export interface DataCellProps {
-  value: any;
-  row?: CellIndexType;
-  column?: CellColumnType;
-  // msg: any;
+  data: any;
+  row?: number;
+  column?: number;
   onCellClick: any;
   isSelected: boolean;
-  isEditable: boolean;
+  service: any;
+  members?: any;
 }
 
 type AccessTypes = 'read' | 'write';
 
 export interface TableProps {
-  // columns: ColumnFields[];
   data: WeeklyAssignmentInterface;
   updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
-  // title: string;
   access: AccessTypes;
-  // day: any;
   selectedCell: any;
   onCellClick: (cellKey: any) => void;
+  // members: any;
 }
 
 export interface SchedulerProps {

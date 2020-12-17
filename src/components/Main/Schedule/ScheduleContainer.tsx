@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 // react query and data manipulation
 import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
+import { getChurchMembersData } from '../../../query';
 import { addService } from '../../../store/apis/schedules';
 // components
 // import { Scheduler } from './Scheduler';
@@ -23,11 +24,12 @@ interface ScheduleContainerProps {
   scheduleId: number;
   isViewed: boolean;
   setAlert: (arg: useAlertProps) => void;
+  churchId: number;
 }
 
 // makes api calls, distributes data to scheduler
 export const ScheduleContainer = React.memo(
-  ({ scheduleId, isViewed, setAlert }: ScheduleContainerProps) => {
+  ({ scheduleId, isViewed, setAlert, churchId }: ScheduleContainerProps) => {
     const classes = useStyles();
     const cache = useQueryCache();
 
@@ -36,10 +38,11 @@ export const ScheduleContainer = React.memo(
       ['scheduleData', scheduleId],
       getScheduleData,
       {
-        refetchOnWindowFocus: false,
         staleTime: 100000000000000,
       },
     );
+
+    // mutations
     const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
       onSuccess: (data) => {
         cache.invalidateQueries('scheduleData');
@@ -51,13 +54,14 @@ export const ScheduleContainer = React.memo(
     const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
     const [selectedCell, setSelectedCell] = useState<string>('');
 
-    showLoadingSpinner(isLoading);
-
-    //from scheduler.tsx but unused
+    // unused for now
     const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
     const role = { id: 1 };
 
     console.log('data', data);
+    // console.log('userData', userData);
+
+    showLoadingSpinner(isLoading);
 
     return (
       <div
@@ -74,19 +78,17 @@ export const ScheduleContainer = React.memo(
             />
           </Dialog>
         )}
-        {
-          data && (
-            <div>
-              <Table
-                data={data}
-                access="write"
-                selectedCell={selectedCell}
-                onCellClick={setSelectedCell}
-              />
-            </div>
-          )
-          // ))
-        }
+        {data && (
+          <div>
+            <Table
+              data={data}
+              access="write"
+              selectedCell={selectedCell}
+              onCellClick={setSelectedCell}
+              // members={userData}
+            />
+          </div>
+        )}
         <div className={classes.bottomButtonContainer}>
           <button onClick={onAddServiceClick} className={classes.addNewServiceButton}>
             <AddIcon height={50} width={50} />

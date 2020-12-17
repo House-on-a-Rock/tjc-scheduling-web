@@ -4,7 +4,6 @@ import { useTable } from 'react-table';
 // Components
 import { DataCell } from './TableCell';
 import { ContextMenu } from '../../shared/ContextMenu';
-import { days } from '../../../shared/utilities/dateHelper';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
@@ -14,7 +13,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 
 //custom components
-import { ServiceContainer } from './ServiceContainer';
+import { ServiceDisplay } from './ServiceDisplay';
 
 // Types
 import { TableProps } from '../../../shared/types';
@@ -54,7 +53,11 @@ export const Table = React.memo(
           </TableHead>
           <TableBody>
             {services.map((service: any) => (
-              <ServiceContainer service={service} />
+              <ServiceDisplay
+                service={service}
+                selectedCell={selectedCell}
+                onCellClick={onCellClick}
+              />
             ))}
           </TableBody>
         </MaUTable>

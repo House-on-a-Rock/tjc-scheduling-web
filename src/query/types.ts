@@ -10,3 +10,8 @@ export interface IRolesData {
 export interface INewMembersData extends MemberStateData {
   roles: string[];
 }
+
+export interface IRolePleaseWork {
+  id: number;
+  role: IRole;
+}

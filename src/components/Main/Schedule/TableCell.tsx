@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
+
+// mat ui
 import Input from '@material-ui/core/Input';
+import TableCell from '@material-ui/core/TableCell';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import { DataCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
 export const DataCell = React.memo(
-  ({ value: initialValue, onCellClick, isSelected }: DataCellProps) => {
+  ({ data, onCellClick, isSelected, service, row, column, members }: DataCellProps) => {
     const classes = useStyles();
-    if (!initialValue) return <></>;
 
-    const [value, setValue] = useState(() => {
-      return initialValue.data.display
-        ? initialValue.data.display
-        : `${initialValue.data.firstName} ${initialValue.data.lastName}`;
-    });
+    const [value, setValue] = useState(data);
+    const [inputValue, setInputValue] = useState(
+      // `${data.user.firstName} ${data.user.lastName}`,
+      null,
+    );
     const [readOnly, setReadOnly] = useState<boolean>(true);
 
     function onDoubleClick(e: any) {
@@ -28,32 +33,62 @@ export const DataCell = React.memo(
 
     const inputStyle = isSelected ? classes.selected : classes.cell;
 
-    function Display() {
-      return readOnly ? (
-        <div onClick={onCellClick} onDoubleClick={onDoubleClick} className={inputStyle}>
-          {value}
-        </div>
-      ) : (
-        <Input
-          onClick={onCellClick}
-          className={classes.editable}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onDoubleClick={onDoubleClick}
-          onBlur={onBlur}
-          autoFocus
-        />
-      );
-    }
+    // console.log('inputValue', inputValue);
 
-    return <Display />;
+    return readOnly ? (
+      <TableCell
+        onClick={() => onCellClick(`${service.name}_${column}_${row}`)}
+        onDoubleClick={onDoubleClick}
+        className={inputStyle}
+      >
+        {data.display}
+      </TableCell>
+    ) : (
+      <TableCell
+        onClick={() => onCellClick(`${service.name}_${column}_${row}`)}
+        onDoubleClick={onDoubleClick}
+      >
+        <Autocomplete
+          id="combo-box"
+          options={members}
+          className={classes.editable}
+          renderInput={(params) => {
+            return <TextField {...params} value={value} />;
+          }}
+          // renderOption={(option) => {
+          //   // console.log('option', option);
+          //   return `${option.firstName} ${option.lastName}`;
+          // }}
+          getOptionLabel={(option: any) => `${option.firstName} ${option.lastName}`}
+          onBlur={onBlur}
+          getOptionSelected={(option, value) => {
+            return option.userId === value.userId;
+          }}
+          value={value}
+          onChange={(event, newValue) => {
+            setValue(newValue);
+          }}
+          inputValue={inputValue}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          selectOnFocus
+          disableClearable
+          fullWidth
+          clearOnBlur
+          autoHighlight
+          openOnFocus
+        />
+      </TableCell>
+    );
   },
   arePropsEqual,
 );
 
 function arePropsEqual(prevProps: DataCellProps, nextProps: DataCellProps) {
   return (
-    prevProps.value === nextProps.value && prevProps.isSelected === nextProps.isSelected
+    // prevProps.value === nextProps.value && prevProps.isSelected === nextProps.isSelected
+    prevProps.isSelected === nextProps.isSelected
   );
 }
 
