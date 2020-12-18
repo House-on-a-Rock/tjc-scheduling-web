@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { DataCell } from './TableCell';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/';
@@ -11,7 +12,13 @@ import { days } from '../../../shared/utilities/dateHelper';
 import { getChurchMembersData } from '../../../query';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 
-export const ServiceDisplay = ({ service, selectedCell, onCellClick }: any) => {
+export const ServiceDisplay = ({
+  service,
+  selectedCell,
+  onCellClick,
+  onTaskModified,
+}: any) => {
+  const classes = useStyles();
   const [isChildrenVisible, setChildrenVisible] = useState(true);
 
   const { churchId, name: churchName } = useSelector((state: RootState) => state.profile);
@@ -24,6 +31,7 @@ export const ServiceDisplay = ({ service, selectedCell, onCellClick }: any) => {
     },
   );
   if (isLoading) return <div>Loading</div>; // prevents problems when using data from useQuery before its arrived from the backend.
+  // need a better looking solution though
 
   const eventRows = service.eventData.map((event: any, rowIndex: number) => {
     const potentialMembers = userData.filter((user: any) =>
@@ -33,16 +41,18 @@ export const ServiceDisplay = ({ service, selectedCell, onCellClick }: any) => {
     return (
       <TableRow>
         {event.cells.map((cell: any, columnIndex: number) => {
-          if (columnIndex < 2) return <TableCell>{cell.display}</TableCell>;
+          if (columnIndex < 2)
+            return (
+              <TableCell key={`${rowIndex}_${columnIndex}`} className={classes.cell}>
+                {cell.display}
+              </TableCell>
+            );
           return (
             <DataCell
               data={cell}
-              isSelected={selectedCell === `${service.name}_${columnIndex}_${rowIndex}`}
-              row={rowIndex}
-              column={columnIndex}
-              onCellClick={onCellClick}
-              service={service}
               members={potentialMembers}
+              onTaskModified={onTaskModified}
+              key={`${rowIndex}_${columnIndex}`}
             />
           );
         })}
@@ -61,3 +71,21 @@ export const ServiceDisplay = ({ service, selectedCell, onCellClick }: any) => {
     </>
   );
 };
+
+// ok styling needs some work
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    cell: {
+      // color: typographyTheme.common.color,
+      textAlign: 'center',
+      '&:focus': {
+        outline: 'none',
+      },
+      'user-select': 'none',
+      padding: '1px 0px 2px 0px',
+      height: 20,
+      width: 50,
+      fontSize: 14,
+    },
+  }),
+);

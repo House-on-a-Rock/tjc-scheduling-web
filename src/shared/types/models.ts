@@ -115,12 +115,8 @@ export interface UpdatableCellProps {
 }
 export interface DataCellProps {
   data: any;
-  row?: number;
-  column?: number;
-  onCellClick: any;
-  isSelected: boolean;
-  service: any;
   members?: any;
+  onTaskModified: any;
 }
 
 type AccessTypes = 'read' | 'write';
@@ -129,9 +125,7 @@ export interface TableProps {
   data: WeeklyAssignmentInterface;
   updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
   access: AccessTypes;
-  selectedCell: any;
-  onCellClick: (cellKey: any) => void;
-  // members: any;
+  onTaskModified: any;
 }
 
 export interface SchedulerProps {

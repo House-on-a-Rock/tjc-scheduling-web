@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 // react query and data manipulation
 import { getScheduleData } from '../../../query/schedules';
@@ -28,95 +28,103 @@ interface ScheduleContainerProps {
 }
 
 // makes api calls, distributes data to scheduler
-export const ScheduleContainer = React.memo(
-  ({ scheduleId, isViewed, setAlert, churchId }: ScheduleContainerProps) => {
-    const classes = useStyles();
-    const cache = useQueryCache();
+export const ScheduleContainer = ({
+  scheduleId,
+  isViewed,
+  setAlert,
+  churchId,
+}: ScheduleContainerProps) => {
+  const classes = useStyles();
+  const cache = useQueryCache();
 
-    // queries
-    const { isLoading, error, data } = useQuery(
-      ['scheduleData', scheduleId],
-      getScheduleData,
-      {
-        staleTime: 100000000000000,
-      },
-    );
+  // queries
+  const { isLoading, error, data } = useQuery(
+    ['scheduleData', scheduleId],
+    getScheduleData,
+    {
+      staleTime: 100000000000000,
+    },
+  );
 
-    // mutations
-    const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
-      onSuccess: (data) => {
-        cache.invalidateQueries('scheduleData');
-        closeDialogHandler(data);
-      },
-    });
+  // mutations
+  const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
+    onSuccess: (data) => {
+      cache.invalidateQueries('scheduleData');
+      closeDialogHandler(data);
+    },
+  });
 
-    // state
-    const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
-    const [selectedCell, setSelectedCell] = useState<string>('');
+  // state
+  const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
+  const [isScheduleModified, setIsScheduleModified] = useState<boolean>(false);
+  const changedTasks = useRef<any>({});
 
-    // unused for now
-    const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
-    const role = { id: 1 };
+  // unused for now
+  const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
+  const role = { id: 1 };
 
-    console.log('data', data);
-    // console.log('userData', userData);
+  showLoadingSpinner(isLoading);
 
-    showLoadingSpinner(isLoading);
+  const onTaskModified = (taskId: number, newAssignee: number, isChanged: boolean) => {
+    if (isChanged) {
+      const updatedChangedTasks = { ...changedTasks.current, [taskId]: newAssignee };
+      changedTasks.current = updatedChangedTasks;
+    } else if (changedTasks.current[taskId]) delete changedTasks.current[taskId];
+    Object.keys(changedTasks.current).length > 0
+      ? setIsScheduleModified(true)
+      : setIsScheduleModified(false);
+  };
 
-    return (
-      <div
-        className={classes.scheduleContainer}
-        style={{ display: isViewed ? 'block' : 'none' }}
-      >
-        {data && (
-          <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
-            <NewServiceForm
-              error={mutateScheduleError}
-              order={data.services?.length || 0}
-              onSubmit={onNewServiceSubmit}
-              onClose={closeDialogHandler}
-            />
-          </Dialog>
-        )}
-        {data && (
-          <div>
-            <Table
-              data={data}
-              access="write"
-              selectedCell={selectedCell}
-              onCellClick={setSelectedCell}
-              // members={userData}
-            />
-          </div>
-        )}
-        <div className={classes.bottomButtonContainer}>
-          <button onClick={onAddServiceClick} className={classes.addNewServiceButton}>
-            <AddIcon height={50} width={50} />
-            <span>Add New Service</span>
-          </button>
+  return (
+    <div
+      className={classes.scheduleContainer}
+      style={{ display: isViewed ? 'block' : 'none' }}
+    >
+      <button disabled={!isScheduleModified}>Save Changes</button>
+      {data && (
+        <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
+          <NewServiceForm
+            error={mutateScheduleError}
+            order={data.services?.length || 0}
+            onSubmit={onNewServiceSubmit}
+            onClose={closeDialogHandler}
+          />
+        </Dialog>
+      )}
+      {data && (
+        <div>
+          <Table data={data} access="write" onTaskModified={onTaskModified} />
         </div>
+      )}
+      <div className={classes.bottomButtonContainer}>
+        <button onClick={onAddServiceClick} className={classes.addNewServiceButton}>
+          <AddIcon height={50} width={50} />
+          <span>Add New Service</span>
+        </button>
       </div>
-    );
+    </div>
+  );
 
-    function closeDialogHandler(response: any) {
-      setIsAddServiceVisible(false);
-      if (response.data) setAlert({ message: response.data, status: 'success' });
-    }
+  function saveChangesHandler() {}
 
-    function onAddServiceClick() {
-      setIsAddServiceVisible(true);
-    }
+  function closeDialogHandler(response: any) {
+    setIsAddServiceVisible(false);
+    if (response.data) setAlert({ message: response.data, status: 'success' });
+  }
 
-    async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
-      await mutateAddService({
-        name,
-        order: order,
-        dayOfWeek,
-        scheduleId: scheduleId,
-      });
-    }
-  },
-);
+  function onAddServiceClick() {
+    setIsAddServiceVisible(true);
+  }
+
+  async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
+    await mutateAddService({
+      name,
+      order: order,
+      dayOfWeek,
+      scheduleId: scheduleId,
+    });
+  }
+};
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

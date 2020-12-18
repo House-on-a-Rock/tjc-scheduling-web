@@ -1,95 +1,78 @@
 import React, { useState, useEffect } from 'react';
 
 // mat ui
-import Input from '@material-ui/core/Input';
 import TableCell from '@material-ui/core/TableCell';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 import { DataCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 
-export const DataCell = React.memo(
-  ({ data, onCellClick, isSelected, service, row, column, members }: DataCellProps) => {
-    const classes = useStyles();
+export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellProps) => {
+  const classes = useStyles();
+  const [value, setValue] = useState(data);
+  const [isCellModified, setIsCellModified] = useState<boolean>(false);
 
-    const [value, setValue] = useState(data);
-    const [inputValue, setInputValue] = useState(
-      // `${data.user.firstName} ${data.user.lastName}`,
-      null,
-    );
-    const [readOnly, setReadOnly] = useState<boolean>(true);
+  function onCellModify(isChanged: boolean, newValue: any) {
+    setIsCellModified(isChanged);
+    onTaskModified(data.taskId, newValue.userId, isChanged);
+    setValue(newValue);
+  }
 
-    function onDoubleClick(e: any) {
-      e.preventDefault();
-      setReadOnly(false);
-    }
+  const cellStyle = isCellModified ? classes.modified : classes.cell; // normally i'd combine styling objects to reduce repetition, but these are strings so idk
 
-    function onBlur() {
-      setReadOnly(true);
-      // callback to mark cell as changed
-    }
-
-    const inputStyle = isSelected ? classes.selected : classes.cell;
-
-    // console.log('inputValue', inputValue);
-
-    return readOnly ? (
-      <TableCell
-        onClick={() => onCellClick(`${service.name}_${column}_${row}`)}
-        onDoubleClick={onDoubleClick}
-        className={inputStyle}
-      >
-        {data.display}
-      </TableCell>
-    ) : (
-      <TableCell
-        onClick={() => onCellClick(`${service.name}_${column}_${row}`)}
-        onDoubleClick={onDoubleClick}
-      >
-        <Autocomplete
-          id="combo-box"
-          options={members}
-          className={classes.editable}
-          renderInput={(params) => {
-            return <TextField {...params} value={value} />;
-          }}
-          // renderOption={(option) => {
-          //   // console.log('option', option);
-          //   return `${option.firstName} ${option.lastName}`;
-          // }}
-          getOptionLabel={(option: any) => `${option.firstName} ${option.lastName}`}
-          onBlur={onBlur}
-          getOptionSelected={(option, value) => {
-            return option.userId === value.userId;
-          }}
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-          inputValue={inputValue}
-          onInputChange={(event, newInputValue) => {
-            setInputValue(newInputValue);
-          }}
-          selectOnFocus
-          disableClearable
-          fullWidth
-          clearOnBlur
-          autoHighlight
-          openOnFocus
-        />
-      </TableCell>
-    );
-  },
-  arePropsEqual,
-);
+  return (
+    <TableCell className={cellStyle}>
+      <Autocomplete
+        id="combo-box"
+        options={members}
+        renderInput={(params: any) => (
+          <TextField
+            {...params}
+            inputProps={{
+              ...params.inputProps,
+              style: { fontSize: 14 },
+            }}
+          />
+        )}
+        getOptionLabel={(option: any) => `${option.firstName} ${option.lastName}`}
+        renderOption={(option: any, state: any) => {
+          // would like this to autosize? so each option is just a single line
+          return (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {`${option.firstName} ${option.lastName}`}
+              {option.userId === data.userId && (
+                <RemoveIcon style={{ height: 10, width: 10, paddingLeft: 3 }} /> // icon to show which one the original assignee is. any ideas on a more appropriate icon?
+              )}
+            </div>
+          );
+        }}
+        value={value}
+        onChange={(event, newValue) =>
+          onCellModify(newValue.userId !== data.userId, newValue)
+        }
+        disableClearable
+        fullWidth
+        clearOnBlur
+        openOnFocus
+        forcePopupIcon={false}
+        autoHighlight={false}
+      />
+    </TableCell>
+  );
+}, arePropsEqual);
 
 function arePropsEqual(prevProps: DataCellProps, nextProps: DataCellProps) {
-  return (
-    // prevProps.value === nextProps.value && prevProps.isSelected === nextProps.isSelected
-    prevProps.isSelected === nextProps.isSelected
-  );
+  // not currently necessary, TODO revisit to check if needed when table is done
+  return true;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -100,27 +83,25 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:focus': {
         outline: 'none',
       },
-    },
-    selected: {
-      color: typographyTheme.common.color,
-      textAlign: 'center',
-      border: '16px solid rgb(93, 93, 177)',
-      borderWidth: 1,
-      '&:focus': {
-        outline: 'none',
-      },
-      'user-select': 'none',
-    },
-    editable: {
-      color: typographyTheme.common.color,
-      textAlign: 'center',
-      border: '16px solid rgb(93, 93, 177)',
-      borderWidth: 1,
       'user-select': 'none',
       padding: '1px 0px 2px 0px',
       height: 20,
       width: 100,
-      fontSize: 14,
+    },
+    modified: {
+      color: typographyTheme.common.color,
+      textAlign: 'center',
+      '&:focus': {
+        outline: 'none',
+      },
+      'user-select': 'none',
+      padding: '1px 0px 2px 0px',
+      height: 20,
+      width: 100,
+      backgroundColor: 'rgb(35, 132, 229)',
+    },
+    input: {
+      fontSize: 50,
     },
   }),
 );

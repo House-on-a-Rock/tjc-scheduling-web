@@ -27,74 +27,73 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
-export const Table = React.memo(
-  ({ data, access, selectedCell, onCellClick }: TableProps) => {
-    const outerRef = useRef(null);
-    const classes = useStyles();
-    // const [dataRows, setDataRows] = useState([...data]);
+export const Table = ({ data, access, onTaskModified }: TableProps) => {
+  const outerRef = useRef(null);
+  const classes = useStyles();
+  // const [dataRows, setDataRows] = useState([...data]);
 
-    // console.log('data', data);
-    const { columns, services, role, title, view } = data;
+  const { columns, services, role, title, view } = data;
 
-    return (
-      <>
-        <ContextMenu
-          outerRef={outerRef}
-          addRowHandler={insertRow}
-          deleteRowHandler={deleteRow}
-        />
-        <MaUTable className={classes.table} ref={outerRef}>
-          <TableHead>
-            <TableRow>
-              {columns.map((column: any) => (
-                <TableCell className={classes.headerCell}>{column.Header}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {services.map((service: any) => (
-              <ServiceDisplay
-                service={service}
-                selectedCell={selectedCell}
-                onCellClick={onCellClick}
-              />
+  return (
+    <>
+      <ContextMenu
+        outerRef={outerRef}
+        addRowHandler={insertRow}
+        deleteRowHandler={deleteRow}
+      />
+      <MaUTable className={classes.table} ref={outerRef}>
+        <TableHead>
+          <TableRow key="Column header">
+            {columns.map((column: any, index: number) => (
+              <TableCell key={`${column.header}_${index}`} className={classes.headerCell}>
+                {column.Header}
+              </TableCell>
             ))}
-          </TableBody>
-        </MaUTable>
-      </>
-    );
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {services.map((service: any, index: number) => (
+            <ServiceDisplay
+              service={service}
+              onTaskModified={onTaskModified}
+              key={index}
+            />
+          ))}
+        </TableBody>
+      </MaUTable>
+    </>
+  );
 
-    // make these blank later
-    function cleanRow(row: any) {
-      Object.keys(row).forEach(function (key) {
-        if (key !== 'duty' && key !== 'time')
-          row[key] = {
-            data: {
-              firstName: 'Mike',
-              lastName: 'Wazowski',
-              userId: 5,
-              role: { id: 2, name: 'Interpreter' },
-            },
-          };
-        else row[key] = { data: { display: '' } };
-      });
-      return row;
-    }
+  // make these blank later
+  function cleanRow(row: any) {
+    Object.keys(row).forEach(function (key) {
+      if (key !== 'duty' && key !== 'time')
+        row[key] = {
+          data: {
+            firstName: 'Mike',
+            lastName: 'Wazowski',
+            userId: 5,
+            role: { id: 2, name: 'Interpreter' },
+          },
+        };
+      else row[key] = { data: { display: '' } };
+    });
+    return row;
+  }
 
-    function deleteRow(rowIndex: number) {
-      // const newData = [...dataRows];
-      // newData.splice(rowIndex, 1);
-      // setDataRows(newData);
-    }
+  function deleteRow(rowIndex: number) {
+    // const newData = [...dataRows];
+    // newData.splice(rowIndex, 1);
+    // setDataRows(newData);
+  }
 
-    function insertRow(rowIndex: number) {
-      // const newRow = cleanRow({ ...dataRows[rowIndex] });
-      // const tempData = [...dataRows];
-      // tempData.splice(rowIndex, 0, newRow);
-      // setDataRows(tempData);
-    }
-  },
-);
+  function insertRow(rowIndex: number) {
+    // const newRow = cleanRow({ ...dataRows[rowIndex] });
+    // const tempData = [...dataRows];
+    // tempData.splice(rowIndex, 0, newRow);
+    // setDataRows(tempData);
+  }
+};
 
 const normalCellBorderColor = 'rgba(234, 234, 234, 1)';
 const normalCellBorder = `1px solid ${normalCellBorderColor}`;

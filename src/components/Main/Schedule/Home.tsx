@@ -47,7 +47,7 @@ export const Home = () => {
   // not too sure how setRole is being used/passed through
   // const [role, setRole] = useState({});
   // React.useEffect(() => {
-  //   // setRole(data[tabIdx]?.role); //wat
+  //   // setRole(data[tabIdx]?.role);
   // }, [data, tabIdx]);
 
   function onTabClick(e: React.ChangeEvent, value: number) {
