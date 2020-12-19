@@ -72,15 +72,6 @@ export const ScheduleContainer = ({
 
   showLoadingSpinner(isLoading);
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', beforeUnloadHandler);
-    return () => window.removeEventListener('beforeunload', beforeUnloadHandler);
-  }, [beforeUnloadHandler]);
-
-  function beforeUnloadHandler() {
-    console.log('calling beforeunloadhandler');
-  }
-
   return (
     <div
       className={classes.scheduleContainer}

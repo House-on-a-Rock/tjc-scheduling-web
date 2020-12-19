@@ -20,7 +20,7 @@ export const ScheduleTabs = ({ tabIdx, onTabClick, titles }: ScheduleTabsProps) 
     <div className={classes.root}>
       <Tabs
         value={tabIdx}
-        onChange={onTabClick}
+        onChange={(e, value) => onTabClick(value)}
         textColor="primary"
         centered
         className={classes.tabs}

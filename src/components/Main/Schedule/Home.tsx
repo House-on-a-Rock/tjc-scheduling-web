@@ -43,12 +43,6 @@ export const Home = () => {
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
   const [alert, setAlert] = useState<useAlertProps>();
 
-  // not too sure how setRole is being used/passed through -- ticket for later (maybe for alan)
-  // const [role, setRole] = useState({});
-  // React.useEffect(() => {
-  //   // setRole(data[tabIdx]?.role);
-  // }, [data, tabIdx]);
-
   return (
     <>
       <button
@@ -88,7 +82,7 @@ export const Home = () => {
       )}
     </>
   );
-  function onTabClick(e: React.ChangeEvent, value: number) {
+  function onTabClick(value: number) {
     if (value <= data.length - 1) {
       // if not the last tab, open that tab
       setTabIdx(value);

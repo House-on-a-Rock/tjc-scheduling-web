@@ -136,7 +136,7 @@ export interface SchedulerProps {
 export interface ScheduleTabsProps {
   titles: string[];
   tabIdx: number;
-  onTabClick: (e: React.ChangeEvent, value: number) => void;
+  onTabClick: (value: number) => void;
 }
 
 export interface AddUserProps {
