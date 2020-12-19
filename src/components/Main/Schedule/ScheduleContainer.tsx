@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 // react query and data manipulation
 import { getScheduleData } from '../../../query/schedules';
@@ -17,6 +17,7 @@ import { buttonTheme } from '../../../shared/styles/theme.js';
 //
 // import { extractRoleIds } from '../../../shared/utilities';
 import { Table } from './Table';
+import { Prompt } from 'react-router-dom';
 
 interface ScheduleContainerProps {
   scheduleId: number;
@@ -71,6 +72,15 @@ export const ScheduleContainer = ({
 
   showLoadingSpinner(isLoading);
 
+  useEffect(() => {
+    window.addEventListener('beforeunload', beforeUnloadHandler);
+    return () => window.removeEventListener('beforeunload', beforeUnloadHandler);
+  }, [beforeUnloadHandler]);
+
+  function beforeUnloadHandler() {
+    console.log('calling beforeunloadhandler');
+  }
+
   return (
     <div
       className={classes.scheduleContainer}
@@ -79,6 +89,10 @@ export const ScheduleContainer = ({
       <button disabled={!isScheduleModified} onClick={() => onSaveScheduleChanges()}>
         Save Changes
       </button>
+      <Prompt
+        when={isScheduleModified}
+        message="You have unsaved changes, are you sure you want to leave? Unsaved changes will be lost"
+      />
       {data && (
         <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
           <NewServiceForm
