@@ -15,7 +15,7 @@ import { showLoadingSpinner } from '../../../shared/styles/loading-spinner';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
 //
-import { extractRoleIds } from '../../../shared/utilities';
+// import { extractRoleIds } from '../../../shared/utilities';
 import { Table } from './Table';
 
 interface ScheduleContainerProps {
@@ -30,7 +30,6 @@ export const ScheduleContainer = ({
   scheduleId,
   isViewed,
   setAlert,
-  churchId,
 }: ScheduleContainerProps) => {
   const classes = useStyles();
   const cache = useQueryCache();
@@ -51,12 +50,10 @@ export const ScheduleContainer = ({
       closeDialogHandler(data);
     },
   });
-
   const [mutateUpdateSchedule, { error: mutateUpdateScheduleError }] = useMutation(
     updateScheduleAssignments,
     {
       onSuccess: (data: any) => {
-        console.log('on success data', data);
         cache.invalidateQueries('scheduleData');
         setAlert({ message: data[0].data, status: 'success' });
       },
@@ -69,34 +66,17 @@ export const ScheduleContainer = ({
   const changedTasks = useRef<any>({});
 
   // unused for now
-  const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
-  const role = { id: 1 };
+  // const accessLevel = extractRoleIds(localStorage.getItem('access_token')); // must log out/in
+  // const role = { id: 1 };
 
   showLoadingSpinner(isLoading);
-
-  const onTaskModified = (taskId: number, newAssignee: number, isChanged: boolean) => {
-    if (isChanged) {
-      const updatedChangedTasks = { ...changedTasks.current, [taskId]: newAssignee };
-      changedTasks.current = updatedChangedTasks;
-    } else if (changedTasks.current[taskId]) delete changedTasks.current[taskId];
-    Object.keys(changedTasks.current).length > 0
-      ? setIsScheduleModified(true)
-      : setIsScheduleModified(false);
-    console.log('changedTasks.current', changedTasks.current);
-  };
 
   return (
     <div
       className={classes.scheduleContainer}
       style={{ display: isViewed ? 'block' : 'none' }}
     >
-      <button
-        disabled={!isScheduleModified}
-        onClick={() => {
-          console.log('save changes clicked');
-          onSaveScheduleChanges();
-        }}
-      >
+      <button disabled={!isScheduleModified} onClick={() => onSaveScheduleChanges()}>
         Save Changes
       </button>
       {data && (
@@ -132,6 +112,16 @@ export const ScheduleContainer = ({
     setIsAddServiceVisible(true);
   }
 
+  function onTaskModified(taskId: number, newAssignee: number, isChanged: boolean) {
+    if (isChanged) {
+      const updatedChangedTasks = { ...changedTasks.current, [taskId]: newAssignee };
+      changedTasks.current = updatedChangedTasks;
+    } else if (changedTasks.current[taskId]) delete changedTasks.current[taskId];
+    Object.keys(changedTasks.current).length > 0
+      ? setIsScheduleModified(true)
+      : setIsScheduleModified(false);
+  }
+
   async function onNewServiceSubmit(name: string, order: number, dayOfWeek: number) {
     await mutateAddService({
       name,
@@ -145,6 +135,7 @@ export const ScheduleContainer = ({
 
   async function onSaveScheduleChanges() {
     await mutateUpdateSchedule(changedTasks.current);
+    setIsScheduleModified(false);
   }
 };
 

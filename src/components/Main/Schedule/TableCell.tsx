@@ -23,7 +23,9 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
 
   const cellStyle = isCellModified ? classes.modified : classes.cell; // normally i'd combine styling objects to reduce repetition, but these are strings so idk
 
-  // console.log('rendering cell');
+  // resets background color when new data is received
+  useEffect(() => setIsCellModified(false), [data]);
+
   return (
     <TableCell className={cellStyle}>
       <Autocomplete
@@ -41,7 +43,7 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
         getOptionLabel={(option: any) => `${option.firstName} ${option.lastName}`}
         getOptionSelected={(option: any, value: any) => option.userId === value.userId}
         renderOption={(option: any, state: any) => {
-          // would like this to autosize? so each option is just a single line
+          // would like this to autosize so each option is just a single line
           return (
             <div
               style={{
@@ -52,7 +54,7 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
             >
               {`${option.firstName} ${option.lastName}`}
               {option.userId === data.userId && (
-                <RemoveIcon style={{ height: 10, width: 10, paddingLeft: 3 }} /> // icon to show which one the original assignee is. any ideas on a more appropriate icon?
+                <RemoveIcon style={{ height: 10, width: 10, paddingLeft: 4 }} /> // icon to show which one the original assignee is. any ideas on a more appropriate icon?
               )}
             </div>
           );

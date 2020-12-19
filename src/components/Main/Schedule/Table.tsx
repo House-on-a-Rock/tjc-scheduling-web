@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useTable } from 'react-table';
+import React, { useState, useRef } from 'react';
 
 // Components
-import { DataCell } from './TableCell';
+
 import { ContextMenu } from '../../shared/ContextMenu';
 
 // Material-UI Components
@@ -32,7 +31,7 @@ export const Table = ({ data, access, onTaskModified }: TableProps) => {
   const classes = useStyles();
   // const [dataRows, setDataRows] = useState([...data]);
 
-  const { columns, services, role, title, view } = data;
+  const { columns, services } = data;
 
   return (
     <>
@@ -81,6 +80,7 @@ export const Table = ({ data, access, onTaskModified }: TableProps) => {
     return row;
   }
 
+  // these broke :(
   function deleteRow(rowIndex: number) {
     // const newData = [...dataRows];
     // newData.splice(rowIndex, 1);

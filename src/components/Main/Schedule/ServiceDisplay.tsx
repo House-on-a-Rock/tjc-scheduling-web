@@ -10,7 +10,7 @@ import { days } from '../../../shared/utilities/dateHelper';
 
 //query
 import { getChurchMembersData } from '../../../query';
-import { useQuery, useMutation, useQueryCache } from 'react-query';
+import { useQuery } from 'react-query';
 
 export const ServiceDisplay = ({ service, onTaskModified }: any) => {
   const classes = useStyles();
@@ -32,7 +32,7 @@ export const ServiceDisplay = ({ service, onTaskModified }: any) => {
       <TableRow>
         <TableCell>Loading</TableCell>
       </TableRow>
-    ); // prevents problems when using data from useQuery before its arrived from the backend.
+    ); // prevents problems when using data from useQuery before its arrived from the backend. suggestions welcome
 
   const eventRows = service.eventData.map((event: any, rowIndex: number) => {
     const potentialMembers = userData.filter((user: any) =>
@@ -61,6 +61,7 @@ export const ServiceDisplay = ({ service, onTaskModified }: any) => {
     );
   });
 
+  // main return is this one
   return (
     <>
       <TableRow
@@ -68,7 +69,7 @@ export const ServiceDisplay = ({ service, onTaskModified }: any) => {
           setChildrenVisible((d) => !d);
         }}
       >
-        <TableCell>{`${days[service.day]}${service.name}`}</TableCell>
+        <TableCell>{`${days[service.day]} ${service.name}`}</TableCell>
       </TableRow>
       {isChildrenVisible ? (
         eventRows
