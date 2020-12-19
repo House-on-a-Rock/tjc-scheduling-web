@@ -34,7 +34,7 @@ export const MembersHeader = ({
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table controls">
         <TableHead className={classes.header}>
-          <TableRow>
+          <TableRow key="Member Table Row Header">
             <TableCell>
               <div className={classes.search}>
                 <SearchIcon className={classes.searchIcon} />

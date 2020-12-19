@@ -3,10 +3,8 @@ import React, { useState, useRef } from 'react';
 // react query and data manipulation
 import { getScheduleData } from '../../../query/schedules';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
-import { getChurchMembersData } from '../../../query';
-import { addService } from '../../../store/apis/schedules';
+import { addService, updateScheduleAssignments } from '../../../store/apis/schedules';
 // components
-// import { Scheduler } from './Scheduler';
 import { NewServiceForm } from './NewServiceForm';
 import { useAlertProps } from '../../../shared/types/models';
 // material ui and styling
@@ -47,12 +45,23 @@ export const ScheduleContainer = ({
   );
 
   // mutations
-  const [mutateAddService, { error: mutateScheduleError }] = useMutation(addService, {
+  const [mutateAddService, { error: mutateAddServiceError }] = useMutation(addService, {
     onSuccess: (data) => {
       cache.invalidateQueries('scheduleData');
       closeDialogHandler(data);
     },
   });
+
+  const [mutateUpdateSchedule, { error: mutateUpdateScheduleError }] = useMutation(
+    updateScheduleAssignments,
+    {
+      onSuccess: (data: any) => {
+        console.log('on success data', data);
+        cache.invalidateQueries('scheduleData');
+        setAlert({ message: data[0].data, status: 'success' });
+      },
+    },
+  );
 
   // state
   const [isAddServiceVisible, setIsAddServiceVisible] = useState<boolean>(false);
@@ -73,6 +82,7 @@ export const ScheduleContainer = ({
     Object.keys(changedTasks.current).length > 0
       ? setIsScheduleModified(true)
       : setIsScheduleModified(false);
+    console.log('changedTasks.current', changedTasks.current);
   };
 
   return (
@@ -80,11 +90,19 @@ export const ScheduleContainer = ({
       className={classes.scheduleContainer}
       style={{ display: isViewed ? 'block' : 'none' }}
     >
-      <button disabled={!isScheduleModified}>Save Changes</button>
+      <button
+        disabled={!isScheduleModified}
+        onClick={() => {
+          console.log('save changes clicked');
+          onSaveScheduleChanges();
+        }}
+      >
+        Save Changes
+      </button>
       {data && (
         <Dialog open={isAddServiceVisible} onClose={closeDialogHandler}>
           <NewServiceForm
-            error={mutateScheduleError}
+            error={mutateAddServiceError}
             order={data.services?.length || 0}
             onSubmit={onNewServiceSubmit}
             onClose={closeDialogHandler}
@@ -105,8 +123,6 @@ export const ScheduleContainer = ({
     </div>
   );
 
-  function saveChangesHandler() {}
-
   function closeDialogHandler(response: any) {
     setIsAddServiceVisible(false);
     if (response.data) setAlert({ message: response.data, status: 'success' });
@@ -123,6 +139,12 @@ export const ScheduleContainer = ({
       dayOfWeek,
       scheduleId: scheduleId,
     });
+    // cleanup
+    setIsScheduleModified(false);
+  }
+
+  async function onSaveScheduleChanges() {
+    await mutateUpdateSchedule(changedTasks.current);
   }
 };
 

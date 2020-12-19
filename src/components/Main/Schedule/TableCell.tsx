@@ -23,6 +23,7 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
 
   const cellStyle = isCellModified ? classes.modified : classes.cell; // normally i'd combine styling objects to reduce repetition, but these are strings so idk
 
+  // console.log('rendering cell');
   return (
     <TableCell className={cellStyle}>
       <Autocomplete
@@ -38,6 +39,7 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
           />
         )}
         getOptionLabel={(option: any) => `${option.firstName} ${option.lastName}`}
+        getOptionSelected={(option: any, value: any) => option.userId === value.userId}
         renderOption={(option: any, state: any) => {
           // would like this to autosize? so each option is just a single line
           return (
@@ -71,8 +73,7 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
 }, arePropsEqual);
 
 function arePropsEqual(prevProps: DataCellProps, nextProps: DataCellProps) {
-  // not currently necessary, TODO revisit to check if needed when table is done
-  return true;
+  return prevProps.data.userId === nextProps.data.userId;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '1px 0px 2px 0px',
       height: 20,
       width: 100,
-      backgroundColor: 'rgb(35, 132, 229)',
+      backgroundColor: 'rgb(125, 226, 226)',
     },
     input: {
       fontSize: 50,

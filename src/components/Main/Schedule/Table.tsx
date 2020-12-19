@@ -127,11 +127,11 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:not(:first-child)': {
         minWidth: '2ch',
       },
-      '& > div': {
-        width: '100%',
-        padding: 0,
-        margin: 0,
-      },
+      // '& > div': {
+      //   width: '100%',
+      //   padding: 0,
+      //   margin: 0,
+      // },
       '& input': {
         // width: '20ch',
         // padding: '10px 15px 3px',

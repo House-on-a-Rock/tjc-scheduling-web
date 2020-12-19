@@ -12,12 +12,7 @@ import { days } from '../../../shared/utilities/dateHelper';
 import { getChurchMembersData } from '../../../query';
 import { useQuery, useMutation, useQueryCache } from 'react-query';
 
-export const ServiceDisplay = ({
-  service,
-  selectedCell,
-  onCellClick,
-  onTaskModified,
-}: any) => {
+export const ServiceDisplay = ({ service, onTaskModified }: any) => {
   const classes = useStyles();
   const [isChildrenVisible, setChildrenVisible] = useState(true);
 
@@ -30,8 +25,14 @@ export const ServiceDisplay = ({
       cacheTime: 3000000,
     },
   );
-  if (isLoading) return <div>Loading</div>; // prevents problems when using data from useQuery before its arrived from the backend.
-  // need a better looking solution though
+
+  // need a better looking solution
+  if (isLoading)
+    return (
+      <TableRow>
+        <TableCell>Loading</TableCell>
+      </TableRow>
+    ); // prevents problems when using data from useQuery before its arrived from the backend.
 
   const eventRows = service.eventData.map((event: any, rowIndex: number) => {
     const potentialMembers = userData.filter((user: any) =>
@@ -39,7 +40,7 @@ export const ServiceDisplay = ({
     );
 
     return (
-      <TableRow>
+      <TableRow key={`${service.name}_${service.serviceId}_${event.eventId}_${rowIndex}`}>
         {event.cells.map((cell: any, columnIndex: number) => {
           if (columnIndex < 2)
             return (
@@ -66,8 +67,14 @@ export const ServiceDisplay = ({
         onClick={() => {
           setChildrenVisible((d) => !d);
         }}
-      >{`${days[service.day]} ${service.name}`}</TableRow>
-      {isChildrenVisible ? eventRows : <TableRow>placeholder</TableRow>}
+      >
+        <TableCell>{`${days[service.day]}${service.name}`}</TableCell>
+      </TableRow>
+      {isChildrenVisible ? (
+        eventRows
+      ) : (
+        <TableRow key={service.serviceId}>placeholder</TableRow>
+      )}
     </>
   );
 };
