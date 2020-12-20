@@ -115,7 +115,7 @@ export interface UpdatableCellProps {
 }
 export interface DataCellProps {
   data: any;
-  members?: any;
+  options?: any;
   onTaskModified: any;
 }
 

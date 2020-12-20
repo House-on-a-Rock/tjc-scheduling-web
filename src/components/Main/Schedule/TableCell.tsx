@@ -10,7 +10,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { DataCellProps } from '../../../shared/types';
 import { typographyTheme } from '../../../shared/styles/theme.js';
 
-export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellProps) => {
+export const DataCell = React.memo(({ data, options, onTaskModified }: DataCellProps) => {
   const classes = useStyles();
   const [value, setValue] = useState(data);
   const [isCellModified, setIsCellModified] = useState<boolean>(false);
@@ -26,11 +26,13 @@ export const DataCell = React.memo(({ data, members, onTaskModified }: DataCellP
   // resets background color when new data is received
   useEffect(() => setIsCellModified(false), [data]);
 
+  const filteredOptions = options.filter((member: any) => member.userId !== value.userId);
+
   return (
     <TableCell className={cellStyle}>
       <Autocomplete
         id="combo-box"
-        options={members}
+        options={filteredOptions}
         renderInput={(params: any) => (
           <TextField
             {...params}

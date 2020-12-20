@@ -34,29 +34,30 @@ export const ServiceDisplay = ({ service, onTaskModified }: any) => {
       </TableRow>
     ); // prevents problems when using data from useQuery before its arrived from the backend. suggestions welcome
 
+  const frozenColumn = ['time', 'duty'];
+
   const eventRows = service.eventData.map((event: any, rowIndex: number) => {
     const potentialMembers = userData.filter((user: any) =>
       user.roles.some((role: any) => role.id === event.roleId),
     );
+    const eventCells = event.cells.map((cell: any, columnIndex: number) => {
+      return columnIndex < 2 ? (
+        <TableCell key={`${rowIndex}_${columnIndex}`} className={classes.cell}>
+          {cell.display}
+        </TableCell>
+      ) : (
+        <DataCell
+          data={cell}
+          options={potentialMembers}
+          onTaskModified={onTaskModified}
+          key={`${rowIndex}_${columnIndex}`}
+        />
+      );
+    });
 
     return (
       <TableRow key={`${service.name}_${service.serviceId}_${event.eventId}_${rowIndex}`}>
-        {event.cells.map((cell: any, columnIndex: number) => {
-          if (columnIndex < 2)
-            return (
-              <TableCell key={`${rowIndex}_${columnIndex}`} className={classes.cell}>
-                {cell.display}
-              </TableCell>
-            );
-          return (
-            <DataCell
-              data={cell}
-              members={potentialMembers}
-              onTaskModified={onTaskModified}
-              key={`${rowIndex}_${columnIndex}`}
-            />
-          );
-        })}
+        {eventCells}
       </TableRow>
     );
   });
@@ -89,7 +90,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '&:focus': {
         outline: 'none',
       },
-      'user-select': 'none',
       padding: '1px 0px 2px 0px',
       height: 20,
       width: 50,
