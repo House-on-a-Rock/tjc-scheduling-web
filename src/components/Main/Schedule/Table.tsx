@@ -1,16 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useTable } from 'react-table';
+import React, { useState, useRef } from 'react';
 
 // Components
-import { UpdatableCell, DataCell } from './TableCell';
+
 import { ContextMenu } from '../../shared/ContextMenu';
 
 // Material-UI Components
 import MaUTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+
+//custom components
+import { ServiceDisplay } from './ServiceDisplay';
 
 // Types
 import { TableProps } from '../../../shared/types';
@@ -24,36 +26,45 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { fade, darken } from '@material-ui/core/styles';
 
-export const Table = ({ columns, data, updateMyData, title, access }: TableProps) => {
+export const Table = ({ data, access, onTaskModified }: TableProps) => {
   const outerRef = useRef(null);
   const classes = useStyles();
-  const [dataRows, setDataRows] = useState(data);
-  useEffect(() => {
-    setDataRows(data);
-  });
-  const tableConfig =
-    access === 'write'
-      ? React.useMemo(
-          () => ({
-            columns,
-            data: dataRows,
-            defaultColumn: { Cell: UpdatableCell },
-            updateMyData,
-          }),
-          [columns, dataRows, updateMyData],
-        )
-      : React.useMemo(
-          () => ({
-            columns: columns,
-            data: dataRows,
-            defaultColumn: { Cell: DataCell },
-          }),
-          [columns, dataRows],
-        );
+  // const [dataRows, setDataRows] = useState([...data]);
 
-  const { getTableProps, headerGroups, rows, prepareRow } = useTable(tableConfig);
+  const { columns, services } = data;
 
-  const cleanRow = function (row: any) {
+  return (
+    <>
+      <ContextMenu
+        outerRef={outerRef}
+        addRowHandler={insertRow}
+        deleteRowHandler={deleteRow}
+      />
+      <MaUTable className={classes.table} ref={outerRef}>
+        <TableHead>
+          <TableRow key="Column header">
+            {columns.map((column: any, index: number) => (
+              <TableCell key={`${column.header}_${index}`} className={classes.headerCell}>
+                {column.Header}
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {services.map((service: any, index: number) => (
+            <ServiceDisplay
+              service={service}
+              onTaskModified={onTaskModified}
+              key={index}
+            />
+          ))}
+        </TableBody>
+      </MaUTable>
+    </>
+  );
+
+  // make these blank later
+  function cleanRow(row: any) {
     Object.keys(row).forEach(function (key) {
       if (key !== 'duty' && key !== 'time')
         row[key] = {
@@ -67,64 +78,21 @@ export const Table = ({ columns, data, updateMyData, title, access }: TableProps
       else row[key] = { data: { display: '' } };
     });
     return row;
-  };
+  }
 
-  // there's an extra render these row operations, not sure where its coming from. Probably causing a flicker where the table shrinks to zero content and then fills back up
-  // TODO figure out why theres a flicker
-  const deleteRow = (rowIndex: any) => {
-    const newData = dataRows.splice(rowIndex, 1);
-    setDataRows(newData);
-  };
+  // these broke :(
+  function deleteRow(rowIndex: number) {
+    // const newData = [...dataRows];
+    // newData.splice(rowIndex, 1);
+    // setDataRows(newData);
+  }
 
-  const insertRow = (rowIndex: any) => {
-    const newRow = { ...dataRows[rowIndex] };
-    cleanRow(newRow);
-    const newData = dataRows.splice(rowIndex, 0, newRow);
-    setDataRows(newData);
-  };
-
-  return (
-    <>
-      {title && (
-        <h3 className={classes.titleContainer}>
-          <span className={classes.titleText}>{title}</span>
-        </h3>
-      )}
-      {access}
-      <ContextMenu
-        outerRef={outerRef}
-        addRowHandler={insertRow}
-        deleteRowHandler={deleteRow}
-      />
-      <MaUTable {...getTableProps()} className={classes.table} ref={outerRef}>
-        <TableHead>
-          {headerGroups.map((headerGroup) => (
-            <TableRow {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <TableCell className={classes.headerCell} {...column.getHeaderProps()}>
-                  {column.render('Header')}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {rows.map((row, i) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()} id={i.toString()}>
-                {row.cells.map((cell) => (
-                  <TableCell className={classes.cell} {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </TableCell>
-                ))}
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </MaUTable>
-    </>
-  );
+  function insertRow(rowIndex: number) {
+    // const newRow = cleanRow({ ...dataRows[rowIndex] });
+    // const tempData = [...dataRows];
+    // tempData.splice(rowIndex, 0, newRow);
+    // setDataRows(tempData);
+  }
 };
 
 const normalCellBorderColor = 'rgba(234, 234, 234, 1)';
@@ -147,7 +115,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     headerCell: {
       textAlign: 'center',
-      padding: '1px 5px',
+      padding: '1px 2px',
       color: typographyTheme.common.color,
       border: normalCellBorder,
       fontWeight: 'bold',
@@ -155,21 +123,22 @@ const useStyles = makeStyles((theme: Theme) =>
     cell: {
       padding: '0px 0px 1px',
       border: normalCellBorder,
+      width: '20ch',
       '&:not(:first-child)': {
-        minWidth: '12ch',
+        minWidth: '2ch',
       },
-      '& div:before': {
-        borderBottom: 'none',
-      },
-      // '&:hover': {
-      //   background: `${buttonTheme.filled.hover.backgroundColor} !important`,
-      //   '& input': {
-      //     color: 'white',
-      //   },
+      // '& > div': {
+      //   width: '100%',
+      //   padding: 0,
+      //   margin: 0,
       // },
       '& input': {
-        width: '20ch',
-        padding: '10px 15px 3px',
+        // width: '20ch',
+        // padding: '10px 15px 3px',
+        width: '100%',
+        padding: 0,
+        margin: 0,
+        textAlign: 'center',
         // ...horizontalScrollIndicatorShadow('transparent'),
       },
     },
@@ -178,13 +147,13 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '1rem',
 
       // first two columns:
-      '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
-        background: 'white',
-        position: 'sticky',
-        zIndex: 1,
-        border: normalCellBorder,
-        boxSizing: 'border-box',
-      },
+      // '& td:first-child, td:nth-child(2), th:first-child, th:nth-child(2)': {
+      //   background: 'white',
+      //   position: 'sticky',
+      //   zIndex: 1,
+      //   border: normalCellBorder,
+      //   boxSizing: 'border-box',
+      // },
 
       // first column:
       '& td:first-child, th:first-child': {

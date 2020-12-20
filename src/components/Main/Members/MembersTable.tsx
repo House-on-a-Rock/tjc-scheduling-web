@@ -39,7 +39,7 @@ export const MembersTable = ({
     <TableContainer component={Paper} className={classes.root}>
       <Table className={classes.table} aria-label="members table">
         <TableHead>
-          <TableRow>
+          <TableRow key="Members Tablehead Row">
             <TableCell padding="checkbox">
               <Checkbox
                 indeterminate={setIndeterminate}

@@ -7,7 +7,6 @@ import { ValidatedSelect } from '../../shared/ValidatedSelect';
 import { useValidatedField } from '../../shared/Hooks/useValidatedField';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import { TextFieldState } from '../../../shared/types';
 import { buttonTheme } from '../../../shared/styles/theme.js';
 
 interface NewServiceFormProps {

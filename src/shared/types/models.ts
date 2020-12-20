@@ -32,6 +32,8 @@ export interface JWTDataType {
 export interface ColumnFields {
   Header: string;
   accessor: string;
+  onClick?: () => void;
+  Cell?: any;
 }
 
 export type DayIndexOptions = {
@@ -39,9 +41,11 @@ export type DayIndexOptions = {
 };
 
 export interface WeeklyAssignmentInterface {
-  time?: string;
-  duty: string;
-  [key: string]: string;
+  title: string;
+  view: string;
+  role: any;
+  columns: any;
+  services: any;
 }
 export interface MappedScheduleInterface {
   day: string;
@@ -110,19 +114,18 @@ export interface UpdatableCellProps {
   updateMyData: (rowIndex: number, columnId: string, value: string) => void;
 }
 export interface DataCellProps {
-  value: any;
-  row: CellIndexType;
-  column: CellColumnType;
+  data: any;
+  options?: any;
+  onTaskModified: any;
 }
 
 type AccessTypes = 'read' | 'write';
 
 export interface TableProps {
-  columns: ColumnFields[];
-  data: WeeklyAssignmentInterface[];
-  updateMyData: (rowIndex: number, columnId: string, value: string) => void;
-  title: string;
+  data: WeeklyAssignmentInterface;
+  updateMyData?: (rowIndex: number, columnId: string, value: string) => void;
   access: AccessTypes;
+  onTaskModified: any;
 }
 
 export interface SchedulerProps {
@@ -133,7 +136,7 @@ export interface SchedulerProps {
 export interface ScheduleTabsProps {
   titles: string[];
   tabIdx: number;
-  onTabClick: (e: React.ChangeEvent, value: number) => void;
+  onTabClick: (value: number) => void;
 }
 
 export interface AddUserProps {
@@ -173,4 +176,10 @@ export interface ValidatedFieldState<T> {
 export interface useAlertProps {
   message: string;
   status: string;
+}
+
+export interface cellManagementProps {
+  isSelected: boolean;
+  isEditable: boolean;
+  onCellClick: (cellKey: any) => void;
 }

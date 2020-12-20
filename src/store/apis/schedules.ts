@@ -35,3 +35,12 @@ export const addService = ({ name, order, dayOfWeek, scheduleId }: AddServicePro
     dayOfWeek,
     scheduleId,
   });
+
+export const updateScheduleAssignments = async (changedTasks: any) => {
+  const response = await Promise.all(
+    Object.entries(changedTasks).map((task) =>
+      axios.patch(`${secretIp}/api/tasks/updateTask/${task[0]}/assignTo/${task[1]}`),
+    ),
+  );
+  return response;
+};

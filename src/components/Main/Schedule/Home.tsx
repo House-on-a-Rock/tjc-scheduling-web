@@ -30,7 +30,6 @@ export const Home = () => {
     refetchOnWindowFocus: false,
     staleTime: 100000000000000,
   });
-
   const [mutateAddSchedule, { error: mutateScheduleError }] = useMutation(addSchedule, {
     onSuccess: (data) => {
       cache.invalidateQueries('scheduleTabs');
@@ -43,43 +42,6 @@ export const Home = () => {
   const [isNewScheduleVisible, setIsNewScheduleVisible] = useState<boolean>(false);
   const [openedTabs, setOpenedTabs] = useState<number[]>([0]);
   const [alert, setAlert] = useState<useAlertProps>();
-
-  // not too sure how setRole is being used/passed through
-  // const [role, setRole] = useState({});
-  // React.useEffect(() => {
-  //   // setRole(data[tabIdx]?.role); //wat
-  // }, [data, tabIdx]);
-
-  function onTabClick(e: React.ChangeEvent, value: number) {
-    // if not the last tab, open that tab
-    if (value <= data.length - 1) {
-      setTabIdx(value);
-      const isOpened = openedTabs.indexOf(value);
-      if (isOpened < 0) setOpenedTabs([...openedTabs, value]);
-    } else setIsNewScheduleVisible(true); //if last tab, open dialog to make new schedule
-  }
-
-  function closeDialogHandler(response: any) {
-    setIsNewScheduleVisible(false);
-    if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
-  }
-
-  async function onNewScheduleSubmit(
-    scheduleTitle: string,
-    startDate: string,
-    endDate: string,
-    view: string,
-    team: number,
-  ) {
-    await mutateAddSchedule({
-      scheduleTitle,
-      startDate,
-      endDate,
-      view,
-      team,
-      churchId,
-    });
-  }
 
   return (
     <>
@@ -109,6 +71,7 @@ export const Home = () => {
           />
           {openedTabs.map((tab) => (
             <ScheduleContainer
+              churchId={churchId}
               setAlert={setAlert}
               scheduleId={data[tab].id}
               isViewed={tab === tabIdx}
@@ -119,6 +82,37 @@ export const Home = () => {
       )}
     </>
   );
+  function onTabClick(value: number) {
+    if (value <= data.length - 1) {
+      // if not the last tab, open that tab
+      setTabIdx(value);
+      const isOpened = openedTabs.indexOf(value);
+      if (isOpened < 0) setOpenedTabs([...openedTabs, value]); // adds unopened tabs to array. need way to handle lots of tabs
+    } else setIsNewScheduleVisible(true); // if last tab, open dialog to make new schedule
+  }
+
+  function closeDialogHandler(response: any) {
+    // TODO for some reason theres a lot of rerenders for just this alert. nothing visible to client, very low priority
+    setIsNewScheduleVisible(false);
+    if (response.data) setAlert({ message: response.data, status: 'success' }); // response.statusText = "OK", response.status == 200
+  }
+
+  async function onNewScheduleSubmit(
+    scheduleTitle: string,
+    startDate: string,
+    endDate: string,
+    view: string,
+    team: number,
+  ) {
+    await mutateAddSchedule({
+      scheduleTitle,
+      startDate,
+      endDate,
+      view,
+      team,
+      churchId,
+    });
+  }
 };
 
 const useStyles = makeStyles((theme: Theme) =>
